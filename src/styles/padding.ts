@@ -1,6 +1,7 @@
 const padding = 18
 
 export default {
+  sixth: padding / 6,
   quarter: padding / 4,
   half: padding / 2,
   threequarters: 3 * padding / 4,

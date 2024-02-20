@@ -14,10 +14,10 @@ import { AuthToken, BackendServiceContext } from '../services/BackendServiceProv
 
 import Loader from "./../components/Loader"
 import styles from '../styles/styles';
-import colors from '../styles/colors';
 
 export default function AppFlowCoordinator() {
   const [loading, setLoading] = useState(false)
+  const [demoLoggedIn, setDemoLoggedIn] = useState(false) // TEMP
   const accountService = useContext(AccountServiceContext)
   const backendService = useContext(BackendServiceContext)
 
@@ -50,8 +50,8 @@ export default function AppFlowCoordinator() {
     }
   }
 
-  const presentLogin = () => {
-    
+  const userHasLoggedIn = () => {
+    setDemoLoggedIn(true)
   }
   
   const done = (name: string) => { 
@@ -79,18 +79,16 @@ export default function AppFlowCoordinator() {
   }
 
   let children = null
-    if (backendService?.hasToken("user")) {
+    if (backendService?.hasToken("user") || demoLoggedIn) {
       children = <HomeFlowCoordinator handleLoader={handleLoader} />
     } else {
-      children = <OnboardingFlowCoordinator handleLoader={handleLoader} />
+      children = <OnboardingFlowCoordinator handleLoader={handleLoader} userHasLoggedIn={userHasLoggedIn} />
     }
 
   return (
-    <SafeAreaView>
-      <View style={styles.container}>
-        {children}
-        <Loader loading={loading} />
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      {children}
+      <Loader loading={loading} />
+    </View>
   )
 }

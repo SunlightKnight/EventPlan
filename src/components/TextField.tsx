@@ -21,6 +21,7 @@ function TextField(props: TextFieldProps) {
     <View style={[{marginHorizontal: padding.full}, props.style]}>
       {props.label ? (
         <Label
+          color={isSelected ? colors.primary : colors.black}
           dimension='small'
           style={[{marginTop: padding.half, marginBottom: padding.quarter}, props.labelStyle]}>
           {props.label}

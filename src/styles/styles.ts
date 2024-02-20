@@ -80,7 +80,7 @@ const commonStyles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: colors.white,
+    backgroundColor: "transparent",
   },
   textInputText: {
     flex: 1,

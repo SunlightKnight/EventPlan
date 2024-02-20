@@ -3,9 +3,11 @@ import {StyleSheet, TouchableOpacity, Text, ViewStyle, TextStyle, TextProps, Vie
 
 import colors from '../styles/colors';
 import Label from './Label';
+import padding from '../styles/padding';
 
 type CustomButtonProps = ViewProps & TextProps & {
   text: string
+  textStyle?: TextStyle
   type?: "primary" | "transparent" | "secondary"
   onPress: (event: any) => void
 }
@@ -32,7 +34,7 @@ export default function CustomButton(props: CustomButtonProps) {
       case "secondary":
         return colors.white
       case "transparent":
-        return colors.black
+        return colors.primary
       default:
         return colors.white
     }
@@ -48,10 +50,11 @@ export default function CustomButton(props: CustomButtonProps) {
           backgroundColor: getButtonColor(),
           height: 50,
           borderWidth: type == "transparent" ? 1 : undefined,
+          borderColor: type == "transparent" ? colors.primary : undefined,
           shadowColor: "transparent"
         },
         props.style]}>
-          <Label color={getTextColor()} style={props.style}>
+          <Label color={getTextColor()} style={props.textStyle}>
             {text}
           </Label>
     </TouchableOpacity>
@@ -62,7 +65,7 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 10,
     marginHorizontal: 20,  
-    borderRadius: 5, 
+    borderRadius: padding.onehalf, 
     justifyContent: "center",
     alignItems: "center",
     shadowOffset: {width: 0, height: 8},

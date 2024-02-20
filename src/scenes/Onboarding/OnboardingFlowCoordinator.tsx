@@ -4,13 +4,17 @@ import { createStackNavigator } from '@react-navigation/stack';
 import colors from "../../styles/colors";
 
 import Login from "../Onboarding/Login/Login"
-import { slideAnimation } from "../../styles/styles";
+import { HEADER_HEIGHT, slideAnimation } from "../../styles/styles";
 import commonStyles from "../../styles/styles";
-import { View } from "react-native";
+import { Image, View } from "react-native";
 import Registration from "./Registration/Registration";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { icon_back } from "../../assets/images";
+import padding from "../../styles/padding";
 
 export type OnboardingFlowCoordinatorProps = {
   handleLoader: () => void
+  userHasLoggedIn: () => void
 }
 
 const Stack = createStackNavigator()
@@ -38,7 +42,17 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
     headerBackTitleVisible: false,
     cardStyleInterpolator: slideAnimation,
     gestureEnabled: false,
-    headerMode: "float"
+    headerBackImage: () => (
+      <Image
+        source={icon_back}
+        resizeMode="contain"
+        style={{
+          width: 30, 
+          height: 30, 
+          tintColor: colors.primary, 
+          marginHorizontal: padding.half
+        }} />
+    )
   };
   
   useEffect(() => {
@@ -56,7 +70,7 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
     Login: {
       component: Login,
       parentProps: props,
-      nav: { "registration": navigateToRegistration }
+      nav: { "registration": navigateToRegistration, "login": props.userHasLoggedIn }
     },
     Registration: {
       component: Registration,
@@ -85,11 +99,13 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
                   options={screenOptions}>
                   {(props) => {
                     return (
-                      <PageComponent
-                        {...props}
-                        parentProps={page.parentProps}
-                        nav={page.nav ? page.nav : undefined}
-                      />
+                      <SafeAreaProvider style={{paddingTop: HEADER_HEIGHT}}>
+                        <PageComponent
+                          {...props}
+                          parentProps={page.parentProps}
+                          nav={page.nav ? page.nav : undefined}
+                        />
+                      </SafeAreaProvider>
                     );
                   }}
                 </Stack.Screen>
