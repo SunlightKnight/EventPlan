@@ -1,0 +1,13 @@
+{
+  "errors": {
+    "timeout": "Timeout error",
+    "generic": "Generic error",
+    "unauthorized": "Client unauthorized",
+    "not_valid": "Value not valid"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "register": "Register"
+  }
+}

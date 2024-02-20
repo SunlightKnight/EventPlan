@@ -1,0 +1,13 @@
+{
+  "errors": {
+    "timeout": "Errore di timeout",
+    "generic": "Errore generico",
+    "unauthorized": "Client non autorizzato",
+    "not_valid": "Valore non valido"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "register": "Registrati"
+  }
+}
