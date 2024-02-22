@@ -6,8 +6,6 @@ import CustomButton from "../../../components/CustomButton";
 import { useTranslation } from "react-i18next";
 import TextField from "../../../components/TextField";
 import { icon_key, icon_mail } from "../../../assets/images";
-import { ScrollView } from "react-native-gesture-handler";
-import commonStyles from "../../../styles/styles";
 import { useState } from "react";
 import padding from "../../../styles/padding";
 import { formatSubtitle } from "../../../utils/Helper";
@@ -47,11 +45,13 @@ function Login(props: LoginProps) {
 
       <TextField 
         label={t("login.email")} 
+        value={userMail}
         icon={icon_mail} 
         iconStyle={{height: 25}}
         onChangeText={(text) => { setUserMail(text) }}/>
       <TextField 
         label={t("login.password")} 
+        value={userPassword}
         icon={icon_key} 
         secureTextEntry
         onChangeText={(text) => { setUserPassword(text) }}

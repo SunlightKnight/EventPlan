@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import {
   BackHandler,
-  SafeAreaView,
   View,
 } from 'react-native';
 
@@ -78,9 +77,13 @@ export default function AppFlowCoordinator() {
     return true
   }
 
+  const manageLogout = useCallback(() => {
+    setDemoLoggedIn(false)
+  }, [demoLoggedIn])
+
   let children = null
     if (backendService?.hasToken("user") || demoLoggedIn) {
-      children = <HomeFlowCoordinator handleLoader={handleLoader} />
+      children = <HomeFlowCoordinator handleLoader={handleLoader} manageLogout={manageLogout} />
     } else {
       children = <OnboardingFlowCoordinator handleLoader={handleLoader} userHasLoggedIn={userHasLoggedIn} />
     }

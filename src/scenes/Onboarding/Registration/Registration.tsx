@@ -43,24 +43,24 @@ function Registration(props: RegistrationProps) {
 
       <TextField 
         label={t("registration.first_name")} 
-        iconStyle={{height: 25}}
+        value={firstName}
         onChangeText={(text) => { setFirstName(text) }}/>
       <TextField 
         label={t("registration.last_name")} 
-        iconStyle={{height: 25}}
+        value={lastName}
         onChangeText={(text) => { setLastName(text) }}/>
       <TextField 
         label={t("login.email")} 
-        iconStyle={{height: 25}}
+        value={userMail}
         onChangeText={(text) => { setUserMail(text) }}/>
       <TextField 
         label={t("login.password")} 
-        iconStyle={{height: 25}}
+        value={password}
         secureTextEntry
         onChangeText={(text) => { setPassword(text) }}/>
       <TextField 
         label={t("registration.confirm_password")} 
-        iconStyle={{height: 25}}
+        value={confirmPassword}
         secureTextEntry
         onChangeText={(text) => { setConfirmPassword(text) }}/>
           

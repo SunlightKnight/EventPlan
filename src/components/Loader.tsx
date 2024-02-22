@@ -1,7 +1,8 @@
 import React from 'react';
-import {StyleSheet, View, ActivityIndicator} from 'react-native';
+import {StyleSheet, View, ActivityIndicator, Platform} from 'react-native';
 
 import colors from '../styles/colors';
+import padding from '../styles/padding';
 
 type LoaderProps = {
   loading: boolean
@@ -16,7 +17,10 @@ export default function Loader(props: LoaderProps) {
             animating={props.loading}
             size="large"
             color={colors.primary}
-            style={{}}
+            style={{
+              marginTop: Platform.OS === "ios" ? padding.quarter : undefined,
+              marginLeft: Platform.OS === "ios" ? padding.sixth : undefined
+            }}
           />
         </View>
       </View>

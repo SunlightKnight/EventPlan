@@ -6,5 +6,5 @@ export default {
   primary: "#00A118",
   secondary: "#A10000",
   lightGrey: "#f0EDED",
-  disabledGrey: "#9C9C9C"
+  disabledGrey: "#B5B5B5"
 }

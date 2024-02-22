@@ -16,5 +16,17 @@
     "first_name": "Nome",
     "last_name": "Cognome",
     "confirm_password": "Conferma password"
+  },
+  "home": {
+    "events": "Events",
+    "create_event": "Crea Evento"
+  },
+  "payment": {
+    "payment": "Pagamento evento",
+    "recipient_iban": "IBAN Destinatario",
+    "card_number": "Numero carta",
+    "card_expiry": "Scadenza",
+    "card_cvv": "CVV",
+    "pay": "Paga {{AMOUNT}}"
   }
 }
