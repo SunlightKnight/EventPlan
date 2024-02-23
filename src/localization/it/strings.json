@@ -21,6 +21,12 @@
     "events": "Events",
     "create_event": "Crea Evento"
   },
+  "detail": {
+    "detail": "Dettaglio evento",
+    "participants": "Partecipanti",
+    "expenses": "Spese",
+    "pay_dues": "Paga la tua quota: {{DUES}}"
+  },
   "payment": {
     "payment": "Pagamento evento",
     "recipient_iban": "IBAN Destinatario",

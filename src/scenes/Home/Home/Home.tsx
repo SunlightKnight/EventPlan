@@ -4,9 +4,9 @@ import padding from "../../../styles/padding"
 import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator"
 import CustomButton from "../../../components/CustomButton"
 import colors from "../../../styles/colors"
-import { formatSubtitle } from "../../../utils/Helper"
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
+import { EventDTO } from "../../../models/services/EventDTO"
 
 type HomeProps = {
   parentProps: HomeFlowCoordinatorProps
@@ -16,6 +16,18 @@ type HomeProps = {
 function Home(props: HomeProps) {
   const { t } = useTranslation()
   const [eventList, setEventList] = useState([])
+  const testEvent: EventDTO = {
+    adminId: 1, 
+    eventName: "Event TEST", 
+    eventDate: "2024-03-15T01:30:00.000Z",
+    eventDescription: "TEST TEST TEST", 
+    eventAmount: "50.00", 
+    participants: [
+      {userId: 0, firstName: "Mario", lastName: "Giallo", email: "test@test.com"},
+      {userId: 1, firstName: "Maria", lastName: "Blu", email: "test@test.com"},
+      {userId: 2, firstName: "Hulk", lastName: "Hogan", email: "test@test.com"}
+    ]
+  }
 
   return (
     <View style={{marginTop: padding.full}}>
@@ -23,9 +35,9 @@ function Home(props: HomeProps) {
         <Label 
           dimension="big" 
           weight="semibold" 
-          color={colors.primary} 
+          color={colors.primaryDark} 
           style={{marginBottom: padding.half, marginLeft: padding.full}}>
-            {formatSubtitle(t("home.events"))}
+            {t("home.events")}
         </Label>
         {eventList.length > 0 ? (
           <CustomButton 
@@ -50,6 +62,11 @@ function Home(props: HomeProps) {
             alignSelf: "center", 
             marginTop: padding.double}} />
       )}
+
+      <CustomButton 
+        text={"detail"} 
+        type="transparent" 
+        onPress={() => props.nav.eventDetail(testEvent)} />
       
     </View>
   )

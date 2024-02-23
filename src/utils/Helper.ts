@@ -12,27 +12,20 @@ export const getTopInset = () => {
   }
 }
 
-export const formatSubtitle = (text: string) => {
-  return "/ " + text + " /"
-}
-
 export const formatDate = (
   date: string,
   currentFormat: string,
   newFormat: string,
 ): string => {
   moment.locale('it');
-  var correctDate = moment(date, currentFormat).format(newFormat);
+  var correctDate = moment(date, currentFormat).subtract(1, "hours").format(newFormat);
   return correctDate
 };
 
 export const formatCardExpiry = (text: string) => {
-  console.log("--- REC TEXT ", text)
   if (!text.includes("/") && text.length == 2) {
-    console.log("HERE")
     return text
   }
-  console.log("OUT")
 
   let correctExpiry = text.replace(
     /^([1-9]\/|[2-9])$/g, '0$1/' // 3 > 03/
@@ -49,6 +42,5 @@ export const formatCardExpiry = (text: string) => {
   ).replace(
     /\/\//g, '/' // Prevent entering more than 1 `/`
   );
-  console.log("CORRECT ", correctExpiry)
   return correctExpiry
 }

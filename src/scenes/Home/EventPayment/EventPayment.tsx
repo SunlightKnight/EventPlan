@@ -7,7 +7,7 @@ import { useState } from "react"
 import commonStyles from "../../../styles/styles"
 import padding from "../../../styles/padding"
 import colors from "../../../styles/colors"
-import { formatCardExpiry, formatSubtitle } from "../../../utils/Helper"
+import { formatCardExpiry } from "../../../utils/Helper"
 import TextField from "../../../components/TextField"
 import { View } from "react-native"
 
@@ -29,9 +29,9 @@ function EventPayment(props: EventPaymentProps) {
       <Label 
         dimension="big" 
         weight="semibold" 
-        color={colors.primary} 
+        color={colors.primaryDark} 
         style={{marginTop: padding.full, marginBottom: padding.half, marginLeft: padding.quarter}}>
-          {formatSubtitle(t("payment.payment"))}
+          {t("payment.payment")}
       </Label>
 
       <TextField 

@@ -19,6 +19,7 @@ import AppFlowCoordinator from './src/scenes/AppFlowCoordinator';
 import AccountServiceProvider from './src/services/AccountServiceProvider';
 import DeviceInfo from 'react-native-device-info';
 import styles from './src/styles/styles';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 function App(): React.JSX.Element {
   const getTopInset = () => {
@@ -32,18 +33,20 @@ function App(): React.JSX.Element {
   }
 
   return (
-    <BackendServiceProvider>
-      <AccountServiceProvider>
-        <View style={styles.container}>
-          <StatusBar
-            translucent
-            barStyle={"dark-content"}
-            backgroundColor={'transparent'}
-          />
-          <AppFlowCoordinator />
-        </View>
-      </AccountServiceProvider>
-    </BackendServiceProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <BackendServiceProvider>
+        <AccountServiceProvider>
+          <View style={styles.container}>
+            <StatusBar
+              translucent
+              barStyle={"dark-content"}
+              backgroundColor={'transparent'}
+            />
+            <AppFlowCoordinator />
+          </View>
+        </AccountServiceProvider>
+      </BackendServiceProvider>
+    </GestureHandlerRootView>
   );
 }
 

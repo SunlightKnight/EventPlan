@@ -8,7 +8,6 @@ import TextField from "../../../components/TextField";
 import { icon_key, icon_mail } from "../../../assets/images";
 import { useState } from "react";
 import padding from "../../../styles/padding";
-import { formatSubtitle } from "../../../utils/Helper";
 
 type LoginProps = {
   parentProps: OnboardingFlowCoordinatorProps
@@ -38,9 +37,9 @@ function Login(props: LoginProps) {
       <Label 
         dimension="big" 
         weight="semibold" 
-        color={colors.primary} 
+        color={colors.primaryDark} 
         style={{marginBottom: padding.half, marginLeft: padding.quarter}}>
-          {formatSubtitle(t("login.login"))}
+          {t("login.login")}
       </Label>
 
       <TextField 

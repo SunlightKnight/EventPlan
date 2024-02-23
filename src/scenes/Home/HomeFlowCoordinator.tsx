@@ -11,6 +11,7 @@ import EventPayment from "./EventPayment/EventPayment";
 import { icon_back, icon_logout } from "../../assets/images";
 import padding from "../../styles/padding";
 import CreateEvent from "./CreateEvent/CreateEvent";
+import { EventDTO } from "../../models/services/EventDTO";
 
 export type HomeFlowCoordinatorProps = {
   handleLoader: () => void
@@ -22,7 +23,7 @@ const Theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: colors.white
+    background: colors.paleGrey
   },
 };
 
@@ -93,10 +94,10 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
     }
   }
 
-  const navigateToEventDetail = (paymentAmount?: string) => {
+  const navigateToEventDetail = (eventData: EventDTO) => {
     if (navRef) {
       setShowLogout(false)
-      navRef.current.navigate("EventDetail", { paymentAmount: paymentAmount })
+      navRef.current.navigate("EventDetail", { eventData: eventData })
     }
   }
 

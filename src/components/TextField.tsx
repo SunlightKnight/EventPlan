@@ -1,6 +1,14 @@
 import { useState } from "react";
-import { Image, ImageStyle, StyleProp, TextInput, TextStyle, View } from "react-native"
-import { ImageSourcePropType, TextInputProps, TextProps, ViewProps } from "react-native";
+import { 
+  Image, 
+  ImageStyle, 
+  StyleProp, 
+  TextInput, 
+  TextStyle, 
+  View, 
+  ImageSourcePropType, 
+  TextInputProps 
+} from "react-native"
 import padding from "../styles/padding";
 import Label from "./Label";
 import colors from "../styles/colors";

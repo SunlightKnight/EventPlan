@@ -7,7 +7,6 @@ import commonStyles from "../../../styles/styles";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import padding from "../../../styles/padding";
-import { formatSubtitle } from "../../../utils/Helper";
 import TextField from "../../../components/TextField";
 import CustomButton from "../../../components/CustomButton";
 
@@ -36,9 +35,9 @@ function Registration(props: RegistrationProps) {
       <Label 
         dimension="big" 
         weight="semibold" 
-        color={colors.primary} 
+        color={colors.primaryDark} 
         style={{marginBottom: padding.half, marginLeft: padding.quarter}}>
-          {formatSubtitle(t("registration.registration"))}
+          {t("registration.registration")}
       </Label>
 
       <TextField 

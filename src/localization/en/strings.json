@@ -21,6 +21,12 @@
     "events": "Events",
     "create_event": "Create Event"
   },
+  "detail": {
+    "detail": "Event detail",
+    "participants": "Participants",
+    "expenses": "Expenses",
+    "pay_dues": "Pay your dues: {{DUES}}"
+  },
   "payment": {
     "payment": "Event payment",
     "recipient_iban": "Recipient IBAN",

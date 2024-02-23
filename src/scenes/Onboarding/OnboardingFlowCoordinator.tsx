@@ -22,7 +22,7 @@ const Theme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: colors.white
+    background: colors.paleGrey
   },
 };
 
@@ -49,7 +49,7 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
         style={{
           width: 30, 
           height: 30, 
-          tintColor: colors.primary, 
+          tintColor: colors.primaryDark, 
           marginHorizontal: padding.half
         }} />
     )
