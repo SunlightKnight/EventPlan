@@ -78,7 +78,7 @@ function EventDetail(props: EventDetailProps) {
 
           {eventData.participants.length > 0 ? (
             eventData.participants.map((p: UserDTO) => {
-              return <Label>{p.firstName + " " + p.lastName}</Label>
+              return <Label key={p.userId}>{p.firstName + " " + p.lastName}</Label>
             })
           ) : null}
         </View>

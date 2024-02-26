@@ -16,7 +16,7 @@ const AccountServiceProvider = ({ children } : any) => {
     try {
       await AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(userData))
     } catch (error) {
-      console.log("Error retrieving user data: " + error)
+      console.log("*** AccountServiceProvider: Error retrieving user data: " + error)
     }
   }
   
@@ -26,14 +26,25 @@ const AccountServiceProvider = ({ children } : any) => {
       const user = userData ? (JSON.parse(userData) as AccountDataDTO) : undefined
       return user
     } catch (error) {
-      console.log("Error retrieving user data: " + error)
+      console.log("*** AccountServiceProvider: Error retrieving user data: " + error)
+    }
+  }
+
+  const removeAccount = async () => {
+    try { 
+      await AsyncStorage.removeItem(USER_DATA_KEY)
+      return true
+    } catch (error) {
+      console.log("*** AccountServiceProvider: Error removing account: " + error)
+      return false
     }
   }
 
   return <AccountServiceContext.Provider value={{
     aService: {
       setAccount: setAccount,
-      getAccount: getAccount
+      getAccount: getAccount,
+      removeAccount: removeAccount
     }
   }}>
     {children}

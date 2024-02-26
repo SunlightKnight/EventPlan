@@ -7,6 +7,8 @@ import colors from "../../../styles/colors"
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
 import { EventDTO } from "../../../models/services/EventDTO"
+import FloatingButton from "../../../components/FloatingButton"
+import { icon_add } from "../../../assets/images"
 
 type HomeProps = {
   parentProps: HomeFlowCoordinatorProps
@@ -30,43 +32,47 @@ function Home(props: HomeProps) {
   }
 
   return (
-    <View style={{marginTop: padding.full}}>
-      <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-        <Label 
-          dimension="big" 
-          weight="semibold" 
-          color={colors.primaryDark} 
-          style={{marginBottom: padding.half, marginLeft: padding.full}}>
-            {t("home.events")}
-        </Label>
-        {eventList.length > 0 ? (
-          <CustomButton 
-            text={"+"} 
-            type="secondary"
-            textStyle={{fontWeight: "400", fontSize: 30, paddingBottom: padding.sixth}} 
-            onPress={() => { props.nav.createEvent() }} 
-            style={{width: 50, height: 40, marginVertical: 0, borderRadius: padding.full}} />
-        ) : null}
-      </View>
+    <View style={{flex: 1, marginTop: padding.full}}>
+      <Label 
+        dimension="big" 
+        weight="semibold" 
+        color={colors.primaryDark} 
+        style={{marginBottom: padding.half, marginLeft: padding.full}}>
+          {t("home.events")}
+      </Label>
 
       {eventList.length > 0 ? (
         <Label>LISTA</Label>
       ) : (
         <CustomButton 
           text={t("home.create_event")} 
+          textStyle={{fontWeight: "800"}}
           type="transparent" 
           onPress={() => props.nav.createEvent()}
           style={{
             height: 100, 
             width: Dimensions.get("screen").width - 100, 
             alignSelf: "center", 
-            marginTop: padding.double}} />
+            marginTop: padding.double,
+            borderWidth: 3}} />
       )}
 
       <CustomButton 
         text={"detail"} 
         type="transparent" 
         onPress={() => props.nav.eventDetail(testEvent)} />
+
+      {eventList.length > 0 ? (
+        <FloatingButton 
+          width={60} 
+          height={60} 
+          radius={30} 
+          bottomMargin={padding.double} 
+          rightMargin={padding.double} 
+          buttonIcon={icon_add} 
+          buttonIconColor={colors.white} 
+          onPress={() => { props.nav.createEvent() }} />
+      ) : null}
       
     </View>
   )

@@ -6,8 +6,11 @@ import CustomButton from "../../../components/CustomButton";
 import { useTranslation } from "react-i18next";
 import TextField from "../../../components/TextField";
 import { icon_key, icon_mail } from "../../../assets/images";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import padding from "../../../styles/padding";
+import DateTextField from "../../../components/DateTextField";
+import { BackendServiceContext } from "../../../services/BackendServiceProvider";
+import LoginRequestDTO from "../../../models/services/LoginRequestDTO";
 
 type LoginProps = {
   parentProps: OnboardingFlowCoordinatorProps
@@ -17,6 +20,7 @@ type LoginProps = {
 
 function Login(props: LoginProps) {
   const { t } = useTranslation()
+  const bsContext = useContext(BackendServiceContext)
   const [userMail, setUserMail] = useState("")
   const [userPassword, setUserPassword] = useState("")
 
@@ -61,6 +65,12 @@ function Login(props: LoginProps) {
         type="primary" 
         onPress={() => {
           if (validate()) {
+            // const loginRequest: LoginRequestDTO = { email: userMail, password: userPassword }
+            // bsContext?.beService.login(loginRequest).then((loginResponse) => {
+
+            // }).catch((loginError) => {
+
+            // })
             props.nav.login()
           }
         }} />

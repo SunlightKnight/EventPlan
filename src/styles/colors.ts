@@ -8,5 +8,6 @@ export default {
   primaryDark: "#305AB0",
   secondary: "#F5AB51",
   lightGrey: "#f0EDED",
-  disabledGrey: "#B5B5B5"
+  disabledGrey: "#B5B5B5",
+  deepRed: "#BD0000"
 }

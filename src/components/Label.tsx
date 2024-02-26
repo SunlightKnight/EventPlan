@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, TextProps, TextStyle} from 'react-native';
 
 import colors from '../styles/colors';
-import fontSize, {getFontSize} from "../styles/fontSize"
+import {getFontSize} from "../styles/fontSize"
 
 type CustomLabelProps = TextProps & TextStyle & {
   children: any

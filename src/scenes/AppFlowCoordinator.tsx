@@ -77,8 +77,16 @@ export default function AppFlowCoordinator() {
     return true
   }
 
-  const manageLogout = useCallback(() => {
-    setDemoLoggedIn(false)
+  const manageLogout = useCallback(async () => {
+    let accountRemoved = await accountService?.aService.removeAccount()
+    let tokenRemoved = await backendService?.removeAuthToken()
+
+    if (accountRemoved && tokenRemoved) {
+      setDemoLoggedIn(false)
+    } else {
+      console.log("*** AppFlowCoordinator - A problem ocurred while logging user out")
+    }
+    
   }, [demoLoggedIn])
 
   let children = null

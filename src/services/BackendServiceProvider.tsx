@@ -1,12 +1,14 @@
 import { createContext } from "react";
 import { throwError } from "./BackendError";
 import { useTranslation } from "react-i18next";
+import * as Keychain from "react-native-keychain"
 import BackendServiceInterface from "./BackendServiceInterface";
 import LoginRequestDTO from "../models/services/LoginRequestDTO";
 
 const FETCH_TIMEOUT = 30;
 const REFRESH_TOKEN_ERROR = "error.session.expired" // TEMP
 const API_BASE_URL = ""
+const AUTH_OBJECT = "AUTH"
 
 export interface IJSON {
   [key: string]: any;
@@ -38,6 +40,7 @@ export type AuthToken = {
 interface BackendServiceContextType {
   setAuthToken: (token: string, type?: 'user' | 'client') => void
   hasToken: (type?: 'user' | 'client') => boolean
+  removeAuthToken: () => Promise<boolean>
   beService: BackendServiceInterface
 }
 
@@ -46,14 +49,14 @@ export const BackendServiceContext = createContext<BackendServiceContextType | n
 const BackendServiceProvider = ({ children } : any) => {
   const { t } = useTranslation()
 
-  let userToken: string;
+  let userToken: AuthToken | undefined;
   let clientToken: string;
 
-  const setAuthToken = (token: string, type?: 'user' | 'client') => {
-    if (type === 'client') {
+  const setAuthToken = (token: AuthToken | string, type?: 'user' | 'client') => {
+    if (type === 'client' && typeof token === "string") {
       clientToken = token;
     } else {
-      userToken = token;
+      userToken = token as AuthToken;
     }
   }
 
@@ -233,6 +236,17 @@ const BackendServiceProvider = ({ children } : any) => {
 
   }
 
+  const saveAuthToken = async (token: AuthToken | undefined) => {
+    console.log("*** BackendService - saveAthToken - AuthToken is:\n" + JSON.stringify(token))
+    userToken = token
+    await Keychain.setGenericPassword(AUTH_OBJECT, JSON.stringify(token))
+  }
+
+  const removeAuthToken = async () => {
+    console.log("*** BackendService - Removing token")
+    return await Keychain.resetGenericPassword()
+  }
+
   const login = (payload: LoginRequestDTO) => {
     return callJSON(API_BASE_URL + "/login", HTTPMethod.POST, payload, HTTPContentType.json);
   }
@@ -241,6 +255,7 @@ const BackendServiceProvider = ({ children } : any) => {
   return <BackendServiceContext.Provider value={{
     setAuthToken: setAuthToken,
     hasToken: hasToken,
+    removeAuthToken: removeAuthToken,
     beService: {
       login: login
     }

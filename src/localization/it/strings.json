@@ -1,4 +1,8 @@
 {
+  "general": {
+    "confirm": "Conferma",
+    "cancel": "Cancella"
+  },
   "errors": {
     "timeout": "Errore di timeout",
     "generic": "Errore generico",
@@ -20,6 +24,9 @@
   "home": {
     "events": "Events",
     "create_event": "Crea Evento"
+  },
+  "create": {
+    "select_date": "Seleziona data"
   },
   "detail": {
     "detail": "Dettaglio evento",
