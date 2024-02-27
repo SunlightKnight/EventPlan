@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next"
 import Label from "../../../components/Label"
-import { ScrollView } from "react-native"
 import DateTextField from "../../../components/DateTextField"
 import { useState } from "react"
 import colors from "../../../styles/colors"
