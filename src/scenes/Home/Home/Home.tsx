@@ -38,10 +38,8 @@ function Home(props: HomeProps) {
       // API CALL
       setEventList([])
     }
-    props.navigation.addListener("focus", listener)
-    return () => {
-      props.navigation.removeListener("focus", listener)
-    }
+    const unsubscribe = props.navigation.addListener("focus", listener)
+    return unsubscribe
   }, [eventList])
 
   return (
