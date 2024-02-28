@@ -42,7 +42,7 @@ function Login(props: LoginProps) {
         weight="semibold" 
         color={colors.primaryDark} 
         style={{marginBottom: padding.half, marginLeft: padding.quarter}}>
-          {t("login.login") + "AAAAAA"}
+          {t("login.login")}
       </Label>
 
       <TextField 
