@@ -1,4 +1,10 @@
 import moment from "moment"
+import 'moment/locale/en-gb';
+import 'moment/locale/de';
+import 'moment/locale/fr';
+import 'moment/locale/it';
+import 'moment/locale/pt';
+import 'moment/locale/es';
 import { Platform, StatusBar } from "react-native"
 import DeviceInfo from "react-native-device-info"
 

@@ -6,7 +6,7 @@ import colors from "../../styles/colors";
 import Login from "../Onboarding/Login/Login"
 import { HEADER_HEIGHT, slideAnimation } from "../../styles/styles";
 import commonStyles from "../../styles/styles";
-import { Image, View } from "react-native";
+import { Image, Platform, View } from "react-native";
 import Registration from "./Registration/Registration";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { icon_back } from "../../assets/images";
@@ -50,7 +50,8 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
           width: 30, 
           height: 30, 
           tintColor: colors.primaryDark, 
-          marginHorizontal: padding.half
+          marginHorizontal: padding.half,
+          marginTop: Platform.OS === "ios" ? padding.full : padding.double
         }} />
     )
   };
@@ -60,7 +61,6 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
   }, [])
 
   const navigateToRegistration = () => {
-    console.log("REACHED ONBOARDINGFLOW ", navRef.current)
     if (navRef) {
       navRef.current.navigate("Registration")
     }
@@ -84,7 +84,7 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
         ref={navRef}
         theme={Theme}
         onStateChange={(navigationState: NavigationState | undefined) => {
-          console.log(`*** OnBoarding:onStateChange: navigationState=${JSON.stringify(navigationState,)}`)
+          console.log(`*** OnBoarding:onStateChange: navigationState=${JSON.stringify(navigationState)}`)
         }}>
         <Stack.Navigator
           initialRouteName={'Login'}

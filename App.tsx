@@ -22,16 +22,6 @@ import styles from './src/styles/styles';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 function App(): React.JSX.Element {
-  const getTopInset = () => {
-    if (Platform.OS === "android") {
-      return StatusBar.currentHeight
-    } else if (Platform.OS === "ios") {
-      return (DeviceInfo.hasNotch() || DeviceInfo.hasDynamicIsland()) ? 30 : 0
-    } else {
-      return 0
-    }
-  }
-
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <BackendServiceProvider>

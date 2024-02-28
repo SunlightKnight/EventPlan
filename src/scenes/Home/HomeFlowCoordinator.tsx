@@ -3,7 +3,7 @@ import colors from "../../styles/colors";
 import { HEADER_HEIGHT, slideAnimation } from "../../styles/styles";
 import Home from "./Home/Home";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Image, View, TouchableOpacity } from "react-native";
+import { Image, View, TouchableOpacity, Platform } from "react-native";
 import { DefaultTheme, NavigationContainer, NavigationState } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import EventDetail from "./EventDetail/EventDetail";
@@ -62,7 +62,7 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
           height: 30, 
           tintColor: colors.white, 
           marginHorizontal: padding.half,
-          marginTop: padding.full
+          marginTop: Platform.OS === "ios" ? padding.full : padding.double
         }} />
     ),
     headerRight: () => {

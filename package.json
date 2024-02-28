@@ -7,7 +7,15 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "androidBuildDebug": "cd android && gradlew installDebug",
+    "androidBuildRelease": "cd android && gradlew installRelease",
+    "androidAssembleDebug": "cd android && gradlew assembleDebug",
+    "androidAssembleRelease": "cd android && gradlew assembleRelease",
+    "androidBuildDebugMac": "cd android && ./gradlew installDebug",
+    "androidBuildReleaseMac": "cd android && ./gradlew installRelease",
+    "androidAssembleDebugMac": "cd android && ./gradlew assembleDebug",
+    "androidAssembleReleaseMac": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
