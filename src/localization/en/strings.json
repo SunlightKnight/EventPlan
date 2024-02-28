@@ -37,6 +37,7 @@
   "payment": {
     "payment": "Event payment",
     "recipient_iban": "Recipient IBAN",
+    "card_owner": "Card owner",
     "card_number": "Card number",
     "card_expiry": "Expiry",
     "card_cvv": "CVV",

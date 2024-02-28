@@ -53,16 +53,16 @@ export default function AppFlowCoordinator() {
     setDemoLoggedIn(true)
   }
   
-  const done = (name: string) => { 
-    switch (name) {
-      case "OnboardingFlowCoordinator":
+  // const done = (name: string) => { 
+  //   switch (name) {
+  //     case "OnboardingFlowCoordinator":
         
-        break
-      case "MainFlowCoordinator":
+  //       break
+  //     case "MainFlowCoordinator":
         
-        break
-    }
-  }
+  //       break
+  //   }
+  // }
 
   const handleLoader = useCallback(() => {
     setLoading(!loading)

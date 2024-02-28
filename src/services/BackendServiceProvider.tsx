@@ -8,7 +8,7 @@ import LoginRequestDTO from "../models/services/LoginRequestDTO";
 const FETCH_TIMEOUT = 30;
 const REFRESH_TOKEN_ERROR = "error.session.expired" // TEMP
 const API_BASE_URL = ""
-const AUTH_OBJECT = "AUTH"
+const AUTH_OBJECT_KEY = "AUTH"
 
 export interface IJSON {
   [key: string]: any;
@@ -239,7 +239,7 @@ const BackendServiceProvider = ({ children } : any) => {
   const saveAuthToken = async (token: AuthToken | undefined) => {
     console.log("*** BackendService - saveAthToken - AuthToken is:\n" + JSON.stringify(token))
     userToken = token
-    await Keychain.setGenericPassword(AUTH_OBJECT, JSON.stringify(token))
+    await Keychain.setGenericPassword(AUTH_OBJECT_KEY, JSON.stringify(token))
   }
 
   const removeAuthToken = async () => {

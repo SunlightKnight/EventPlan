@@ -20,6 +20,7 @@ type EventPaymentProps = {
 function EventPayment(props: EventPaymentProps) {
   const { t } = useTranslation()
   const [recipientIban, setRecipientIban] = useState("IT60X0542811101000000123456")
+  const [cardOwner, setCardOwner] = useState("")
   const [cardNumber, setCardNumber] = useState("")
   const [cardExpiry, setCardExpiry] = useState("")
   const [cardCVV, setCardCVV] = useState("")
@@ -38,6 +39,10 @@ function EventPayment(props: EventPaymentProps) {
         label={t("payment.recipient_iban")} 
         value={recipientIban}
         editable={false} />
+      <TextField 
+        label={t("payment.card_owner")} 
+        value={cardOwner}
+        onChangeText={(text) => { setCardOwner(text) }} />
       <TextField 
         label={t("payment.card_number")} 
         value={cardNumber}

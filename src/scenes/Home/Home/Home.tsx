@@ -5,31 +5,44 @@ import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator"
 import CustomButton from "../../../components/CustomButton"
 import colors from "../../../styles/colors"
 import { useTranslation } from "react-i18next"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { EventDTO } from "../../../models/services/EventDTO"
 import FloatingButton from "../../../components/FloatingButton"
 import { icon_add } from "../../../assets/images"
 
 type HomeProps = {
   parentProps: HomeFlowCoordinatorProps
+  navigation: any
   nav: any
 }
 
 function Home(props: HomeProps) {
   const { t } = useTranslation()
   const [eventList, setEventList] = useState([])
-  const testEvent: EventDTO = {
-    adminId: 1, 
-    eventName: "Event TEST", 
-    eventDate: "2024-03-15T01:30:00.000Z",
-    eventDescription: "TEST TEST TEST", 
-    eventAmount: "50.00", 
-    participants: [
-      {userId: 0, firstName: "Mario", lastName: "Giallo", email: "test@test.com"},
-      {userId: 1, firstName: "Maria", lastName: "Blu", email: "test@test.com"},
-      {userId: 2, firstName: "Hulk", lastName: "Hogan", email: "test@test.com"}
-    ]
-  }
+  // const testEvent: EventDTO = {
+  //   adminId: 1, 
+  //   eventName: "Event TEST", 
+  //   eventDate: "2024-03-15T01:30:00.000Z",
+  //   eventDescription: "TEST TEST TEST", 
+  //   eventAmount: "50.00", 
+  //   participants: [
+  //     {userId: 0, firstName: "Mario", lastName: "Giallo", email: "test@test.com"},
+  //     {userId: 1, firstName: "Maria", lastName: "Blu", email: "test@test.com"},
+  //     {userId: 2, firstName: "Hulk", lastName: "Hogan", email: "test@test.com"}
+  //   ]
+  // }
+
+  useEffect(() => {
+    const listener = function() {
+      console.log("LISTENING")
+      // API CALL
+      setEventList([])
+    }
+    props.navigation.addListener("focus", listener)
+    return () => {
+      props.navigation.removeListener("focus", listener)
+    }
+  }, [eventList])
 
   return (
     <View style={{flex: 1, marginTop: padding.full}}>
@@ -57,10 +70,10 @@ function Home(props: HomeProps) {
             borderWidth: 3}} />
       )}
 
-      <CustomButton 
+      {/* <CustomButton 
         text={"detail"} 
         type="transparent" 
-        onPress={() => props.nav.eventDetail(testEvent)} />
+        onPress={() => props.nav.eventDetail(testEvent)} /> */}
 
       {eventList.length > 0 ? (
         <FloatingButton 

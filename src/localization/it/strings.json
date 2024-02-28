@@ -37,6 +37,7 @@
   "payment": {
     "payment": "Pagamento evento",
     "recipient_iban": "IBAN Destinatario",
+    "card_owner": "Intestatario carta",
     "card_number": "Numero carta",
     "card_expiry": "Scadenza",
     "card_cvv": "CVV",
