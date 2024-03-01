@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import Label from "../../../components/Label";
 import colors from "../../../styles/colors";
 import { OnboardingFlowCoordinatorProps } from "../OnboardingFlowCoordinator";
@@ -10,6 +10,7 @@ import { useContext, useState } from "react";
 import padding from "../../../styles/padding";
 import { BackendServiceContext } from "../../../services/BackendServiceProvider";
 import LoginRequestDTO from "../../../models/services/LoginRequestDTO";
+import { AccountServiceContext } from "../../../services/AccountServiceProvider";
 
 type LoginProps = {
   parentProps: OnboardingFlowCoordinatorProps
@@ -19,12 +20,13 @@ type LoginProps = {
 
 function Login(props: LoginProps) {
   const { t } = useTranslation()
+  const aContext = useContext(AccountServiceContext)
   const bsContext = useContext(BackendServiceContext)
-  const [userMail, setUserMail] = useState("")
+  const [userName, setUserName] = useState("")
   const [userPassword, setUserPassword] = useState("")
 
   const validate = () => {
-    if (userMail && userPassword) {
+    if (userName && userPassword) {
       return true
     }
     return false
@@ -47,10 +49,12 @@ function Login(props: LoginProps) {
 
       <TextField 
         label={t("login.email")} 
-        value={userMail}
+        value={userName}
         icon={icon_mail} 
         iconStyle={{height: 25}}
-        onChangeText={(text) => { setUserMail(text) }}/>
+        autoCapitalize="none"
+        autoCorrect={false}
+        onChangeText={(text) => { setUserName(text) }}/>
       <TextField 
         label={t("login.password")} 
         value={userPassword}
@@ -64,13 +68,17 @@ function Login(props: LoginProps) {
         type="primary" 
         onPress={() => {
           if (validate()) {
-            // const loginRequest: LoginRequestDTO = { email: userMail, password: userPassword }
-            // bsContext?.beService.login(loginRequest).then((loginResponse) => {
-
-            // }).catch((loginError) => {
-
-            // })
-            props.nav.login()
+            props.parentProps.handleLoader(true)
+            const loginRequest: LoginRequestDTO = { username: userName, password: userPassword }
+            bsContext?.beService.login(loginRequest).then((loginResponse) => {
+              aContext?.aService.setAccount(userName)
+              bsContext.setAuthToken(loginResponse)
+              bsContext.saveAuthToken(loginResponse)
+            }).catch((loginError) => {
+              Alert.alert(loginError.message)
+            }).finally(() => {
+              props.parentProps.handleLoader(false)
+            })
           }
         }} />
       <CustomButton 

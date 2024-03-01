@@ -2,12 +2,15 @@ import { createContext } from "react";
 import { throwError } from "./BackendError";
 import { useTranslation } from "react-i18next";
 import * as Keychain from "react-native-keychain"
+import * as AppConfig from '../config/config';
 import BackendServiceInterface from "./BackendServiceInterface";
 import LoginRequestDTO from "../models/services/LoginRequestDTO";
+import { RefreshTokenRequestDTO } from "../models/services/RefreshTokenRequestDTO";
+import { UserDTO } from "../models/services/UserDTO";
 
 const FETCH_TIMEOUT = 30;
 const REFRESH_TOKEN_ERROR = "error.session.expired" // TEMP
-const API_BASE_URL = ""
+const API_BASE_URL: string = AppConfig.TEST_ENDPOINT
 const AUTH_OBJECT_KEY = "AUTH"
 
 export interface IJSON {
@@ -30,16 +33,16 @@ enum HTTPContentType {
 }
 
 export type AuthToken = {
-  refreshToken: string | null
-  accessToken: string
-  idToken: string
-  tokenType: string
-  expirationDate: string
+  clientToken: string
+  exp: number
+  expDateTime: string
+  refreshToken: string
 }
 
 interface BackendServiceContextType {
-  setAuthToken: (token: string, type?: 'user' | 'client') => void
-  hasToken: (type?: 'user' | 'client') => boolean
+  setAuthToken: (token: AuthToken | undefined) => void
+  saveAuthToken: (token: AuthToken | undefined) => void
+  hasToken: () => boolean
   removeAuthToken: () => Promise<boolean>
   beService: BackendServiceInterface
 }
@@ -50,18 +53,13 @@ const BackendServiceProvider = ({ children } : any) => {
   const { t } = useTranslation()
 
   let userToken: AuthToken | undefined;
-  let clientToken: string;
 
-  const setAuthToken = (token: AuthToken | string, type?: 'user' | 'client') => {
-    if (type === 'client' && typeof token === "string") {
-      clientToken = token;
-    } else {
-      userToken = token as AuthToken;
-    }
+  const setAuthToken = (token: AuthToken | undefined) => {
+    userToken = token
   }
 
-  const hasToken = (type?: 'user' | 'client') => {
-    if (type === 'client') return clientToken !== undefined
+  const hasToken = () => {
+    console.log("*** BackendServiceProvider - hasToken: ", userToken !== undefined)
     return userToken !== undefined;
   }
 
@@ -79,10 +77,10 @@ const BackendServiceProvider = ({ children } : any) => {
         'Accept': responseContentType,
       };
 
-      if (userToken || clientToken) {
+      if (userToken) {
         headers = {
           ...headers,
-          'Authorization': 'Bearer ' + (userToken ? userToken : clientToken)
+          'Authorization': 'Bearer ' + (userToken.clientToken)
         }
       }
 
@@ -129,11 +127,13 @@ const BackendServiceProvider = ({ children } : any) => {
     responseContentType: HTTPContentType,
     retry: boolean,
   ): Promise<any> => {
+    console.log("*** BackendService - Response -> ", response)
     if (response.status === 201 || response.status === 200 || response.status === 204) {
       if (responseContentType === HTTPContentType.none) {
         return;
       }
       let contentType = response.headers.get('Content-Type');
+
       if (contentType !== null) {
         contentType = contentType.split(';')[0]; // ignore things like "...;charset=..."
       }
@@ -172,11 +172,14 @@ const BackendServiceProvider = ({ children } : any) => {
             messageKey: 'invalid_content_type',
           })
       }
-    } if (response.status === 401) {
+    } 
+    if (response.status === 401) {
       // RefreshToken
       if (retry) {
-        await refreshToken().then((refreshResponse) => {
-
+        let refreshRequest: RefreshTokenRequestDTO = {refreshToken: userToken?.refreshToken ?? ""}
+        await refreshToken(refreshRequest).then((refreshResponse) => {
+          setAuthToken(refreshResponse)
+          saveAuthToken(refreshResponse)
         }).catch((refreshError) => {
           throw refreshError
         })
@@ -191,11 +194,21 @@ const BackendServiceProvider = ({ children } : any) => {
       let json = {} as any;
       try {
         json = await response.json();
-        console.error("Error JSON: " + JSON.stringify(json));
+        console.log("Error JSON: " + JSON.stringify(json));
+        throwError({
+          status: 500,
+          message: json.message,
+          messageKey: json.messageKey
+        })
       } catch (error: any) {
         console.log(
           `*** BackendService:manageResponse: got error while parsing response => ${error.message}`,
         );
+        throwError({
+          status: 500,
+          message: json.message,
+          messageKey: json.messageKey
+        })
       }
       // let messageKey = json.messageKey || (json.provider_errors && json.provider_errors.faultCode) || (json.errors && json.errors[0] && json.errors[0].message_key) || "error.generic";
       // let message = t("errors.generic")
@@ -232,8 +245,12 @@ const BackendServiceProvider = ({ children } : any) => {
     ]);
   }
 
-  const refreshToken = async () => {
-
+  const refreshToken = (payload: RefreshTokenRequestDTO) => {
+    return callJSON(
+      API_BASE_URL + "/auth/refresh", 
+      HTTPMethod.POST, 
+      payload, 
+      HTTPContentType.json);
   }
 
   const saveAuthToken = async (token: AuthToken | undefined) => {
@@ -244,20 +261,46 @@ const BackendServiceProvider = ({ children } : any) => {
 
   const removeAuthToken = async () => {
     console.log("*** BackendService - Removing token")
+    setAuthToken(undefined)
     return await Keychain.resetGenericPassword()
   }
 
-  const login = (payload: LoginRequestDTO) => {
-    return callJSON(API_BASE_URL + "/login", HTTPMethod.POST, payload, HTTPContentType.json);
+  const login = (payload: LoginRequestDTO): Promise<AuthToken> => {
+    return callJSON(
+      API_BASE_URL + `/auth`, 
+      HTTPMethod.POST, 
+      payload, 
+      HTTPContentType.json
+    );
   }
 
+  const getUsersList = (): Promise<Array<UserDTO>> => {
+    return callJSON(
+      API_BASE_URL + `/eventi/utenti`,
+      HTTPMethod.GET,
+      undefined,
+      HTTPContentType.json
+    )
+  }
+
+  const payEvent = (pID: number): Promise<IJSON> => {
+    return callJSON(
+      API_BASE_URL + `/eventi/paga/${pID}`,
+      HTTPMethod.POST,
+      undefined,
+      HTTPContentType.json
+    )
+  }
 
   return <BackendServiceContext.Provider value={{
     setAuthToken: setAuthToken,
+    saveAuthToken: saveAuthToken,
     hasToken: hasToken,
     removeAuthToken: removeAuthToken,
     beService: {
-      login: login
+      login: login,
+      getUsersList: getUsersList,
+      payEvent: payEvent
     }
   }}>
     {children}

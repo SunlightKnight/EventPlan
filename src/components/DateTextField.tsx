@@ -102,7 +102,7 @@ export default function DateTextField(props: DatePickerFieldProps) {
             onCancel={onCancel}
             minimumDate={minDate}
             maximumDate={maxDate}
-            timeZoneOffsetInMinutes={0}
+            timeZoneOffsetInMinutes={60}
             locale={"it-it"}
           />
           <Label dimension='normal' style={{marginLeft: padding.half}}>

@@ -14,7 +14,7 @@ import CreateEvent from "./CreateEvent/CreateEvent";
 import { EventDTO } from "../../models/services/EventDTO";
 
 export type HomeFlowCoordinatorProps = {
-  handleLoader: () => void
+  handleLoader: (l: boolean) => void
   manageLogout: () => void
 }
 
@@ -70,7 +70,7 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
         <TouchableOpacity style={{
           marginRight: padding.half
         }}
-        onPress={() => { props.manageLogout() }}>
+        onPress={() => { props.handleLoader(true); props.manageLogout() }}>
           <Image 
             source={icon_logout} 
             resizeMode="contain" 
@@ -101,9 +101,9 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
     }
   }
 
-  const navigateToEventPayment = (paymentAmount: string) => {
+  const navigateToEventPayment = (paymentAmount: string, pID: number) => {
     if (navRef) {
-      navRef.current.navigate("EventPayment", { paymentAmount: paymentAmount })
+      navRef.current.navigate("EventPayment", { paymentAmount: paymentAmount, pID: pID })
     }
   }
 

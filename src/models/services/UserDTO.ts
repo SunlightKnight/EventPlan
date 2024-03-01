@@ -1,6 +1,5 @@
 export interface UserDTO {
-  userId: number
-  firstName: string
-  lastName: string
-  email: string
+  username: string
+  nome: string
+  cognome: string
 }

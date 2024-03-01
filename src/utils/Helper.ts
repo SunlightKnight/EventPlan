@@ -5,6 +5,9 @@ import 'moment/locale/fr';
 import 'moment/locale/it';
 import 'moment/locale/pt';
 import 'moment/locale/es';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
+import 'intl/locale-data/jsonp/it';
 import { Platform, StatusBar } from "react-native"
 import DeviceInfo from "react-native-device-info"
 
@@ -24,7 +27,7 @@ export const formatDate = (
   newFormat: string,
 ): string => {
   moment.locale('it');
-  var correctDate = moment(date, currentFormat).subtract(1, "hours").format(newFormat);
+  var correctDate = moment(date, currentFormat).format(newFormat);
   return correctDate
 };
 
@@ -50,3 +53,50 @@ export const formatCardExpiry = (text: string) => {
   );
   return correctExpiry
 }
+
+export const formattedCurrency = (
+  amount: string,
+  doNotShowSymbol?: boolean,
+  putEurInFront?: boolean,
+  numberOfDecimals?: number
+): string => {
+  if (amount && amount !== undefined) {
+    var correctCurrency: string = '';
+    amount += '';
+
+    if (numberOfDecimals === 0) {
+      correctCurrency = new Intl.NumberFormat('it-IT', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(parseFloat(amount));
+    } else {
+      correctCurrency = new Intl.NumberFormat('it-IT', {
+        style: 'currency',
+        currency: 'EUR',
+        minimumFractionDigits: numberOfDecimals ? numberOfDecimals : 2,
+        maximumFractionDigits: numberOfDecimals ? numberOfDecimals : 2
+      }).format(parseFloat(amount));
+    }
+
+    var currencyString = correctCurrency.toString();
+    if (doNotShowSymbol) {
+      return currencyString.substring(0, currencyString.length - 2);
+    } else if (putEurInFront) {
+      return (
+        currencyString.substring(
+          currencyString.length - 1,
+          currencyString.length,
+        ) +
+        ' ' +
+        currencyString.substring(0, currencyString.length - 2)
+      );
+    } else {
+      return currencyString;
+    }
+  } else {
+    return '';
+  }
+};
+

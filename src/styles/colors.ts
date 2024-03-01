@@ -9,5 +9,7 @@ export default {
   secondary: "#F5AB51",
   lightGrey: "#f0EDED",
   disabledGrey: "#B5B5B5",
-  deepRed: "#BD0000"
+  deepRed: "#BD0000",
+  deepGreen: "#0DA818",
+  gold: "#FFBF00"
 }

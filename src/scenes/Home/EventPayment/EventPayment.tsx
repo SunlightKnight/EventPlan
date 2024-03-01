@@ -3,13 +3,14 @@ import CustomButton from "../../../components/CustomButton"
 import Label from "../../../components/Label"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator"
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import commonStyles from "../../../styles/styles"
 import padding from "../../../styles/padding"
 import colors from "../../../styles/colors"
-import { formatCardExpiry } from "../../../utils/Helper"
+import { formatCardExpiry, formattedCurrency } from "../../../utils/Helper"
 import TextField from "../../../components/TextField"
-import { View } from "react-native"
+import { Alert, View } from "react-native"
+import { BackendServiceContext } from "../../../services/BackendServiceProvider"
 
 type EventPaymentProps = {
   parentProps: HomeFlowCoordinatorProps
@@ -19,11 +20,17 @@ type EventPaymentProps = {
 
 function EventPayment(props: EventPaymentProps) {
   const { t } = useTranslation()
+  const bsContext = useContext(BackendServiceContext)
   const [recipientIban, setRecipientIban] = useState("IT60X0542811101000000123456")
   const [cardOwner, setCardOwner] = useState("")
   const [cardNumber, setCardNumber] = useState("")
   const [cardExpiry, setCardExpiry] = useState("")
   const [cardCVV, setCardCVV] = useState("")
+
+  useEffect(() => {
+    console.log("AMOUNT ", props.route.params.paymentAmount)
+    console.log("ID ", props.route.params.pID)
+  }, [])
 
   return (
     <KeyboardAwareScrollView style={commonStyles.scrollingContent} extraScrollHeight={padding.double}>
@@ -67,8 +74,27 @@ function EventPayment(props: EventPaymentProps) {
       </View>
 
       <CustomButton 
-        text={t("payment.pay", {AMOUNT: props.route.params.paymentAmount})} 
-        onPress={() => { /* CALL API FIRST */ props.navigation.popToTop() }}
+        text={t("payment.pay", {AMOUNT: formattedCurrency(String(props.route.params.paymentAmount), false, true, 2)})} 
+        onPress={() => {
+          props.parentProps.handleLoader(true)
+          bsContext?.beService.payEvent(props.route.params.pID).then((paymentResponse) => {
+            Alert.alert(
+              t("payment.payment"), 
+              t("payment.payment_success"), 
+              [
+                {
+                  text: t("general.ok").toUpperCase(),
+                  onPress: () => {
+                    props.navigation.popToTop()
+                  },
+                }
+              ])
+          }).catch((paymentError) => {
+            Alert.alert(t("general.error"), paymentError.message)
+          }).finally(() => {
+            props.parentProps.handleLoader(false)
+          })
+        }}
         style={{marginTop: padding.full}} />
     </KeyboardAwareScrollView>
   )

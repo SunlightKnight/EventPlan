@@ -1,7 +1,15 @@
 export interface BackendError {
   status: number
-  message: string
   messageKey: string
+  message: string
+  errorDetails?: Array<BackendErrorDetails>
+}
+
+export interface BackendErrorDetails {
+  fieldName: string
+  fieldValue: string
+  messageKey: string
+  message: string
 }
 
 export const throwError = (error: BackendError) => {

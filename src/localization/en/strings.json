@@ -1,7 +1,9 @@
 {
   "general": {
+    "ok": "Ok",
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "error": "Error"
   },
   "errors": {
     "timeout": "Timeout error",
@@ -30,9 +32,10 @@
   },
   "detail": {
     "detail": "Event detail",
+    "creator": "Creator",
     "participants": "Participants",
     "expenses": "Expenses",
-    "pay_dues": "Pay your dues: {{DUES}}"
+    "pay_dues": "Pay your dues"
   },
   "payment": {
     "payment": "Event payment",
@@ -41,6 +44,7 @@
     "card_number": "Card number",
     "card_expiry": "Expiry",
     "card_cvv": "CVV",
-    "pay": "Pay {{AMOUNT}}"
+    "pay": "Pay {{AMOUNT}}",
+    "payment_success": "Payment has been successful"
   }
 }

@@ -1,7 +1,9 @@
 {
   "general": {
+    "ok": "Ok",
     "confirm": "Conferma",
-    "cancel": "Cancella"
+    "cancel": "Cancella",
+    "error": "Errore"
   },
   "errors": {
     "timeout": "Errore di timeout",
@@ -30,9 +32,10 @@
   },
   "detail": {
     "detail": "Dettaglio evento",
+    "creator": "Creatore",
     "participants": "Partecipanti",
     "expenses": "Spese",
-    "pay_dues": "Paga la tua quota: {{DUES}}"
+    "pay_dues": "Paga la tua quota"
   },
   "payment": {
     "payment": "Pagamento evento",
@@ -41,6 +44,7 @@
     "card_number": "Numero carta",
     "card_expiry": "Scadenza",
     "card_cvv": "CVV",
-    "pay": "Paga {{AMOUNT}}"
+    "pay": "Paga {{AMOUNT}}",
+    "payment_success": "Payment has been successful"
   }
 }

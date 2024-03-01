@@ -19,27 +19,61 @@ type HomeProps = {
 function Home(props: HomeProps) {
   const { t } = useTranslation()
   const [eventList, setEventList] = useState([])
-  // const testEvent: EventDTO = {
-  //   adminId: 1, 
-  //   eventName: "Event TEST", 
-  //   eventDate: "2024-03-15T01:30:00.000Z",
-  //   eventDescription: "TEST TEST TEST", 
-  //   eventAmount: "50.00", 
-  //   participants: [
-  //     {userId: 0, firstName: "Mario", lastName: "Giallo", email: "test@test.com"},
-  //     {userId: 1, firstName: "Maria", lastName: "Blu", email: "test@test.com"},
-  //     {userId: 2, firstName: "Hulk", lastName: "Hogan", email: "test@test.com"}
+  // const testEvent: any = {
+  //   id: 0,
+  //   nome: "TEST EVENT",
+  //   descr: "Testing event detail",
+  //   dataEv: "2022-03-15 12:30:22",
+  //   spesa: 150,
+  //   creatore: {
+  //     username: "mario",
+  //     nome: "Mario",
+  //     cognome: "Giallo"
+  //   },
+  //   partecipantiList: [
+  //     {
+  //       username: "mario",
+  //       nome: "Mario",
+  //       cognome: "Giallo",
+  //       idPartecipante: 0,
+  //       spesa: 50,
+  //       dataPagamento: "2024-02-29T13:36:05.452Z"
+  //     },
+  //     {
+  //       username: "samuele",
+  //       nome: "Samuele",
+  //       cognome: "Tonelli",
+  //       idPartecipante: 3,
+  //       spesa: 50,
+  //       dataPagamento: ""
+  //     },
+  //     {
+  //       username: "elisa",
+  //       nome: "Elisa",
+  //       cognome: "Festa",
+  //       idPartecipante: 1,
+  //       spesa: 50,
+  //       dataPagamento: ""
+  //     },
+  //     {
+  //       username: "gabriele",
+  //       nome: "Gabriele",
+  //       cognome: "Valentini",
+  //       idPartecipante: 2,
+  //       spesa: 50,
+  //       dataPagamento: "2024-02-29T13:36:05.452Z"
+  //     }
   //   ]
   // }
 
   useEffect(() => {
     const listener = function() {
-      console.log("LISTENING")
+      console.log("*** Home - useEffect - Listening...")
       // API CALL
       setEventList([])
     }
     const unsubscribe = props.navigation.addListener("focus", listener)
-    return unsubscribe
+    return unsubscribe // Cleanup
   }, [eventList])
 
   return (

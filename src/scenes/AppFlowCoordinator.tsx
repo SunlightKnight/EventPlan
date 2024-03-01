@@ -15,8 +15,7 @@ import Loader from "./../components/Loader"
 import styles from '../styles/styles';
 
 export default function AppFlowCoordinator() {
-  const [loading, setLoading] = useState(false)
-  const [demoLoggedIn, setDemoLoggedIn] = useState(false) // TEMP
+  const [loading, setLoading] = useState(true)
   const accountService = useContext(AccountServiceContext)
   const backendService = useContext(BackendServiceContext)
 
@@ -26,14 +25,13 @@ export default function AppFlowCoordinator() {
 
   const loadData = async () => {
     let tokenObject = await retrieveTokenObject()
-    let user = accountService?.aService.getAccount()
+    await accountService?.aService.getAccount()
 
     if (tokenObject && backendService) {
-      backendService.setAuthToken(tokenObject.accessToken, "user")
-    }
-
-    if (user && accountService) {
-      accountService.aService.setAccount(user)
+      backendService.setAuthToken(tokenObject)
+      setLoading(false)
+    } else {
+      setLoading(false)
     }
 
     console.log("*** AppFlowCoordinator - LOADED")
@@ -43,16 +41,13 @@ export default function AppFlowCoordinator() {
     try {
       const token = await Keychain.getGenericPassword()
       const tokenObject = token ? (JSON.parse(token.password) as AuthToken) : undefined
+      console.log("*** AppFlowCoordinator - Token retrieved: ", JSON.stringify(tokenObject))
       return tokenObject
     } catch (error) {
       console.log("Error retrieving token object: " + error)
     }
   }
 
-  const userHasLoggedIn = () => {
-    setDemoLoggedIn(true)
-  }
-  
   // const done = (name: string) => { 
   //   switch (name) {
   //     case "OnboardingFlowCoordinator":
@@ -64,37 +59,37 @@ export default function AppFlowCoordinator() {
   //   }
   // }
 
-  const handleLoader = useCallback(() => {
-    setLoading(!loading)
+  const handleLoader = (loading: boolean) => {
+    setLoading(loading)
     if (loading) {
       BackHandler.addEventListener('hardwareBackPress', handleAndroidBackButtonPress);
     } else {
       BackHandler.removeEventListener('hardwareBackPress', handleAndroidBackButtonPress);
     }
-  }, [loading])
+  }
 
   const handleAndroidBackButtonPress = () => {
     return true
   }
 
-  const manageLogout = useCallback(async () => {
+  const manageLogout = async () => {
     let accountRemoved = await accountService?.aService.removeAccount()
     let tokenRemoved = await backendService?.removeAuthToken()
 
-    if (accountRemoved && tokenRemoved) {
-      setDemoLoggedIn(false)
+    if (tokenRemoved && accountRemoved) {
+      setLoading(false)
     } else {
       console.log("*** AppFlowCoordinator - A problem ocurred while logging user out")
+      setLoading(false)
     }
-    
-  }, [demoLoggedIn])
+  }
 
   let children = null
-    if (backendService?.hasToken("user") || demoLoggedIn) {
-      children = <HomeFlowCoordinator handleLoader={handleLoader} manageLogout={manageLogout} />
-    } else {
-      children = <OnboardingFlowCoordinator handleLoader={handleLoader} userHasLoggedIn={userHasLoggedIn} />
-    }
+  if (backendService?.hasToken()) {
+    children = <HomeFlowCoordinator handleLoader={handleLoader} manageLogout={manageLogout} />
+  } else {
+    children = <OnboardingFlowCoordinator handleLoader={handleLoader} />
+  }
 
   return (
     <View style={styles.container}>

@@ -1,5 +1,6 @@
 export default interface AccountServiceInterface {
-  setAccount: (account: any) => void
+  setAccount: (userName: string) => void
   getAccount: () => any
+  getUserName: () => string
   removeAccount: () => any
 }

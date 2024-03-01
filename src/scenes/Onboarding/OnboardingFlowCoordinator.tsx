@@ -13,8 +13,7 @@ import { icon_back } from "../../assets/images";
 import padding from "../../styles/padding";
 
 export type OnboardingFlowCoordinatorProps = {
-  handleLoader: () => void
-  userHasLoggedIn: () => void
+  handleLoader: (l: boolean) => void
 }
 
 const Stack = createStackNavigator()
@@ -70,7 +69,7 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
     Login: {
       component: Login,
       parentProps: props,
-      nav: { "registration": navigateToRegistration, "login": props.userHasLoggedIn }
+      nav: { "registration": navigateToRegistration }
     },
     Registration: {
       component: Registration,
