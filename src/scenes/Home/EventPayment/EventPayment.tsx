@@ -27,10 +27,10 @@ function EventPayment(props: EventPaymentProps) {
   const [cardExpiry, setCardExpiry] = useState("")
   const [cardCVV, setCardCVV] = useState("")
 
-  useEffect(() => {
-    console.log("AMOUNT ", props.route.params.paymentAmount)
-    console.log("ID ", props.route.params.pID)
-  }, [])
+  // useEffect(() => {
+  //   console.log("AMOUNT ", props.route.params.paymentAmount)
+  //   console.log("ID ", props.route.params.pID)
+  // }, [])
 
   return (
     <KeyboardAwareScrollView style={commonStyles.scrollingContent} extraScrollHeight={padding.double}>
@@ -77,7 +77,7 @@ function EventPayment(props: EventPaymentProps) {
         text={t("payment.pay", {AMOUNT: formattedCurrency(String(props.route.params.paymentAmount), false, true, 2)})} 
         onPress={() => {
           props.parentProps.handleLoader(true)
-          bsContext?.beService.payEvent(props.route.params.pID).then((paymentResponse) => {
+          bsContext?.beService.payEvent(props.route.params.pID).then((_) => {
             Alert.alert(
               t("payment.payment"), 
               t("payment.payment_success"), 
