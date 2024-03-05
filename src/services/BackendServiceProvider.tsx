@@ -14,7 +14,7 @@ const API_BASE_URL: string = AppConfig.TEST_ENDPOINT
 const AUTH_OBJECT_KEY = "AUTH"
 
 export interface IJSON {
-  [key: string]: any;
+  [key: string]: any; 
 }
 
 enum HTTPMethod {

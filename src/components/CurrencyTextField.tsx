@@ -43,7 +43,7 @@ function CurrencyTextField(props: CurrencyTextFieldProps) {
           separator=","
           precision={2}
           minValue={0}
-          onChangeText={(formattedValue) => {
+          onChangeText={(formattedValue) => { 
             console.log(formattedValue); // € 2.310,46
           }}
           onBlur={() => { setIsSelected(false) }}

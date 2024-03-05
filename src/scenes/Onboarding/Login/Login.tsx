@@ -48,7 +48,7 @@ function Login(props: LoginProps) {
       </Label>
 
       <TextField 
-        label={t("login.email")} 
+        label={t("login.username")} 
         value={userName}
         icon={icon_mail} 
         iconStyle={{height: 25}}

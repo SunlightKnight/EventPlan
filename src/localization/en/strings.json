@@ -12,6 +12,7 @@
     "not_valid": "Value not valid"
   },
   "login": {
+    "username": "Username",
     "email": "Email",
     "password": "Password",
     "login": "Login",
@@ -28,7 +29,10 @@
     "create_event": "Create Event"
   },
   "create": {
-    "select_date": "Select date"
+    "select_date": "Select date",
+    "name_event": "Event name",
+    "desc_event": "Event description",
+    "total_event": "Event expenses"
   },
   "detail": {
     "detail": "Event detail",
