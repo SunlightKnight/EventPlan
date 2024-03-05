@@ -32,6 +32,13 @@ function EventPayment(props: EventPaymentProps) {
   //   console.log("ID ", props.route.params.pID)
   // }, [])
 
+  const validate = () => {
+    if (recipientIban && cardOwner && cardNumber && cardExpiry && cardCVV) {
+      return true
+    }
+    return false
+  }
+
   return (
     <KeyboardAwareScrollView style={commonStyles.scrollingContent} extraScrollHeight={padding.double}>
       <Label 
@@ -76,24 +83,26 @@ function EventPayment(props: EventPaymentProps) {
       <CustomButton 
         text={t("payment.pay", {AMOUNT: formattedCurrency(String(props.route.params.paymentAmount), false, true, 2)})} 
         onPress={() => {
-          props.parentProps.handleLoader(true)
-          bsContext?.beService.payEvent(props.route.params.pID).then((_) => {
-            Alert.alert(
-              t("payment.payment"), 
-              t("payment.payment_success"), 
-              [
-                {
-                  text: t("general.ok").toUpperCase(),
-                  onPress: () => {
-                    props.navigation.popToTop()
-                  },
-                }
-              ])
-          }).catch((paymentError) => {
-            Alert.alert(t("general.error"), paymentError.message)
-          }).finally(() => {
-            props.parentProps.handleLoader(false)
-          })
+          if (validate()) {
+            props.parentProps.handleLoader(true)
+            bsContext?.beService.payEvent(props.route.params.pID).then((_) => {
+              Alert.alert(
+                t("payment.payment"), 
+                t("payment.payment_success"), 
+                [
+                  {
+                    text: t("general.ok").toUpperCase(),
+                    onPress: () => {
+                      props.navigation.popToTop()
+                    },
+                  }
+                ])
+            }).catch((paymentError) => {
+              Alert.alert(t("general.error"), paymentError.message)
+            }).finally(() => {
+              props.parentProps.handleLoader(false)
+            })
+          }
         }}
         style={{marginTop: padding.full}} />
     </KeyboardAwareScrollView>
