@@ -74,7 +74,7 @@ function Home(props: HomeProps) {
     }
     const unsubscribe = props.navigation.addListener("focus", listener)
     return unsubscribe // Cleanup
-  }, [eventList])
+  }, [])
 
   return (
     <View style={{flex: 1, marginTop: padding.full}}>

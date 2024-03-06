@@ -11,31 +11,39 @@ import { BackendServiceContext } from "../../../services/BackendServiceProvider"
 import { Alert } from "react-native";
 import { UserDTO } from "../../../models/services/UserDTO";
 import TextField from "../../../components/TextField";
-import { Text } from "react-native-reanimated/lib/typescript/Animated";
 import CurrencyTextField from "../../../components/CurrencyTextField";
 import NameListCell from "../../../components/NameListCell";
+import { AccountServiceContext } from "../../../services/AccountServiceProvider";
+import CustomButton from "../../../components/CustomButton";
 
 type CreateEventProps = {
   parentProps: HomeFlowCoordinatorProps;
   navigation: any;
 };
 
-// ADD CREATOR TO PARTICIPANTS LIST
+let tempUsers: Array<UserDTO> = []
 
 function CreateEvent(props: CreateEventProps) {
   const { t } = useTranslation();
   const backendService = useContext(BackendServiceContext);
+  const accountService = useContext(AccountServiceContext)
   const [userList, setUserList] = useState<Array<UserDTO>>([]);
   const [nameEvent, setNameEvent] = useState<string>("");
   const [descEvent, setDescEvent] = useState<string>("");
   const [eventTotal, setEventTotal] = useState<number | null>(null);
-  const [selectedUsers, setSelectedUsers] = useState<Array<string>>([]);
+  const [selectedUsers, setSelectedUsers] = useState<Array<UserDTO>>([]);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
 
   useEffect(() => {
     getUserList();
+    tempUsers.push({username: accountService?.aService.getUserName() ?? ""})
+    setSelectedUsers(tempUsers)
   }, []);
+
+  const manageParticipantsArray = (user: UserDTO) => {
+    
+  }
 
   const getUserList = () => {
     props.parentProps.handleLoader(true);
@@ -45,7 +53,19 @@ function CreateEvent(props: CreateEventProps) {
         setUserList(userListResponse);
       })
       .catch((userListError) => {
-        Alert.alert(userListError.message);
+        if (userListError.status === 401) {
+          Alert.alert(t("general.error"), t("errors.unauthorized"), [
+            {
+              text: t("general.ok").toUpperCase(),
+              onPress: () => {
+                props.navigation.popToTop()
+                props.parentProps.manageLogout()
+              },
+            }
+          ]);
+        } else {
+          Alert.alert(t("general.error"), userListError.message)
+        }
       })
       .finally(() => {
         props.parentProps.handleLoader(false);
@@ -55,6 +75,7 @@ function CreateEvent(props: CreateEventProps) {
   return (
     <KeyboardAwareScrollView
       style={commonStyles.scrollingContent}
+      contentContainerStyle={{paddingBottom: padding.double}}
       extraScrollHeight={padding.double}
     >
       <Label
@@ -115,14 +136,23 @@ function CreateEvent(props: CreateEventProps) {
       />
 
       {userList.map((user) => {
-        return <NameListCell
-          name={user.nome}
-          surname={user.cognome}
-          onCellPress={
-            () => console.log("Nome: ", user.nome)
-          }
-        />
+        return (
+          user.username == accountService?.aService.getUserName() ? null :
+          <NameListCell
+            name={user.nome ?? ""}
+            surname={user.cognome ?? ""}
+            onCellPress={() => {
+              manageParticipantsArray(user)
+            }}
+          />
+        )
       })}
+
+      <CustomButton 
+        text={t("home.create_event")} 
+        onPress={() => {
+          console.log(selectedUsers)
+        }} />
     </KeyboardAwareScrollView>
   );
 }
