@@ -16,6 +16,7 @@ function NameListCell(props: NameListCellProps) {
     const [isChecked, setIsChecked] = useState(false)
     return (
         <TouchableOpacity
+            activeOpacity={0.8}
             onPress={() => {
                 props.onCellPress()
                 setIsChecked(!isChecked)
@@ -25,6 +26,8 @@ function NameListCell(props: NameListCellProps) {
                 borderWidth: 1,
                 borderColor: isChecked ? colors.deepGreen : colors.black,
                 marginVertical: 10,
+                marginHorizontal: padding.full,
+                borderRadius: padding.half
             }}
             >
             <View

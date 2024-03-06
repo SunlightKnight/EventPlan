@@ -62,7 +62,7 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
           height: 30, 
           tintColor: colors.white, 
           marginHorizontal: padding.half,
-          marginTop: Platform.OS === "ios" ? padding.full : padding.double
+          marginTop: Platform.OS === "ios" ? padding.full : HEADER_HEIGHT-30
         }} />
     ),
     headerRight: () => {

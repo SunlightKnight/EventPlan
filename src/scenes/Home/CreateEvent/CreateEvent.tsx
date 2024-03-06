@@ -142,6 +142,15 @@ function CreateEvent(props: CreateEventProps) {
         }}
       />
 
+      <Label
+        dimension="big"
+        weight="semibold"
+        color={colors.primaryDark}
+        style={{ marginTop: padding.full, marginBottom: padding.half, marginLeft: padding.quarter }}
+      >
+        {t("create.list_title")}
+      </Label>
+
       {userList.map((user) => {
         return (
           user.username == accountService?.aService.getUserName() ? null :
@@ -156,7 +165,8 @@ function CreateEvent(props: CreateEventProps) {
       })}
 
       <CustomButton 
-        text={t("home.create_event")} 
+        text={t("home.create_event")}
+        style={{marginTop: padding.full}}
         onPress={() => {
           let creator: UserDTO = {
             "username": accountService?.aService.getUserName() ?? ""
