@@ -1,5 +1,5 @@
 export interface UserDTO {
   username: string
-  nome: string
-  cognome: string
+  nome?: string
+  cognome?: string
 }

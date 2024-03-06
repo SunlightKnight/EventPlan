@@ -9,7 +9,7 @@ import { RefreshTokenRequestDTO } from "../models/services/RefreshTokenRequestDT
 import { UserDTO } from "../models/services/UserDTO";
 
 const FETCH_TIMEOUT = 30;
-const REFRESH_TOKEN_ERROR = "error.session.expired" // TEMP
+const RECALL_API_AFTER_REFRESH_TOKEN_KEY = "401.refreshToken.OK"
 const API_BASE_URL: string = AppConfig.TEST_ENDPOINT
 const AUTH_OBJECT_KEY = "AUTH"
 
@@ -103,11 +103,64 @@ const BackendServiceProvider = ({ children } : any) => {
         retry,
       ).catch(async (error: any) => {
         // if RECALL_API_AFTER_REFRESH_TOKEN_KEY -> retry
-        if (error === 401) {
+        if (error === RECALL_API_AFTER_REFRESH_TOKEN_KEY) {
           return callJSON(url, method, payload, responseContentType, false)
         } else {
           throw error;
         }
+      });
+    } catch (error: any) {
+      console.log(
+        '*** BackendService:callJSON:' + url + ': got error => ',
+        error.message || "empty error message"
+      );
+      if (error && error.message && error.message !== "Failed to fetch") {
+        throwError({status: error.status || 500, message: error.message, messageKey: error.messageKey})
+      } else {
+        throwError({status: error.status || 500, message: t("errors.generic"), messageKey: "error.fetch"})
+      }
+    }
+  }
+
+  const callJSONRefresh = async (
+    url: string,
+    method: HTTPMethod,
+    payload: IJSON | undefined,
+    responseContentType: HTTPContentType,
+    retry: boolean = true,
+  ): Promise<any> => {
+    try {
+      var headers: { [key: string]: string } = {
+        'Content-Type': 'application/json',
+        'Accept': responseContentType,
+      };
+
+      if (userToken) {
+        headers = {
+          ...headers,
+          'Authorization': 'Bearer ' + (userToken.clientToken)
+        }
+      }
+
+      const opts = {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(payload),
+      };
+      console.log(
+        `*** BackendService:callJSON: fetching .../${url} with opts=${JSON.stringify(
+          opts,
+        )}`,
+      );
+
+      const response = await fetchWithTimeout(url, opts);
+
+      return await manageResponse(
+        response,
+        responseContentType,
+        retry,
+      ).catch(async (error: any) => {
+        throw error
       });
     } catch (error: any) {
       console.log(
@@ -128,102 +181,89 @@ const BackendServiceProvider = ({ children } : any) => {
     retry: boolean,
   ): Promise<any> => {
     console.log("*** BackendService - Response -> ", response)
-    if (response.status === 201 || response.status === 200 || response.status === 204) {
-      if (responseContentType === HTTPContentType.none) {
-        return;
+    try {
+      if (response.status !== 200) {
+        if (response.status === 401 && retry) {
+          // RefreshToken
+          let refreshRequest: RefreshTokenRequestDTO = {refreshToken: userToken?.refreshToken ?? ""}
+          await refreshToken(refreshRequest).then((refreshResponse) => {
+            setAuthToken(refreshResponse)
+            saveAuthToken(refreshResponse)
+            throw RECALL_API_AFTER_REFRESH_TOKEN_KEY
+          }).catch((refreshError) => {
+            if (refreshError === RECALL_API_AFTER_REFRESH_TOKEN_KEY) throw refreshError
+            throwError({
+              status: 401,
+              message: t("errors.unathorized"),
+              messageKey: "error.unauthorize"
+            })
+          })
+        } else {
+          throwError({
+            status: 401,
+            message: t("errors.unathorized"),
+            messageKey: "error.unauthorize"
+          })
+        }
       }
-      let contentType = response.headers.get('Content-Type');
 
-      if (contentType !== null) {
-        contentType = contentType.split(';')[0]; // ignore things like "...;charset=..."
-      }
-      if (contentType !== responseContentType) {
-        throwError({
-          status: 415,
-          message: `Bad content type <${contentType}>`,
-          messageKey: 'bad_content_type',
-        })
-      }
-      switch (contentType) {
-        case HTTPContentType.json:
-          const json = await response.json();
-          console.log(
-            `*** BackendService:manageResponse: got json for ${response.url} => ${JSON.stringify(json)}`,
-          );
-          return json;
-        case HTTPContentType.image:
-          const image = await response.text();
-          // TODO: is <image> encoded in some way?
-          console.log(
-            `*** BackendService:manageResponse: got image for ${response.url} => ${image.length} bytes`,
-          );
-          return image;
-        case HTTPContentType.pdf:
-          const pdf = await response.text();
-          // TODO: is <pdf> encoded in some way?
-          console.log(
-            `*** BackendService:manageResponse: got pdf for ${response.url} => ${pdf.length} bytes`,
-          );
-          return pdf;
-        default:
+      if (response.status === 201 || response.status === 200 || response.status === 204) {
+        if (responseContentType === HTTPContentType.none) {
+          return;
+        }
+        let contentType = response.headers.get('Content-Type');
+  
+        if (contentType !== null) {
+          contentType = contentType.split(';')[0]; // ignore things like "...;charset=..."
+        }
+        if (contentType !== responseContentType) {
           throwError({
             status: 415,
-            message: `Invalid content type <${contentType}>`,
-            messageKey: 'invalid_content_type',
+            message: `Bad content type <${contentType}>`,
+            messageKey: 'bad_content_type',
           })
-      }
-    } 
-    if (response.status === 401) {
-      // RefreshToken
-      if (retry) {
-        let refreshRequest: RefreshTokenRequestDTO = {refreshToken: userToken?.refreshToken ?? ""}
-        await refreshToken(refreshRequest).then((refreshResponse) => {
-          setAuthToken(refreshResponse)
-          saveAuthToken(refreshResponse)
-        }).catch((refreshError) => {
-          throw refreshError
-        })
+        }
+        switch (contentType) {
+          case HTTPContentType.json:
+            const json = await response.json();
+            console.log(
+              `*** BackendService:manageResponse: got json for ${response.url} => ${JSON.stringify(json)}`,
+            );
+            return json;
+          case HTTPContentType.image:
+            const image = await response.text();
+            // TODO: is <image> encoded in some way?
+            console.log(
+              `*** BackendService:manageResponse: got image for ${response.url} => ${image.length} bytes`,
+            );
+            return image;
+          case HTTPContentType.pdf:
+            const pdf = await response.text();
+            // TODO: is <pdf> encoded in some way?
+            console.log(
+              `*** BackendService:manageResponse: got pdf for ${response.url} => ${pdf.length} bytes`,
+            );
+            return pdf;
+          default:
+            throwError({
+              status: 415,
+              message: `Invalid content type <${contentType}>`,
+              messageKey: 'invalid_content_type',
+            })
+        }
+      } 
+    } catch (error: any) {
+      if (error == 401) {
+        throw error;
       } else {
-        throwError({
-          status: 401,
-          message: t("errors.unathorized"),
-          messageKey: "error.unauthorize"
-        })
-      }
-    } else {
-      let json = {} as any;
-      try {
-        json = await response.json();
-        console.log("Error JSON: " + JSON.stringify(json));
-        throwError({
-          status: 500,
-          message: json.message,
-          messageKey: json.messageKey
-        })
-      } catch (error: any) {
         console.log(
-          `*** BackendService:manageResponse: got error while parsing response => ${error.message}`,
+          '*** BackendService:manageResponse: ' +
+            response.url +
+            ': got error => ',
+          error.message,
         );
-        throwError({
-          status: 500,
-          message: json.message,
-          messageKey: json.messageKey
-        })
+        throw error
       }
-      // let messageKey = json.messageKey || (json.provider_errors && json.provider_errors.faultCode) || (json.errors && json.errors[0] && json.errors[0].message_key) || "error.generic";
-      // let message = t("errors.generic")
-      // if (messageKey === "field.notValid" && json.errors && json.errors.length > 0) {
-      //   try {
-      //     message = "" + strings.formatString(strings.errors.not_valid, json.errors[0].field_value)
-      //     if (json.errors[0].field_name === "email") {
-      //       messageKey = "filed.notValid.email"
-      //     }
-      //   } catch {
-      //     message = t("errors.not_valid")
-      //   }
-      // } else {
-      //   message = json.message || (json.provider_errors && json.provider_errors.message) || (json.errors && json.errors[0] && json.errors[0].message) || strings.errors.generic;
-      // }
     }
   }
 
@@ -246,11 +286,12 @@ const BackendServiceProvider = ({ children } : any) => {
   }
 
   const refreshToken = (payload: RefreshTokenRequestDTO) => {
-    return callJSON(
+    return callJSONRefresh(
       API_BASE_URL + "/auth/refresh", 
       HTTPMethod.POST, 
       payload, 
-      HTTPContentType.json);
+      HTTPContentType.json, 
+      false);
   }
 
   const saveAuthToken = async (token: AuthToken | undefined) => {
