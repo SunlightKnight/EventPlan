@@ -15,6 +15,7 @@ import CurrencyTextField from "../../../components/CurrencyTextField";
 import NameListCell from "../../../components/NameListCell";
 import { AccountServiceContext } from "../../../services/AccountServiceProvider";
 import CustomButton from "../../../components/CustomButton";
+import { CreateEventRequestDTO } from "../../../models/services/CreateEventRequestDTO";
 
 type CreateEventProps = {
   parentProps: HomeFlowCoordinatorProps;
@@ -42,7 +43,13 @@ function CreateEvent(props: CreateEventProps) {
   }, []);
 
   const manageParticipantsArray = (user: UserDTO) => {
-    
+    if(tempUsers.filter((U) => U.username == user.username).length > 0) {
+      tempUsers = tempUsers.filter((U) => U.username != user.username)
+    } else {
+      tempUsers.push({"username": user.username})
+    }
+    console.log(tempUsers)
+    setSelectedUsers(tempUsers)
   }
 
   const getUserList = () => {
@@ -151,7 +158,38 @@ function CreateEvent(props: CreateEventProps) {
       <CustomButton 
         text={t("home.create_event")} 
         onPress={() => {
-          console.log(selectedUsers)
+          let creator: UserDTO = {
+            "username": accountService?.aService.getUserName() ?? ""
+          }
+          if(nameEvent && selectedDate && eventTotal && creator && selectedUsers) {
+            props.parentProps.handleLoader(true)
+            let createEventRequest: CreateEventRequestDTO = {
+              "nome": nameEvent,
+              "descr": descEvent,
+              "dataEv": selectedDate ?? new Date(),
+              "spesa": eventTotal ?? 0,
+              "creatore": creator,
+              "partecipantiList": selectedUsers,
+            }
+            console.log("createEventRequest: ", JSON.stringify(createEventRequest))
+             backendService?.beService.createEvent(createEventRequest).then((createEventResponse) => {
+               Alert.alert(
+                 t("create.alert_title"), 
+                 t("create.alert_message"), 
+                 [
+                   {
+                     text: t("general.ok").toUpperCase(),
+                     onPress: () => {
+                       props.navigation.back()
+                     },
+                   }
+                 ])
+             }).catch((createEventError) => {
+               Alert.alert(t("general.error"), createEventError)
+             }).finally(() => {
+               props.parentProps.handleLoader(false)
+             })
+          }
         }} />
     </KeyboardAwareScrollView>
   );

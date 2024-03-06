@@ -3,6 +3,7 @@ import Label from "./Label";
 import colors from "../styles/colors";
 import padding from "../styles/padding";
 import { View } from "react-native";
+import { useState } from "react";
 
 type NameListCellProps = {
   name: string;
@@ -12,13 +13,17 @@ type NameListCellProps = {
 };
 
 function NameListCell(props: NameListCellProps) {
+    const [isChecked, setIsChecked] = useState(false)
     return (
         <TouchableOpacity
-            onPress={props.onCellPress}
+            onPress={() => {
+                props.onCellPress()
+                setIsChecked(!isChecked)
+            }}
             style={{
-                backgroundColor: colors.white,
+                backgroundColor: isChecked ? colors.deepGreenOpacity25 : colors.white,
                 borderWidth: 1,
-                borderColor: colors.black,
+                borderColor: isChecked ? colors.deepGreen : colors.black,
                 marginVertical: 10,
             }}
             >

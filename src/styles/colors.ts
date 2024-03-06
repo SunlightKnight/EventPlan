@@ -11,5 +11,6 @@ export default {
   disabledGrey: "#B5B5B5",
   deepRed: "#BD0000",
   deepGreen: "#0DA818",
-  gold: "#FFBF00"
+  gold: "#FFBF00",
+  deepGreenOpacity25: "#0DA81840"
 }

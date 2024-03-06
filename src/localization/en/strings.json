@@ -32,7 +32,9 @@
     "select_date": "Select date",
     "name_event": "Event name",
     "desc_event": "Event description",
-    "total_event": "Event expenses"
+    "total_event": "Event expenses",
+    "alert_title": "Event created",
+    "alert_message": "Event successfully created"
   },
   "detail": {
     "detail": "Event detail",

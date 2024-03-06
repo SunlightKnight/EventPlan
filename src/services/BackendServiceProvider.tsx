@@ -7,6 +7,7 @@ import BackendServiceInterface from "./BackendServiceInterface";
 import LoginRequestDTO from "../models/services/LoginRequestDTO";
 import { RefreshTokenRequestDTO } from "../models/services/RefreshTokenRequestDTO";
 import { UserDTO } from "../models/services/UserDTO";
+import { CreateEventRequestDTO } from "../models/services/CreateEventRequestDTO";
 
 const FETCH_TIMEOUT = 30;
 const RECALL_API_AFTER_REFRESH_TOKEN_KEY = "401.refreshToken.OK"
@@ -324,6 +325,15 @@ const BackendServiceProvider = ({ children } : any) => {
     )
   }
 
+  const createEvent = (payload: CreateEventRequestDTO): Promise<IJSON> => {
+    return callJSON(
+      API_BASE_URL + `/eventi/nuovo`,
+      HTTPMethod.POST,
+      payload,
+      HTTPContentType.json
+    )
+  }
+
   const payEvent = (pID: number): Promise<IJSON> => {
     return callJSON(
       API_BASE_URL + `/eventi/paga/${pID}`,
@@ -341,7 +351,8 @@ const BackendServiceProvider = ({ children } : any) => {
     beService: {
       login: login,
       getUsersList: getUsersList,
-      payEvent: payEvent
+      payEvent: payEvent,
+      createEvent: createEvent
     }
   }}>
     {children}
