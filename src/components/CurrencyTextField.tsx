@@ -2,7 +2,7 @@ import { useState } from "react"
 import CurrencyInput from "react-native-currency-input";
 import colors from "../styles/colors";
 import padding from "../styles/padding";
-import { TextStyle, View } from "react-native";
+import { Platform, TextStyle, View } from "react-native";
 import Label from "./Label";
 import { getFontSize } from "../styles/fontSize";
 
@@ -50,8 +50,9 @@ function CurrencyTextField(props: CurrencyTextFieldProps) {
           onFocus={() => { setIsSelected(true) }}
           style={{
             backgroundColor: colors.lightGrey, 
-            height: 35, 
-            fontSize: getFontSize("normal")}}
+            height: Platform.OS === "ios" ? 35 : 55,
+            fontSize: getFontSize("normal"),
+          }}
         />
       </View>
     </View>
