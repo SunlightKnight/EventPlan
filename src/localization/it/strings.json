@@ -29,8 +29,10 @@
     "confirm_password": "Conferma password"
   },
   "home": {
-    "events": "Events",
-    "create_event": "Crea Evento"
+    "events": "Eventi",
+    "create_event": "Crea Evento",
+    "receive": "Mi spettano: {{AMOUNT}}",
+    "not_partecipating": "Non partecipi a questo evento"
   },
   "create": {
     "select_date": "Seleziona data",

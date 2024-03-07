@@ -1,10 +1,12 @@
+import { PartecipantDTO } from "./PartecipantDTO"
 import { UserDTO } from "./UserDTO"
 
 export interface EventDTO {
-  adminId: number
-  eventName: string
-  eventDate: string
-  eventDescription: string
-  eventAmount: string
-  participants: Array<UserDTO>
-}
+  id: number,
+  nome: string,
+  descr: string,
+  dataEv: string,
+  spesa: number,
+  creatore: UserDTO,
+  partecipantiList: Array<PartecipantDTO>
+  }

@@ -8,6 +8,7 @@ import LoginRequestDTO from "../models/services/LoginRequestDTO";
 import { RefreshTokenRequestDTO } from "../models/services/RefreshTokenRequestDTO";
 import { UserDTO } from "../models/services/UserDTO";
 import { CreateEventRequestDTO } from "../models/services/CreateEventRequestDTO";
+import { EventsListResponseDTO } from "../models/services/EventsListResponseDTO";
 
 const FETCH_TIMEOUT = 30;
 const RECALL_API_AFTER_REFRESH_TOKEN_KEY = "401.refreshToken.OK"
@@ -316,6 +317,15 @@ const BackendServiceProvider = ({ children } : any) => {
     );
   }
 
+  const getEventList = (): Promise<EventsListResponseDTO> => {
+    return callJSON(
+      API_BASE_URL + `/eventi`,
+      HTTPMethod.GET,
+      undefined,
+      HTTPContentType.json
+    )
+  } 
+
   const getUsersList = (): Promise<Array<UserDTO>> => {
     return callJSON(
       API_BASE_URL + `/eventi/utenti`,
@@ -352,7 +362,8 @@ const BackendServiceProvider = ({ children } : any) => {
       login: login,
       getUsersList: getUsersList,
       payEvent: payEvent,
-      createEvent: createEvent
+      createEvent: createEvent,
+      getEventList: getEventList
     }
   }}>
     {children}

@@ -17,7 +17,7 @@ import { AccountServiceContext } from "../../../services/AccountServiceProvider"
 import CustomButton from "../../../components/CustomButton";
 import { CreateEventRequestDTO } from "../../../models/services/CreateEventRequestDTO";
 import { formatDate } from "../../../utils/Helper";
-import { CreateEventAPIDateTime, fullDate } from "../../../utils/Constants";
+import { createEventAPIDateTime, fullDate } from "../../../utils/Constants";
 
 type CreateEventProps = {
   parentProps: HomeFlowCoordinatorProps;
@@ -90,13 +90,12 @@ function CreateEvent(props: CreateEventProps) {
       let createEventRequest: CreateEventRequestDTO = {
         "nome": nameEvent,
         "descr": descEvent,
-        "dataEv": formatDate(selectedDate.toISOString(), fullDate, CreateEventAPIDateTime)  ?? (new Date()).toISOString(),
+        "dataEv": formatDate(selectedDate.toISOString(), fullDate, createEventAPIDateTime)  ?? (new Date()).toISOString(),
         "spesa": eventTotal ?? 0,
         "creatore": creator,
         "partecipantiList": selectedUsers,
       }
-      console.log("createEventRequest: ", JSON.stringify(createEventRequest))
-       backendService?.beService.createEvent(createEventRequest).then((createEventResponse) => {
+       backendService?.beService.createEvent(createEventRequest).then((_) => {
          Alert.alert(
            t("create.alert_title"), 
            t("create.alert_message"), 

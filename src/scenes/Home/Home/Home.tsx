@@ -1,4 +1,4 @@
-import { Dimensions, View } from "react-native"
+import { Alert, Dimensions, FlatList, View } from "react-native"
 import Label from "../../../components/Label"
 import padding from "../../../styles/padding"
 import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator"
@@ -10,6 +10,8 @@ import { EventDTO } from "../../../models/services/EventDTO"
 import FloatingButton from "../../../components/FloatingButton"
 import { icon_add } from "../../../assets/images"
 import { BackendServiceContext } from "../../../services/BackendServiceProvider"
+import EventListCell from "../../../components/EventListCell"
+import { AccountServiceContext } from "../../../services/AccountServiceProvider"
 
 type HomeProps = {
   parentProps: HomeFlowCoordinatorProps
@@ -19,8 +21,10 @@ type HomeProps = {
 
 function Home(props: HomeProps) {
   const { t } = useTranslation()
+  const accountService = useContext(AccountServiceContext)
   const backendService = useContext(BackendServiceContext)
-  const [eventList, setEventList] = useState([])
+  const [eventList, setEventList] = useState<Array<EventDTO>>([])
+  let currentUserName = accountService?.aService.getUserName()
   // const testEvent: any = {
   //   id: 0,
   //   nome: "TEST EVENT",
@@ -78,7 +82,15 @@ function Home(props: HomeProps) {
   }, [])
 
   const fetchEventList = () => {
-    // API CALL
+    props.parentProps.handleLoader(true)
+    backendService?.beService.getEventList().then((eventListResponse) => {
+      setEventList(eventListResponse.eventiList)
+      console.log("Event list: ", JSON.stringify(eventListResponse))
+    }).catch((eventListError: any) => {
+      Alert.alert(t("general.error"), eventListError.message)
+    }).finally(() => {
+      props.parentProps.handleLoader(false)
+    })
   }
 
   return (
@@ -92,7 +104,15 @@ function Home(props: HomeProps) {
       </Label>
 
       {eventList.length > 0 ? (
-        <Label>LISTA</Label>
+        <FlatList
+          data={eventList}
+          renderItem={({item}) => 
+            <EventListCell 
+              event={item} 
+              currentUsername={currentUserName ?? ""}
+              onCellPress={() => {props.nav.eventDetail(item)}} />}
+          keyExtractor={(item: EventDTO) => String(item.id)}
+        />
       ) : (
         <CustomButton 
           text={t("home.create_event")} 
