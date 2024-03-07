@@ -5,10 +5,11 @@ import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator"
 import CustomButton from "../../../components/CustomButton"
 import colors from "../../../styles/colors"
 import { useTranslation } from "react-i18next"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { EventDTO } from "../../../models/services/EventDTO"
 import FloatingButton from "../../../components/FloatingButton"
 import { icon_add } from "../../../assets/images"
+import { BackendServiceContext } from "../../../services/BackendServiceProvider"
 
 type HomeProps = {
   parentProps: HomeFlowCoordinatorProps
@@ -18,6 +19,7 @@ type HomeProps = {
 
 function Home(props: HomeProps) {
   const { t } = useTranslation()
+  const backendService = useContext(BackendServiceContext)
   const [eventList, setEventList] = useState([])
   // const testEvent: any = {
   //   id: 0,
@@ -69,12 +71,15 @@ function Home(props: HomeProps) {
   useEffect(() => {
     const listener = function() {
       console.log("*** Home - useEffect - Listening...")
-      // API CALL
-      setEventList([])
+      fetchEventList()
     }
     const unsubscribe = props.navigation.addListener("focus", listener)
     return unsubscribe // Cleanup
   }, [])
+
+  const fetchEventList = () => {
+    // API CALL
+  }
 
   return (
     <View style={{flex: 1, marginTop: padding.full}}>

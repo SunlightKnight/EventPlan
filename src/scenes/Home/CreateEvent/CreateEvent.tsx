@@ -8,7 +8,7 @@ import commonStyles from "../../../styles/styles";
 import padding from "../../../styles/padding";
 import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator";
 import { BackendServiceContext } from "../../../services/BackendServiceProvider";
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import { UserDTO } from "../../../models/services/UserDTO";
 import TextField from "../../../components/TextField";
 import CurrencyTextField from "../../../components/CurrencyTextField";
@@ -16,6 +16,8 @@ import NameListCell from "../../../components/NameListCell";
 import { AccountServiceContext } from "../../../services/AccountServiceProvider";
 import CustomButton from "../../../components/CustomButton";
 import { CreateEventRequestDTO } from "../../../models/services/CreateEventRequestDTO";
+import { formatDate } from "../../../utils/Helper";
+import { CreateEventAPIDateTime, fullDate } from "../../../utils/Constants";
 
 type CreateEventProps = {
   parentProps: HomeFlowCoordinatorProps;
@@ -78,6 +80,41 @@ function CreateEvent(props: CreateEventProps) {
         props.parentProps.handleLoader(false);
       });
   };
+
+  const saveEvent = () => {
+    let creator: UserDTO = {
+      "username": accountService?.aService.getUserName() ?? ""
+    }
+    if(nameEvent && selectedDate && eventTotal && creator && selectedUsers) {
+      props.parentProps.handleLoader(true)
+      let createEventRequest: CreateEventRequestDTO = {
+        "nome": nameEvent,
+        "descr": descEvent,
+        "dataEv": formatDate(selectedDate.toISOString(), fullDate, CreateEventAPIDateTime)  ?? (new Date()).toISOString(),
+        "spesa": eventTotal ?? 0,
+        "creatore": creator,
+        "partecipantiList": selectedUsers,
+      }
+      console.log("createEventRequest: ", JSON.stringify(createEventRequest))
+       backendService?.beService.createEvent(createEventRequest).then((createEventResponse) => {
+         Alert.alert(
+           t("create.alert_title"), 
+           t("create.alert_message"), 
+           [
+             {
+               text: t("general.ok").toUpperCase(),
+               onPress: () => {
+                 props.navigation.goBack()
+               },
+             }
+           ])
+       }).catch((createEventError) => {
+         Alert.alert(t("general.error"), createEventError.message + ": " + createEventError.status)
+       }).finally(() => {
+         props.parentProps.handleLoader(false)
+       })
+    }
+  }
 
   return (
     <KeyboardAwareScrollView
@@ -142,11 +179,13 @@ function CreateEvent(props: CreateEventProps) {
         }}
       />
 
+      <View style={{marginVertical: padding.onehalf, marginHorizontal: padding.half, height: 1, backgroundColor: colors.blackOpacity25}}/>
+
       <Label
-        dimension="big"
+        dimension="normal"
         weight="semibold"
         color={colors.primaryDark}
-        style={{ marginTop: padding.full, marginBottom: padding.half, marginLeft: padding.quarter }}
+        style={{ marginBottom: padding.half, marginLeft: padding.full }}
       >
         {t("create.list_title")}
       </Label>
@@ -155,6 +194,7 @@ function CreateEvent(props: CreateEventProps) {
         return (
           user.username == accountService?.aService.getUserName() ? null :
           <NameListCell
+            key={user.username}
             name={user.nome ?? ""}
             surname={user.cognome ?? ""}
             onCellPress={() => {
@@ -168,38 +208,7 @@ function CreateEvent(props: CreateEventProps) {
         text={t("home.create_event")}
         style={{marginTop: padding.full}}
         onPress={() => {
-          let creator: UserDTO = {
-            "username": accountService?.aService.getUserName() ?? ""
-          }
-          if(nameEvent && selectedDate && eventTotal && creator && selectedUsers) {
-            props.parentProps.handleLoader(true)
-            let createEventRequest: CreateEventRequestDTO = {
-              "nome": nameEvent,
-              "descr": descEvent,
-              "dataEv": selectedDate ?? new Date(),
-              "spesa": eventTotal ?? 0,
-              "creatore": creator,
-              "partecipantiList": selectedUsers,
-            }
-            console.log("createEventRequest: ", JSON.stringify(createEventRequest))
-             backendService?.beService.createEvent(createEventRequest).then((createEventResponse) => {
-               Alert.alert(
-                 t("create.alert_title"), 
-                 t("create.alert_message"), 
-                 [
-                   {
-                     text: t("general.ok").toUpperCase(),
-                     onPress: () => {
-                       props.navigation.back()
-                     },
-                   }
-                 ])
-             }).catch((createEventError) => {
-               Alert.alert(t("general.error"), createEventError)
-             }).finally(() => {
-               props.parentProps.handleLoader(false)
-             })
-          }
+          saveEvent()
         }} />
     </KeyboardAwareScrollView>
   );

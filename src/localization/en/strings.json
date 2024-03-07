@@ -18,6 +18,10 @@
     "login": "Login",
     "register": "Register"
   },
+  "logout": {
+    "logout_title": "Logout",
+    "logout_message": "Are you sure you want to logout?"
+  },
   "registration": {
     "registration": "Registration",
     "first_name": "First name",

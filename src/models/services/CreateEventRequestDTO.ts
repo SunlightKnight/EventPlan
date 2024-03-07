@@ -4,7 +4,7 @@ export interface CreateEventRequestDTO {
     id?: number,
     nome: string,
     descr?: string,
-    dataEv: Date,
+    dataEv: string,
     spesa: number,
     creatore: UserDTO,
     partecipantiList: Array<UserDTO>

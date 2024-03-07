@@ -18,6 +18,10 @@
     "login": "Accedi",
     "register": "Registrati"
   },
+  "logout": {
+    "logout_title": "Logout",
+    "logout_message": "Effettuare il logout?"
+  },
   "registration": {
     "registration": "Registrazione",
     "first_name": "Nome",

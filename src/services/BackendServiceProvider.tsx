@@ -201,9 +201,9 @@ const BackendServiceProvider = ({ children } : any) => {
           })
         } else {
           throwError({
-            status: 401,
-            message: t("errors.unathorized"),
-            messageKey: "error.unauthorize"
+            status: response.status,
+            message: t("errors.generic"),
+            messageKey: "error.generic"
           })
         }
       }

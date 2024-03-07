@@ -3,7 +3,7 @@ import colors from "../../styles/colors";
 import { HEADER_HEIGHT, slideAnimation } from "../../styles/styles";
 import Home from "./Home/Home";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Image, View, TouchableOpacity, Platform } from "react-native";
+import { Image, View, TouchableOpacity, Platform, Alert } from "react-native";
 import { DefaultTheme, NavigationContainer, NavigationState } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import EventDetail from "./EventDetail/EventDetail";
@@ -12,6 +12,7 @@ import { icon_back, icon_logout } from "../../assets/images";
 import padding from "../../styles/padding";
 import CreateEvent from "./CreateEvent/CreateEvent";
 import { EventDTO } from "../../models/services/EventDTO";
+import { useTranslation } from "react-i18next";
 
 export type HomeFlowCoordinatorProps = {
   handleLoader: (l: boolean) => void
@@ -28,6 +29,7 @@ const Theme = {
 };
 
 function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
+  const { t } = useTranslation()
   const [showLogout, setShowLogout] = useState(true)
   const navRef = useRef<any>()
 
@@ -70,7 +72,24 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
         <TouchableOpacity style={{
           marginRight: padding.half
         }}
-        onPress={() => { props.handleLoader(true); props.manageLogout() }}>
+        onPress={() => { 
+          Alert.alert(
+            t("logout.logout_title"),
+            t("logout.logout_message"),
+            [
+              {
+                text: t("general.ok"),
+                onPress: () => {
+                  props.handleLoader(true); props.manageLogout() 
+                },
+              },
+              {
+                text: t("general.cancel"),
+                onPress: () => {},
+              }
+            ]
+          )
+        }}>
           <Image 
             source={icon_logout} 
             resizeMode="contain" 
