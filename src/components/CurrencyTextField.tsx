@@ -50,7 +50,7 @@ function CurrencyTextField(props: CurrencyTextFieldProps) {
           onFocus={() => { setIsSelected(true) }}
           style={{
             backgroundColor: colors.lightGrey, 
-            height: Platform.OS === "ios" ? 35 : 55,
+            height: Platform.OS === "ios" ? 35 : 50,
             fontSize: getFontSize("normal"),
           }}
         />

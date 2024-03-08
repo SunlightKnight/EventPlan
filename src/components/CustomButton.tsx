@@ -1,6 +1,11 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text, ViewStyle, TextStyle, TextProps, ViewProps} from 'react-native';
-
+import {
+  StyleSheet, 
+  TouchableOpacity, 
+  TextStyle, 
+  TextProps, 
+  ViewProps
+} from 'react-native';
 import colors from '../styles/colors';
 import Label from './Label';
 import padding from '../styles/padding';

@@ -32,7 +32,9 @@
     "events": "Eventi",
     "create_event": "Crea Evento",
     "receive": "Mi spettano: {{AMOUNT}}",
-    "not_partecipating": "Non partecipi a questo evento"
+    "not_partecipating": "Non partecipi a questo evento",
+    "already_paid": "Hai già pagato la tua quota!",
+    "event_paid": "Evento pagato!"
   },
   "create": {
     "select_date": "Seleziona data",

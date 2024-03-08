@@ -81,11 +81,11 @@ function Login(props: LoginProps) {
             })
           }
         }} />
-      <CustomButton 
+      {/* <CustomButton 
         text={t("login.register")} 
         type="transparent" 
         onPress={props.nav.registration}
-        style={{marginTop: -padding.sixth}} />
+        style={{marginTop: -padding.sixth}} /> */}
     </View>
   )
 }

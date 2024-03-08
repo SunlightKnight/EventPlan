@@ -25,52 +25,6 @@ function Home(props: HomeProps) {
   const backendService = useContext(BackendServiceContext)
   const [eventList, setEventList] = useState<Array<EventDTO>>([])
   let currentUserName = accountService?.aService.getUserName()
-  // const testEvent: any = {
-  //   id: 0,
-  //   nome: "TEST EVENT",
-  //   descr: "Testing event detail",
-  //   dataEv: "2022-03-15 12:30:22",
-  //   spesa: 150,
-  //   creatore: {
-  //     username: "mario",
-  //     nome: "Mario",
-  //     cognome: "Giallo"
-  //   },
-  //   partecipantiList: [
-  //     {
-  //       username: "mario",
-  //       nome: "Mario",
-  //       cognome: "Giallo",
-  //       idPartecipante: 0,
-  //       spesa: 50,
-  //       dataPagamento: "2024-02-29T13:36:05.452Z"
-  //     },
-  //     {
-  //       username: "samuele",
-  //       nome: "Samuele",
-  //       cognome: "Tonelli",
-  //       idPartecipante: 3,
-  //       spesa: 50,
-  //       dataPagamento: ""
-  //     },
-  //     {
-  //       username: "elisa",
-  //       nome: "Elisa",
-  //       cognome: "Festa",
-  //       idPartecipante: 1,
-  //       spesa: 50,
-  //       dataPagamento: ""
-  //     },
-  //     {
-  //       username: "gabriele",
-  //       nome: "Gabriele",
-  //       cognome: "Valentini",
-  //       idPartecipante: 2,
-  //       spesa: 50,
-  //       dataPagamento: "2024-02-29T13:36:05.452Z"
-  //     }
-  //   ]
-  // }
 
   useEffect(() => {
     const listener = function() {
@@ -87,7 +41,18 @@ function Home(props: HomeProps) {
       setEventList(eventListResponse.eventiList)
       console.log("Event list: ", JSON.stringify(eventListResponse))
     }).catch((eventListError: any) => {
-      Alert.alert(t("general.error"), eventListError.message)
+      if (eventListError.status === 401) {
+        Alert.alert(t("general.error"), t("errors.unauthorized"), [
+          {
+            text: t("general.ok").toUpperCase(),
+            onPress: () => {
+              props.parentProps.manageLogout()
+            },
+          }
+        ]);
+      } else {
+        Alert.alert(t("general.error"), eventListError.message)
+      }
     }).finally(() => {
       props.parentProps.handleLoader(false)
     })
@@ -112,7 +77,7 @@ function Home(props: HomeProps) {
               currentUsername={currentUserName ?? ""}
               onCellPress={() => {props.nav.eventDetail(item)}} />}
           keyExtractor={(item: EventDTO) => String(item.id)}
-        />
+            />
       ) : (
         <CustomButton 
           text={t("home.create_event")} 
@@ -126,11 +91,6 @@ function Home(props: HomeProps) {
             marginTop: padding.double,
             borderWidth: 3}} />
       )}
-
-      {/* <CustomButton 
-        text={"detail"} 
-        type="transparent" 
-        onPress={() => props.nav.eventDetail(testEvent)} /> */}
 
       {eventList.length > 0 ? (
         <FloatingButton 

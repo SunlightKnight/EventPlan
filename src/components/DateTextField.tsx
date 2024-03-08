@@ -16,7 +16,6 @@ import { icon_event, icon_cancel } from '../assets/images';
 import colors from '../styles/colors';
 import padding from '../styles/padding';
 import Label from './Label';
-import fontSize from '../styles/fontSize';
 import { formatDate } from '../utils/Helper';
 import { useTranslation } from 'react-i18next';
 import { displayDate, displayDateTime, fullDate } from '../utils/Constants';
@@ -79,7 +78,7 @@ export default function DateTextField(props: DatePickerFieldProps) {
       {fieldTitle ? (
         <Label
           dimension='small'
-          style={[{marginLeft: padding.full, marginTop: padding.half}, fieldTitleStyle]}>
+          style={[{marginLeft: padding.full}, fieldTitleStyle]}>
           {fieldTitle}
         </Label>
       ) : null}

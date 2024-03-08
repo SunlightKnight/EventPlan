@@ -9,4 +9,4 @@ export interface EventDTO {
   spesa: number,
   creatore: UserDTO,
   partecipantiList: Array<PartecipantDTO>
-  }
+}

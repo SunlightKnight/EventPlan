@@ -137,13 +137,6 @@ const BackendServiceProvider = ({ children } : any) => {
         'Accept': responseContentType,
       };
 
-      if (userToken) {
-        headers = {
-          ...headers,
-          'Authorization': 'Bearer ' + (userToken.clientToken)
-        }
-      }
-
       const opts = {
         method: method,
         headers: headers,
@@ -349,7 +342,7 @@ const BackendServiceProvider = ({ children } : any) => {
       API_BASE_URL + `/eventi/paga/${pID}`,
       HTTPMethod.POST,
       undefined,
-      HTTPContentType.json
+      HTTPContentType.none
     )
   }
 

@@ -67,7 +67,6 @@ function CreateEvent(props: CreateEventProps) {
             {
               text: t("general.ok").toUpperCase(),
               onPress: () => {
-                props.navigation.popToTop()
                 props.parentProps.manageLogout()
               },
             }

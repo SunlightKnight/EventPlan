@@ -37,19 +37,15 @@ export const formatCardExpiry = (text: string) => {
   }
 
   let correctExpiry = text.replace(
-    /^([1-9]\/|[2-9])$/g, '0$1/' // 3 > 03/
+    /[^0-9]/g, '' // To allow only numbers
   ).replace(
-    /^(0[1-9]|1[0-2])$/g, '$1/' // 11 > 11/
+      /^([2-9])$/g, '0$1' // To handle 3 > 03
   ).replace(
-    /^([0-1])([3-9])$/g, '0$1/$2' // 13 > 01/3
+      /^(1{1})([3-9]{1})$/g, '0$1/$2' // 13 > 01/3
   ).replace(
-    /^(0?[1-9]|1[0-2])([0-9]{2})$/g, '$1/$2' // 141 > 01/41
+      /^0{1,}/g, '0' // To handle 00 > 0
   ).replace(
-    /^([0]+)\/|[0]+$/g, '0' // 0/ > 0 and 00 > 0
-  ).replace(
-    /[^\d\/]|^[\/]*$/g, '' // To allow only digits and `/`
-  ).replace(
-    /\/\//g, '/' // Prevent entering more than 1 `/`
+      /^([0-1]{1}[0-9]{1})([0-9]{1,2}).*/g, '$1/$2' // To handle 113 > 11/3
   );
   return correctExpiry
 }

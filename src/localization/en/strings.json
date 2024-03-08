@@ -32,7 +32,9 @@
     "events": "Events",
     "create_event": "Create Event",
     "receive": "I expect: {{AMOUNT}}",
-    "not_partecipating": "You don't take part in this event"
+    "not_partecipating": "You don't take part in this event",
+    "already_paid": "You already paid your part!",
+    "event_paid": "Event paid!"
   },
   "create": {
     "select_date": "Select date",
