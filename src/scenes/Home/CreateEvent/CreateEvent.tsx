@@ -40,6 +40,7 @@ function CreateEvent(props: CreateEventProps) {
 
   useEffect(() => {
     getUserList();
+    tempUsers=new Array()
     tempUsers.push({username: accountService?.aService.getUserName() ?? ""})
     setSelectedUsers(tempUsers)
   }, []);

@@ -62,7 +62,7 @@ function EventListCell(props: EventListCellProps) {
   return (
     <TouchableOpacity
       activeOpacity={0.8}
-      onPress={eventPaid() && props.currentUsername == props.event.creatore.username ? undefined : props.onCellPress}
+      onPress={eventPaid() ? undefined : props.onCellPress}
       style={{
         backgroundColor: colors.white,
         marginVertical: 10,

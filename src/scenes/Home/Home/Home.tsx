@@ -24,6 +24,7 @@ function Home(props: HomeProps) {
   const accountService = useContext(AccountServiceContext)
   const backendService = useContext(BackendServiceContext)
   const [eventList, setEventList] = useState<Array<EventDTO>>([])
+  const [isRefreshing, setIsRefreshing] = useState(false)
   let currentUserName = accountService?.aService.getUserName()
 
   useEffect(() => {
@@ -54,6 +55,7 @@ function Home(props: HomeProps) {
         Alert.alert(t("general.error"), eventListError.message)
       }
     }).finally(() => {
+      setIsRefreshing(false)
       props.parentProps.handleLoader(false)
     })
   }
@@ -77,6 +79,11 @@ function Home(props: HomeProps) {
               currentUsername={currentUserName ?? ""}
               onCellPress={() => {props.nav.eventDetail(item)}} />}
           keyExtractor={(item: EventDTO) => String(item.id)}
+          onRefresh={() => {
+            setIsRefreshing(true)
+            fetchEventList()}}
+          refreshing={isRefreshing}
+          contentContainerStyle={{paddingBottom:padding.quintuple}}
             />
       ) : (
         <CustomButton 
@@ -97,8 +104,8 @@ function Home(props: HomeProps) {
           width={60} 
           height={60} 
           radius={30} 
-          bottomMargin={padding.double} 
-          rightMargin={padding.double} 
+          bottomMargin={padding.full} 
+          rightMargin={padding.full} 
           buttonIcon={icon_add} 
           buttonIconColor={colors.white} 
           onPress={() => { props.nav.createEvent() }} />

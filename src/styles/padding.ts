@@ -10,4 +10,5 @@ export default {
   double: padding * 2,
   triple: padding * 3,
   quadruple: padding * 4,
+  quintuple: padding * 5,
 }

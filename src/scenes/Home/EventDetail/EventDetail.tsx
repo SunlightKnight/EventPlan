@@ -31,7 +31,6 @@ function EventDetail(props: EventDetailProps) {
   const getParticipant = () => {
     eventData.partecipantiList.map((p: any) => {
       if (p.username == userName) {
-        console.log("HERE")
         setP(p)
       }
     })

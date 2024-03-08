@@ -27,11 +27,6 @@ function EventPayment(props: EventPaymentProps) {
   const [cardExpiry, setCardExpiry] = useState("")
   const [cardCVV, setCardCVV] = useState("")
 
-  // useEffect(() => {
-  //   console.log("AMOUNT ", props.route.params.paymentAmount)
-  //   console.log("ID ", props.route.params.pID)
-  // }, [])
-
   const validate = () => {
     if (recipientIban && cardOwner && cardNumber && cardExpiry && cardCVV) {
       return true
