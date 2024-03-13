@@ -130,6 +130,15 @@ function CreateEvent(props: CreateEventProps) {
         {t("home.create_event")}
       </Label>
 
+      <Label
+        dimension="normal"
+        weight="semibold"
+        color={colors.primaryDark}
+        style={{ marginBottom: padding.half, marginLeft: padding.full, marginTop: padding.full }}
+      >
+        {t("create.event_data")}
+      </Label>
+
       <TextField
         label={t("create.name_event")}
         value={nameEvent}
@@ -161,7 +170,7 @@ function CreateEvent(props: CreateEventProps) {
         open={datePickerOpen}
         mode={"datetime"}
         selectedDate={selectedDate}
-        minDate={new Date()}
+        minDate={new Date(new Date().setHours((new Date()).getHours() + 1))}
         iconsStyle={{ tintColor: colors.blackOpacity25, width: 30, height: 30 }}
         onConfirm={(date: Date) => {
           setSelectedDate(date);

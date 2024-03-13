@@ -3,7 +3,7 @@ import CustomButton from "../../../components/CustomButton"
 import Label from "../../../components/Label"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import commonStyles from "../../../styles/styles"
 import padding from "../../../styles/padding"
 import colors from "../../../styles/colors"

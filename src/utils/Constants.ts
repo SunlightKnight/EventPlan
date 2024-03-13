@@ -1,4 +1,4 @@
-// --- REGEXES ---
+// --- REGEXES --- For more info: https://www.codesmith.io/blog/understanding-regex
 export const EMAIL_REGEX = "^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
 
 // --- Dates ---

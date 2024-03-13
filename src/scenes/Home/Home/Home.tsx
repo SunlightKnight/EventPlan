@@ -42,6 +42,8 @@ function Home(props: HomeProps) {
       setEventList(eventListResponse.eventiList)
       console.log("Event list: ", JSON.stringify(eventListResponse))
     }).catch((eventListError: any) => {
+      // Handling session expired error.
+      // If even refreshToken returns 401, user must be logged out.
       if (eventListError.status === 401) {
         Alert.alert(t("general.error"), t("errors.unauthorized"), [
           {
@@ -81,7 +83,8 @@ function Home(props: HomeProps) {
           keyExtractor={(item: EventDTO) => String(item.id)}
           onRefresh={() => {
             setIsRefreshing(true)
-            fetchEventList()}}
+            fetchEventList()
+          }}
           refreshing={isRefreshing}
           contentContainerStyle={{paddingBottom:padding.quintuple}}
             />

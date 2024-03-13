@@ -1,3 +1,4 @@
+// API error interface, as described in API specifications.
 export interface BackendError {
   status: number
   messageKey: string

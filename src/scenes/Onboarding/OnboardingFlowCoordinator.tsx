@@ -13,10 +13,13 @@ import { icon_back } from "../../assets/images";
 import padding from "../../styles/padding";
 
 export type OnboardingFlowCoordinatorProps = {
+  // Function passed down as prop from AppFlowCoordinator.
   handleLoader: (l: boolean) => void
 }
 
+// Stack navigator creation. For more info: https://reactnavigation.org/docs/stack-navigator/
 const Stack = createStackNavigator()
+// Stack navigator theme. For more info: https://reactnavigation.org/docs/themes/
 const Theme = {
   ...DefaultTheme,
   colors: {
@@ -26,8 +29,10 @@ const Theme = {
 };
 
 function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
+  // Navigation ref. By using the useRef hook, we assure that its value never changes between renders.
   const navRef = useRef<any>()
 
+  // Options defined for each navigator screen. For more info: https://reactnavigation.org/docs/screen-options/
   const screenOptions = {
     title: '',
     backgroundColor: colors.white,
@@ -61,14 +66,20 @@ function OnboardingFlowCoordinator(props: OnboardingFlowCoordinatorProps) {
 
   const navigateToRegistration = () => {
     if (navRef) {
+      // "navigate" is the method that allows to go from a screen to another.
+      // For more info: https://reactnavigation.org/docs/navigating/#summary
       navRef.current.navigate("Registration")
     }
   }
 
+  // Simple JS object that contains all the screens in the stack.
   const pages: {[key: string]: any} = {
     Login: {
+      // The actual component (aka screen), that the navigator contains.
       component: Login,
+      // Props passed down from parent: in this case OnboardingFlowCoordinator.
       parentProps: props,
+      // Object that contains references to navigation functions.
       nav: { "registration": navigateToRegistration }
     },
     Registration: {

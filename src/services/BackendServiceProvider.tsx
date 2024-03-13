@@ -10,15 +10,22 @@ import { UserDTO } from "../models/services/UserDTO";
 import { CreateEventRequestDTO } from "../models/services/CreateEventRequestDTO";
 import { EventsListResponseDTO } from "../models/services/EventsListResponseDTO";
 
+// Default timeout: after FETCH_TIMEOUT * 1000 (see line 278) the promise is automatically rejected.
 const FETCH_TIMEOUT = 30;
+// Key used to find out if refresh token call has been successful. If an "error" containing this key is thrown
+// (see line 190), the token has been refreshed successfully.
 const RECALL_API_AFTER_REFRESH_TOKEN_KEY = "401.refreshToken.OK"
+// APIs TEST enpoint, defined in "config.ts" file.
 const API_BASE_URL: string = AppConfig.TEST_ENDPOINT
+// Key used to save AuthToken object in the Keychain. It's basically a reference, so when we look for "AUTH"
+// inside the Keychain, we find the object we are interested in.
 const AUTH_OBJECT_KEY = "AUTH"
 
 export interface IJSON {
   [key: string]: any; 
 }
 
+/** Request methods. For more info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods */
 enum HTTPMethod {
   GET = 'GET',
   POST = 'POST',
@@ -27,6 +34,7 @@ enum HTTPMethod {
   DELETE = 'DELETE',
 }
 
+/** Response types. For more info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types */
 enum HTTPContentType {
   none = '',
   json = 'application/json',
@@ -34,6 +42,14 @@ enum HTTPContentType {
   pdf = 'application/pdf',
 }
 
+/**
+ * Local token object.
+ * 
+ * @var clientToken - The actual token used as authorization (see line 98).
+ * @var exp - Expiration in ms.
+ * @var expDateTime - Expiration datetime (YYYY-MM-DDTHH:mm:SS.sssZ).
+ * @var refreshToken - Token used in refreshToken call to get a new AuthToken object.
+ */
 export type AuthToken = {
   clientToken: string
   exp: number
@@ -41,6 +57,15 @@ export type AuthToken = {
   refreshToken: string
 }
 
+/**
+ * BackendServiceContext type.
+ * 
+ * @function setAuthToken - Saves the token object inside the context (see line 81).
+ * @function saveAthToken - Save the token object in the Keychain (see line 314).
+ * @function hasToken - Checks if token is present in context (see line 86).
+ * @function removeAuthToken - Deletes token object from Keychain (see line 322).
+ * @var beService - Object that contains all API call methods.
+ */
 interface BackendServiceContextType {
   setAuthToken: (token: AuthToken | undefined) => void
   saveAuthToken: (token: AuthToken | undefined) => void
@@ -49,8 +74,17 @@ interface BackendServiceContextType {
   beService: BackendServiceInterface
 }
 
+// Context object creation. In conjunction with "useContext" hook, it allows to use all
+// BackendServiceProvider functionalities. For more info:
+// https://react.dev/reference/react/useContext
 export const BackendServiceContext = createContext<BackendServiceContextType | null>(null)
 
+/**
+ * Component that handles API calls.
+ * 
+ * @param children - Components tree wrapped by BackendServiceProvider. 
+ * @returns BackendServiceProvider component with exposed functionalities.
+ */
 const BackendServiceProvider = ({ children } : any) => {
   const { t } = useTranslation()
 
@@ -65,7 +99,16 @@ const BackendServiceProvider = ({ children } : any) => {
     return userToken !== undefined;
   }
 
-  // Http call with JSON request
+  /**
+   * Function that handles the result of manageResponse.
+   * 
+   * @param url - API endpoint url.
+   * @param method - HTTP method to use.
+   * @param payload - Possible HTTP call payload (ex. in POST request).
+   * @param responseContentType - Response type.
+   * @param retry - Value that determines if the current call is to be tried again or not, default is true.
+   * @returns A promise containing the data requested or an error.
+   */
   const callJSON = async (
     url: string,
     method: HTTPMethod,
@@ -104,7 +147,6 @@ const BackendServiceProvider = ({ children } : any) => {
         responseContentType,
         retry,
       ).catch(async (error: any) => {
-        // if RECALL_API_AFTER_REFRESH_TOKEN_KEY -> retry
         if (error === RECALL_API_AFTER_REFRESH_TOKEN_KEY) {
           return callJSON(url, method, payload, responseContentType, false)
         } else {
@@ -124,6 +166,7 @@ const BackendServiceProvider = ({ children } : any) => {
     }
   }
 
+  // Same as "callJSON", but used only for refreshToken, to not overwrite the call that returned 401 (session expired).
   const callJSONRefresh = async (
     url: string,
     method: HTTPMethod,
@@ -170,6 +213,14 @@ const BackendServiceProvider = ({ children } : any) => {
     }
   }
 
+  /**
+   * Manages API response.
+   * 
+   * @param response - API full response.
+   * @param responseContentType - Response type.
+   * @param retry - Value that determines, in case of 401 error, if it's needed to call refreshToken or not.
+   * @returns A promise containing the data requested or an error.
+   */
   const manageResponse = async (
     response: Response,
     responseContentType: HTTPContentType,
@@ -262,6 +313,14 @@ const BackendServiceProvider = ({ children } : any) => {
     }
   }
 
+  /**
+   * Function that handles the actual API call.
+   * 
+   * @param url - API resource url (API_BASE_URL + resource endpoint).
+   * @param options - Options object (see line 129).
+   * @param timeout - Request timeout.
+   * @returns A promise containing the data requested or an error.
+   */
   const fetchWithTimeout = async (
     url: string,
     options: RequestInit,
@@ -269,6 +328,7 @@ const BackendServiceProvider = ({ children } : any) => {
   ): Promise<any> => {
     const headers = (options.headers || {}) as any;
     headers['Request-Timeout'] = timeout;
+    // For more info on promise - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
     return Promise.race([
       fetch(url, options),
       new Promise((_, reject) =>
@@ -286,7 +346,8 @@ const BackendServiceProvider = ({ children } : any) => {
       HTTPMethod.POST, 
       payload, 
       HTTPContentType.json, 
-      false);
+      false
+    );
   }
 
   const saveAuthToken = async (token: AuthToken | undefined) => {

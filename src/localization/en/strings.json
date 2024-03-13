@@ -43,7 +43,8 @@
     "total_event": "Event expenses",
     "alert_title": "Event created",
     "alert_message": "Event successfully created",
-    "list_title": "Participants list"
+    "list_title": "Participants list",
+    "event_data": "Event data"
   },
   "detail": {
     "detail": "Event detail",

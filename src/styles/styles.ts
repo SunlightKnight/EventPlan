@@ -5,9 +5,12 @@ import colors from './colors';
 import padding from './padding';
 import fontSize from './fontSize';
 
+// Variable used to determine header height, that changes between platforms and device models.
 export const HEADER_HEIGHT = (Platform.OS === "ios" && DeviceInfo.hasDynamicIsland()) ? 100 : 
                               (Platform.OS === "ios" && DeviceInfo.hasNotch()) ? 90 : Platform.OS === "android" ? 90 : 70;
 
+// Animation used for stack navigation. For more info, check:
+// https://reactnative.dev/docs/animated
 export const slideAnimation = ({
   current,
   next,
@@ -53,7 +56,8 @@ export const slideAnimation = ({
   };
 };
                               
-
+// Object used to contain "general style", used on multiple screens. Here you can define styles
+// that wuold be redundant to write out in every screen.
 const commonStyles = StyleSheet.create({
   backgroundImage: {
     width: Dimensions.get('screen').width,
@@ -61,11 +65,6 @@ const commonStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  environmentLabel: {
-    width: '100%',
-    textAlign: 'center',
-    color: 'red',
   },
   scrollingContainer: {
     width: '100%',

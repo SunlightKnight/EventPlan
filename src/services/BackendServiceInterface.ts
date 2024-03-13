@@ -4,6 +4,7 @@ import LoginRequestDTO from "../models/services/LoginRequestDTO";
 import { UserDTO } from "../models/services/UserDTO";
 import { AuthToken, IJSON } from "./BackendServiceProvider";
 
+// BackendServiceProvider MUST implement all the functions defined inside its interface.
 export default interface BackendServiceInterface {
   login: (payload: LoginRequestDTO) => Promise<AuthToken>
   getUsersList: () => Promise<Array<UserDTO>>

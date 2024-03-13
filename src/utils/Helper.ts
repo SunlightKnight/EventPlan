@@ -8,19 +8,15 @@ import 'moment/locale/es';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 import 'intl/locale-data/jsonp/it';
-import { Platform, StatusBar } from "react-native"
-import DeviceInfo from "react-native-device-info"
 
-export const getTopInset = () => {
-  if (Platform.OS === "android") {
-    return StatusBar.currentHeight ?? 0
-  } else if (Platform.OS === "ios") {
-    return (DeviceInfo.hasNotch() || DeviceInfo.hasDynamicIsland()) ? 30 : 0
-  } else {
-    return 0
-  }
-}
-
+/**
+ * Formats date string.
+ * 
+ * @param date - Current date string.
+ * @param currentFormat - Current date format.
+ * @param newFormat - Desired date format.
+ * @returns Formatted date string or, in case date or format are not valid, "Invalid date".
+ */
 export const formatDate = (
   date: string,
   currentFormat: string,
@@ -31,11 +27,13 @@ export const formatDate = (
   return correctDate
 };
 
+/**
+ * Automatically formats the credit card expiry date (MM/AA).
+ * 
+ * @param text - Credit card expiry date string.
+ * @returns Formatted card expiry date string.
+ */ 
 export const formatCardExpiry = (text: string) => {
-  if (!text.includes("/") && text.length == 2) {
-    return text
-  }
-
   let correctExpiry = text.replace(
     /[^0-9]/g, '' // To allow only numbers
   ).replace(
@@ -50,6 +48,15 @@ export const formatCardExpiry = (text: string) => {
   return correctExpiry
 }
 
+/**
+ * Formats currency values.
+ * 
+ * @param amount - Amount string.
+ * @param doNotShowSymbol - Hide currency symbol (€, $...).
+ * @param putEurInFront - Removes currency symbol after the value (which is the default formatting) and puts it in front.
+ * @param numberOfDecimals - Number of decimal values.
+ * @returns Formatted currency string.
+ */
 export const formattedCurrency = (
   amount: string,
   doNotShowSymbol?: boolean,

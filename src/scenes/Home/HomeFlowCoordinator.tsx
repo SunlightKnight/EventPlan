@@ -116,12 +116,16 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
   const navigateToEventDetail = (eventData: EventDTO) => {
     if (navRef) {
       setShowLogout(false)
+      // Passing parameters to EventDetail screen.
+      // For more info: https://reactnavigation.org/docs/params
       navRef.current.navigate("EventDetail", { eventData: eventData })
     }
   }
 
   const navigateToEventPayment = (paymentAmount: string, pID: number) => {
     if (navRef) {
+      // Passing parameters to EventPayment screen.
+      // For more info: https://reactnavigation.org/docs/params
       navRef.current.navigate("EventPayment", { paymentAmount: paymentAmount, pID: pID })
     }
   }

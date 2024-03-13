@@ -19,6 +19,8 @@ type LoginProps = {
 }
 
 function Login(props: LoginProps) {
+  // useTranslation hook, for handling translations.
+  // For more info: https://react.i18next.com/latest/usetranslation-hook
   const { t } = useTranslation()
   const aContext = useContext(AccountServiceContext)
   const bsContext = useContext(BackendServiceContext)
