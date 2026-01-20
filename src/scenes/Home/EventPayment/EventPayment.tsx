@@ -80,7 +80,7 @@ function EventPayment(props: EventPaymentProps) {
         onPress={() => {
           if (validate()) {
             props.parentProps.handleLoader(true)
-            bsContext?.beService.payEvent(props.route.params.pID).then((_) => {
+            bsContext?.beService.payEvent(props.route.params.pID).then(() => {
               Alert.alert(
                 t("payment.payment"), 
                 t("payment.payment_success"), 
