@@ -2,13 +2,13 @@ import { createContext } from "react";
 import { throwError } from "./BackendError";
 import { useTranslation } from "react-i18next";
 import * as Keychain from "react-native-keychain"
-import * as AppConfig from '../config/config';
+import * as AppConfig from '../../config/config';
 import BackendServiceInterface from "./BackendServiceInterface";
-import LoginRequestDTO from "../models/services/LoginRequestDTO";
-import { RefreshTokenRequestDTO } from "../models/services/RefreshTokenRequestDTO";
-import { UserDTO } from "../models/services/UserDTO";
-import { CreateEventRequestDTO } from "../models/services/CreateEventRequestDTO";
-import { EventsListResponseDTO } from "../models/services/EventsListResponseDTO";
+import LoginRequestDTO from "../../models/services/LoginRequestDTO";
+import { RefreshTokenRequestDTO } from "../../models/services/RefreshTokenRequestDTO";
+import { UserDTO } from "../../models/services/UserDTO";
+import { CreateEventRequestDTO } from "../../models/services/CreateEventRequestDTO";
+import { EventsListResponseDTO } from "../../models/services/EventsListResponseDTO";
 
 // Default timeout: after FETCH_TIMEOUT * 1000 (see line 278) the promise is automatically rejected.
 const FETCH_TIMEOUT = 30;

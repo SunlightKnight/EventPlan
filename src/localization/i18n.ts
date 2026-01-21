@@ -17,13 +17,13 @@ export const resources = {
 // is used instead.
 const locale =
   Platform.OS === 'ios'
-    ? NativeModules.SettingsManager.settings.AppleLocale
+    ? NativeModules.SettingsManager.getConstants().settings.AppleLocale
     : NativeModules.I18nManager.localeIdentifier;
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v3',
   resources,
-  lng: locale.substring(0, 2),
+  lng: locale?.substring(0, 2),
   fallbackLng: "it",
   interpolation: {
     escapeValue: false,

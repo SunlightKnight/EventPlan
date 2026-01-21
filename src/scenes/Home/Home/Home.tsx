@@ -9,18 +9,20 @@ import { useContext, useEffect, useState } from "react"
 import { EventDTO } from "../../../models/services/EventDTO"
 import FloatingButton from "../../../components/FloatingButton"
 import { icon_add } from "../../../assets/images"
-import { BackendServiceContext } from "../../../services/BackendServiceProvider"
+import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider"
 import EventListCell from "../../../components/EventListCell"
-import { AccountServiceContext } from "../../../services/AccountServiceProvider"
+import { AccountServiceContext } from "../../../Providers/Account/AccountServiceProvider"
+import { useNavigation } from "@react-navigation/native"
+import { AppContext } from "../../../Providers/App/AppProvider"
 
 type HomeProps = {
-  parentProps: HomeFlowCoordinatorProps
-  navigation: any
-  nav: any
+  parentProps: any
 }
 
 function Home(props: HomeProps) {
   const { t } = useTranslation()
+  const navigation = useNavigation<any>()
+  const appContext = useContext(AppContext)
   const accountService = useContext(AccountServiceContext)
   const backendService = useContext(BackendServiceContext)
   const [eventList, setEventList] = useState<Array<EventDTO>>([])
@@ -32,15 +34,15 @@ function Home(props: HomeProps) {
       console.log("*** Home - useEffect - Listening...")
       fetchEventList()
     }
-    const unsubscribe = props.navigation.addListener("focus", listener)
+    const unsubscribe = navigation.addListener("focus", listener)
     return unsubscribe // Cleanup
   }, [])
 
   const fetchEventList = () => {
-    props.parentProps.handleLoader(true)
+    appContext?.app.handleLoader(true)
     backendService?.beService.getEventList().then((eventListResponse) => {
       setEventList(eventListResponse.eventiList)
-      console.log("Event list: ", JSON.stringify(eventListResponse))
+      // console.log("Event list: ", JSON.stringify(eventListResponse))
     }).catch((eventListError: any) => {
       // Handling session expired error.
       // If even refreshToken returns 401, user must be logged out.
@@ -49,7 +51,7 @@ function Home(props: HomeProps) {
           {
             text: t("general.ok").toUpperCase(),
             onPress: () => {
-              props.parentProps.manageLogout()
+              props.parentProps.logout()
             },
           }
         ]);
@@ -58,7 +60,7 @@ function Home(props: HomeProps) {
       }
     }).finally(() => {
       setIsRefreshing(false)
-      props.parentProps.handleLoader(false)
+      appContext?.app.handleLoader(false)
     })
   }
 
@@ -79,7 +81,7 @@ function Home(props: HomeProps) {
             <EventListCell 
               event={item} 
               currentUsername={currentUserName ?? ""}
-              onCellPress={() => {props.nav.eventDetail(item)}} />}
+              onCellPress={() => { navigation.navigate("EventDetail", { eventData: item }) }} />}
           keyExtractor={(item: EventDTO) => String(item.id)}
           onRefresh={() => {
             setIsRefreshing(true)
@@ -93,7 +95,7 @@ function Home(props: HomeProps) {
           text={t("home.create_event")} 
           textStyle={{fontWeight: "800"}}
           type="transparent" 
-          onPress={() => props.nav.createEvent()}
+          onPress={() => { navigation.navigate("CreateEvent") }}
           style={{
             height: 100, 
             width: Dimensions.get("screen").width - 100, 
@@ -111,7 +113,7 @@ function Home(props: HomeProps) {
           rightMargin={padding.full} 
           buttonIcon={icon_add} 
           buttonIconColor={colors.white} 
-          onPress={() => { props.nav.createEvent() }} />
+          onPress={() => { navigation.navigate("CreateEvent") }} />
       ) : null}
       
     </View>

@@ -3,33 +3,37 @@ import Label from "../../../components/Label";
 import DateTextField from "../../../components/DateTextField";
 import { useContext, useEffect, useState } from "react";
 import colors from "../../../styles/colors";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import commonStyles from "../../../styles/styles";
 import padding from "../../../styles/padding";
-import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator";
-import { BackendServiceContext } from "../../../services/BackendServiceProvider";
+import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider";
 import { Alert, View } from "react-native";
 import { UserDTO } from "../../../models/services/UserDTO";
 import TextField from "../../../components/TextField";
 import CurrencyTextField from "../../../components/CurrencyTextField";
 import NameListCell from "../../../components/NameListCell";
-import { AccountServiceContext } from "../../../services/AccountServiceProvider";
+import { AccountServiceContext } from "../../../Providers/Account/AccountServiceProvider";
 import CustomButton from "../../../components/CustomButton";
 import { CreateEventRequestDTO } from "../../../models/services/CreateEventRequestDTO";
 import { formatDate } from "../../../utils/Helper";
 import { createEventAPIDateTime, fullDate } from "../../../utils/Constants";
+import { AppContext } from "../../../Providers/App/AppProvider";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
 type CreateEventProps = {
-  parentProps: HomeFlowCoordinatorProps;
-  navigation: any;
+  parentProps: any
 };
 
 let tempUsers: Array<UserDTO> = []
 
 function CreateEvent(props: CreateEventProps) {
   const { t } = useTranslation();
+  const navigation = useNavigation<any>()
+
+  const appContext = useContext(AppContext)
   const backendService = useContext(BackendServiceContext);
   const accountService = useContext(AccountServiceContext)
+
   const [userList, setUserList] = useState<Array<UserDTO>>([]);
   const [nameEvent, setNameEvent] = useState<string>("");
   const [descEvent, setDescEvent] = useState<string>("");
@@ -56,29 +60,25 @@ function CreateEvent(props: CreateEventProps) {
   }
 
   const getUserList = () => {
-    props.parentProps.handleLoader(true);
-    backendService?.beService
-      .getUsersList()
-      .then((userListResponse) => {
-        setUserList(userListResponse);
-      })
-      .catch((userListError) => {
-        if (userListError.status === 401) {
-          Alert.alert(t("general.error"), t("errors.unauthorized"), [
-            {
-              text: t("general.ok").toUpperCase(),
-              onPress: () => {
-                props.parentProps.manageLogout()
-              },
-            }
-          ]);
-        } else {
-          Alert.alert(t("general.error"), userListError.message)
-        }
-      })
-      .finally(() => {
-        props.parentProps.handleLoader(false);
-      });
+    appContext?.app.handleLoader(true);
+    backendService?.beService.getUsersList().then((userListResponse) => {
+      setUserList(userListResponse);
+    }).catch((userListError) => {
+      if (userListError.status === 401) {
+        Alert.alert(t("general.error"), t("errors.unauthorized"), [
+          {
+            text: t("general.ok").toUpperCase(),
+            onPress: () => {
+              props.parentProps.logout()
+            },
+          }
+        ]);
+      } else {
+        Alert.alert(t("general.error"), userListError.message)
+      }
+    }).finally(() => {
+      appContext?.app.handleLoader(false);
+    });
   };
 
   const saveEvent = () => {
@@ -86,7 +86,7 @@ function CreateEvent(props: CreateEventProps) {
       "username": accountService?.aService.getUserName() ?? ""
     }
     if(nameEvent && selectedDate && eventTotal && creator && selectedUsers) {
-      props.parentProps.handleLoader(true)
+      appContext?.app.handleLoader(true)
       let createEventRequest: CreateEventRequestDTO = {
         "nome": nameEvent,
         "descr": descEvent,
@@ -102,15 +102,13 @@ function CreateEvent(props: CreateEventProps) {
            [
              {
                text: t("general.ok").toUpperCase(),
-               onPress: () => {
-                 props.navigation.goBack()
-               },
+               onPress: () => { navigation.dispatch(StackActions.pop(1)) },
              }
            ])
        }).catch((createEventError) => {
          Alert.alert(t("general.error"), createEventError.message + ": " + createEventError.status)
        }).finally(() => {
-         props.parentProps.handleLoader(false)
+         appContext?.app.handleLoader(false)
        })
     }
   }
@@ -119,14 +117,12 @@ function CreateEvent(props: CreateEventProps) {
     <KeyboardAwareScrollView
       style={commonStyles.scrollingContent}
       contentContainerStyle={{paddingBottom: padding.double}}
-      extraScrollHeight={padding.double}
-    >
+      bottomOffset={padding.double}>
       <Label
         dimension="big"
         weight="semibold"
         color={colors.primaryDark}
-        style={{ marginBottom: padding.half, marginLeft: padding.quarter }}
-      >
+        style={{ marginBottom: padding.half, marginLeft: padding.quarter }}>
         {t("home.create_event")}
       </Label>
 
@@ -134,8 +130,7 @@ function CreateEvent(props: CreateEventProps) {
         dimension="normal"
         weight="semibold"
         color={colors.primaryDark}
-        style={{ marginBottom: padding.half, marginLeft: padding.full, marginTop: padding.full }}
-      >
+        style={{ marginBottom: padding.half, marginLeft: padding.full, marginTop: padding.full }}>
         {t("create.event_data")}
       </Label>
 
@@ -144,24 +139,21 @@ function CreateEvent(props: CreateEventProps) {
         value={nameEvent}
         onChangeText={(text) => {
           setNameEvent(text);
-        }}
-      />
+        }}/>
 
       <TextField
         label={t("create.desc_event")}
         value={descEvent}
         onChangeText={(text) => {
           setDescEvent(text);
-        }}
-      />
+        }}/>
 
       <CurrencyTextField
         label={t("create.total_event")}
         value={eventTotal}
         onChangeValue={(expense) => {
           setEventTotal(expense);
-        }}
-      />
+        }}/>
 
       <DateTextField
         outerViewStyle={{}}
@@ -184,8 +176,7 @@ function CreateEvent(props: CreateEventProps) {
         }}
         onDatePickerPress={() => {
           setDatePickerOpen(true);
-        }}
-      />
+        }}/>
 
       <View style={{marginVertical: padding.onehalf, marginHorizontal: padding.half, height: 1, backgroundColor: colors.blackOpacity25}}/>
 
@@ -193,8 +184,7 @@ function CreateEvent(props: CreateEventProps) {
         dimension="normal"
         weight="semibold"
         color={colors.primaryDark}
-        style={{ marginBottom: padding.half, marginLeft: padding.full }}
-      >
+        style={{ marginBottom: padding.half, marginLeft: padding.full }}>
         {t("create.list_title")}
       </Label>
 

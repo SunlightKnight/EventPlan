@@ -1,23 +1,22 @@
 import { Image, ScrollView, StyleSheet, View } from "react-native"
 import CustomButton from "../../../components/CustomButton"
 import Label from "../../../components/Label"
-import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator"
 import { useTranslation } from "react-i18next"
 import colors from "../../../styles/colors"
 import padding from "../../../styles/padding"
 import { formatDate, formattedCurrency } from "../../../utils/Helper"
 import { useContext, useEffect, useState } from "react"
-import { AccountServiceContext } from "../../../services/AccountServiceProvider"
+import { AccountServiceContext } from "../../../Providers/Account/AccountServiceProvider"
 import { icon_tick, icon_user } from "../../../assets/images"
+import { useNavigation } from "@react-navigation/native"
 
 type EventDetailProps = {
-  parentProps: HomeFlowCoordinatorProps
   route?: any
-  nav: any
 }
 
 function EventDetail(props: EventDetailProps) {
   const { t } = useTranslation()
+  const navigation = useNavigation<any>()
   const aContext = useContext(AccountServiceContext)
   const [p, setP] = useState<any | undefined>(undefined)
   const { eventData } = props.route.params
@@ -176,7 +175,7 @@ function EventDetail(props: EventDetailProps) {
           
             <CustomButton 
               text={t("detail.pay_dues")}
-              onPress={() => props.nav.eventPayment(String(p ? p.spesa : 0), p ? p.idPartecipante : 0)}/>
+              onPress={() => navigation.navigate("EventPayment", { paymentAmount: String(p ? p.spesa : 0), pID: p ? p.idPartecipante : 0 })}/>
           </View>
         )}
       </View>

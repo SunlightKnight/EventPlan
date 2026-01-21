@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import colors from "../../styles/colors";
 import { HEADER_HEIGHT, slideAnimation } from "../../styles/styles";
 import Home from "./Home/Home";
@@ -13,10 +13,12 @@ import padding from "../../styles/padding";
 import CreateEvent from "./CreateEvent/CreateEvent";
 import { EventDTO } from "../../models/services/EventDTO";
 import { useTranslation } from "react-i18next";
+import { AccountServiceContext } from "../../Providers/Account/AccountServiceProvider";
+import { BackendServiceContext } from "../../Providers/Backend/BackendServiceProvider";
+import { AppContext } from "../../Providers/App/AppProvider";
 
 export type HomeFlowCoordinatorProps = {
-  handleLoader: (l: boolean) => void
-  manageLogout: () => void
+
 }
 
 const Stack = createStackNavigator()
@@ -30,8 +32,12 @@ const Theme = {
 
 function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
   const { t } = useTranslation()
+  const appContext = useContext(AppContext)
+  const accountService = useContext(AccountServiceContext)
+  const backendService = useContext(BackendServiceContext)
+
   const [showLogout, setShowLogout] = useState(true)
-  const navRef = useRef<any>()
+  const navRef = useRef<any>(null)
 
   const screenOptions = {
     title: '',
@@ -69,34 +75,31 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
     ),
     headerRight: () => {
       return showLogout ? (
-        <TouchableOpacity style={{
-          marginRight: padding.half
-        }}
-        onPress={() => { 
-          Alert.alert(
-            t("logout.logout_title"),
-            t("logout.logout_message"),
-            [
-              {
-                text: t("general.ok"),
-                onPress: () => {
-                  props.handleLoader(true); props.manageLogout() 
+        <TouchableOpacity 
+          style={{marginRight: padding.half, marginTop: Platform.OS === "ios" ? padding.full : HEADER_HEIGHT-40, alignItems: "flex-end"}}
+          onPress={() => { 
+            Alert.alert(
+              t("logout.logout_title"),
+              t("logout.logout_message"),
+              [
+                {
+                  text: t("general.ok"),
+                  onPress: async () => {
+                    manageLogout()
+                    // appContext?.app.handleLoader(false)
+                  },
                 },
-              },
-              {
-                text: t("general.cancel"),
-                onPress: () => {},
-              }
-            ]
-          )
-        }}>
+                {
+                  text: t("general.cancel"),
+                  onPress: () => {},
+                }
+              ]
+            )
+          }}>
           <Image 
             source={icon_logout} 
             resizeMode="contain" 
-            style={{
-              width: 30, 
-              height: 30,  
-              tintColor: colors.white}} />
+            style={{width: 30, height: 30, tintColor: colors.white}} />
         </TouchableOpacity>
       ) : null
     },
@@ -106,55 +109,26 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
     console.log("*** HomeFlowCoordinator - RENDERED")
   }, [])
 
-  const navigateToCreateEvent = () => {
-    if (navRef) {
-      setShowLogout(false)
-      navRef.current.navigate("CreateEvent")
-    }
-  }
+  // Handles logout.
+  // Deletes account from AsyncStorage and token from Keychain.
+  const manageLogout = async () => {
+    appContext?.app.handleLoader(true)
+    let accountRemoved = await accountService?.aService.removeAccount()
+    let tokenRemoved = await backendService?.removeAuthToken()
 
-  const navigateToEventDetail = (eventData: EventDTO) => {
-    if (navRef) {
-      setShowLogout(false)
-      // Passing parameters to EventDetail screen.
-      // For more info: https://reactnavigation.org/docs/params
-      navRef.current.navigate("EventDetail", { eventData: eventData })
-    }
-  }
-
-  const navigateToEventPayment = (paymentAmount: string, pID: number) => {
-    if (navRef) {
-      // Passing parameters to EventPayment screen.
-      // For more info: https://reactnavigation.org/docs/params
-      navRef.current.navigate("EventPayment", { paymentAmount: paymentAmount, pID: pID })
+    if (tokenRemoved && accountRemoved) {
+      appContext?.app.handleLoader(false)
+    } else {
+      console.log("*** AppFlowCoordinator - A problem ocurred while logging user out")
+      appContext?.app.handleLoader(false)
     }
   }
 
   const pages: {[key: string]: any} = {
-    Home: {
-      component: Home,
-      parentProps: props,
-      nav: { 
-        "eventDetail": navigateToEventDetail, 
-        "createEvent": navigateToCreateEvent, 
-        "showLogout": setShowLogout 
-      }
-    },
-    CreateEvent: {
-      component: CreateEvent,
-      parentProps: props,
-      nav: { "showLogout": setShowLogout }
-    },
-    EventDetail: {
-      component: EventDetail,
-      parentProps: props,
-      nav: { "eventPayment": navigateToEventPayment }
-    },
-    EventPayment: {
-      component: EventPayment,
-      parentProps: props,
-      nav: { }
-    }
+    Home: { component: Home, parentProps: { logout: manageLogout } },
+    CreateEvent: { component: CreateEvent, parentProps: { logout: manageLogout } },
+    EventDetail: { component: EventDetail },
+    EventPayment: { component: EventPayment }
   };
 
   return ( 
@@ -166,6 +140,8 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
           console.log(`*** OnBoarding:onStateChange: navigationState=${JSON.stringify(navigationState)}`)
           if (navigationState?.routes.length === 1 && navigationState.routes[0].name === "Home") {
             setShowLogout(true)
+          } else {
+            setShowLogout(false)
           }
         }}>
         
@@ -186,7 +162,6 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
                         <PageComponent
                           {...props}
                           parentProps={page.parentProps}
-                          nav={page.nav ? page.nav : undefined}
                         />
                       </SafeAreaProvider>
                     );

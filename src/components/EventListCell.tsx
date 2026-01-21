@@ -69,6 +69,7 @@ function EventListCell(props: EventListCellProps) {
         marginHorizontal: padding.full,
         borderRadius: padding.half
       }}>
+      
       <LinearGradient 
         start={{x: 0.90, y: 1.0}} 
         end={{x: 0.0, y: 0.25}}
@@ -79,74 +80,78 @@ function EventListCell(props: EventListCellProps) {
           colors.white, 
           colors.white]} 
         style={{
-          padding: 10, 
           borderRadius: padding.half, 
           borderWidth: 1,
           borderColor: colors.blackOpacity25
         }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between"
-          }}>
-          <Label
-            weight="bold"
+        <View style={{padding: 10}}>
+          <View
             style={{
-              paddingRight: 5,
+              // padding: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              // marginHorizontal: 5,
             }}>
-              {props.event.nome}
-          </Label>
-          <View style={{flexDirection: "row", alignItems: "center"}}>
-            <Image 
-              source={icon_user} 
+            <Label
+              weight="bold"
               style={{
-                width: 20, 
-                height: 20, 
-                marginRight: padding.quarter, 
-                tintColor: colors.blackOpacity40}}/> 
-            <Label>{props.event.partecipantiList.length}</Label>
-          </View>      
-        </View>
-        <View style={{flexDirection: "row", justifyContent: "space-between", marginTop: padding.quarter}}>
-          <Label dimension="small">{formatDate(props.event.dataEv, createEventAPIDateTime, displayDateTime)}</Label>
-          <Label dimension="small">{formattedCurrency(String(props.event.spesa), false, true, 2)}</Label>
-        </View>
-        {isUserPresent() ? (
-          hasUserAlreadyPaid() ? (
-            <Label 
-              dimension="small" 
-              weight="semibold" 
-              color={colors.deepGreen} 
-              style={{marginTop: padding.half}}>
-                {t("home.already_paid")}
+                paddingRight: 5,
+              }}>
+                {props.event.nome}
             </Label>
-          ) : (
-            eventPaid() && props.currentUsername == props.event.creatore.username ? (
+            <View style={{flexDirection: "row", alignItems: "center"}}>
+              <Image 
+                source={icon_user} 
+                style={{
+                  width: 20, 
+                  height: 20, 
+                  marginRight: padding.quarter, 
+                  tintColor: colors.blackOpacity40}}/> 
+              <Label>{props.event.partecipantiList.length}</Label>
+            </View>      
+          </View>
+          <View style={{flexDirection: "row", justifyContent: "space-between", marginTop: padding.quarter}}>
+            <Label dimension="small">{formatDate(props.event.dataEv, createEventAPIDateTime, displayDateTime)}</Label>
+            <Label dimension="small">{formattedCurrency(String(props.event.spesa), false, true, 2)}</Label>
+          </View>
+          {isUserPresent() ? (
+            hasUserAlreadyPaid() ? (
               <Label 
                 dimension="small" 
                 weight="semibold" 
                 color={colors.deepGreen} 
                 style={{marginTop: padding.half}}>
-                  {t("home.event_paid")}
+                  {t("home.already_paid")}
               </Label>
             ) : (
-              <Label dimension="small" style={{marginTop: padding.half}}>
-                {props.currentUsername == props.event.creatore.username ?
-                  t("home.receive", {AMOUNT: formattedCurrency(String(getAmount()), false, true, 2)}):
-                  t("payment.pay", {AMOUNT: formattedCurrency(String(getAmount()), false, true, 2)})}
-              </Label>
+              eventPaid() && props.currentUsername == props.event.creatore.username ? (
+                <Label 
+                  dimension="small" 
+                  weight="semibold" 
+                  color={colors.deepGreen} 
+                  style={{marginTop: padding.half}}>
+                    {t("home.event_paid")}
+                </Label>
+              ) : (
+                <Label dimension="small" style={{marginTop: padding.half}}>
+                  {props.currentUsername == props.event.creatore.username ?
+                    t("home.receive", {AMOUNT: formattedCurrency(String(getAmount()), false, true, 2)}):
+                    t("payment.pay", {AMOUNT: formattedCurrency(String(getAmount()), false, true, 2)})}
+                </Label>
+              )
             )
-          )
-        ) : (
-          <Label 
-            dimension="small" 
-            weight="semibold" 
-            color={colors.deepRed} 
-            style={{marginTop: padding.half}}>
-              {t("home.not_partecipating")}
-          </Label>
-        )}
+          ) : (
+            <Label 
+              dimension="small" 
+              weight="semibold" 
+              color={colors.deepRed} 
+              style={{marginTop: padding.half}}>
+                {t("home.not_partecipating")}
+            </Label>
+          )}
+        </View>
       </LinearGradient>
+      
     </TouchableOpacity>
   )
 }

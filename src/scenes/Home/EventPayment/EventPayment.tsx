@@ -1,8 +1,7 @@
 import { useTranslation } from "react-i18next"
 import CustomButton from "../../../components/CustomButton"
 import Label from "../../../components/Label"
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { HomeFlowCoordinatorProps } from "../HomeFlowCoordinator"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import { useContext, useState } from "react"
 import commonStyles from "../../../styles/styles"
 import padding from "../../../styles/padding"
@@ -10,16 +9,18 @@ import colors from "../../../styles/colors"
 import { formatCardExpiry, formattedCurrency } from "../../../utils/Helper"
 import TextField from "../../../components/TextField"
 import { Alert, View } from "react-native"
-import { BackendServiceContext } from "../../../services/BackendServiceProvider"
+import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider"
+import { AppContext } from "../../../Providers/App/AppProvider"
+import { StackActions, useNavigation } from "@react-navigation/native"
 
 type EventPaymentProps = {
-  parentProps: HomeFlowCoordinatorProps
-  navigation: any
   route?: any
 }
 
 function EventPayment(props: EventPaymentProps) {
   const { t } = useTranslation()
+  const navigation = useNavigation<any>()
+  const appContext = useContext(AppContext)
   const bsContext = useContext(BackendServiceContext)
   const [recipientIban, setRecipientIban] = useState("IT60X0542811101000000123456")
   const [cardOwner, setCardOwner] = useState("")
@@ -35,7 +36,7 @@ function EventPayment(props: EventPaymentProps) {
   }
 
   return (
-    <KeyboardAwareScrollView style={commonStyles.scrollingContent} extraScrollHeight={padding.double}>
+    <KeyboardAwareScrollView style={commonStyles.scrollingContent} bottomOffset={padding.double}>
       <Label 
         dimension="big" 
         weight="semibold" 
@@ -79,7 +80,7 @@ function EventPayment(props: EventPaymentProps) {
         text={t("payment.pay", {AMOUNT: formattedCurrency(String(props.route.params.paymentAmount), false, true, 2)})} 
         onPress={() => {
           if (validate()) {
-            props.parentProps.handleLoader(true)
+            appContext?.app.handleLoader(true)
             bsContext?.beService.payEvent(props.route.params.pID).then(() => {
               Alert.alert(
                 t("payment.payment"), 
@@ -88,14 +89,14 @@ function EventPayment(props: EventPaymentProps) {
                   {
                     text: t("general.ok").toUpperCase(),
                     onPress: () => {
-                      props.navigation.popToTop()
+                      navigation.dispatch(StackActions.popToTop())
                     },
                   }
                 ])
             }).catch((paymentError) => {
               Alert.alert(t("general.error"), paymentError.message)
             }).finally(() => {
-              props.parentProps.handleLoader(false)
+              appContext?.app.handleLoader(false)
             })
           }
         }}

@@ -8,22 +8,26 @@ import TextField from "../../../components/TextField";
 import { icon_key, icon_mail } from "../../../assets/images";
 import { useContext, useState } from "react";
 import padding from "../../../styles/padding";
-import { BackendServiceContext } from "../../../services/BackendServiceProvider";
+import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider";
 import LoginRequestDTO from "../../../models/services/LoginRequestDTO";
-import { AccountServiceContext } from "../../../services/AccountServiceProvider";
+import { AccountServiceContext } from "../../../Providers/Account/AccountServiceProvider";
+import { useNavigation } from "@react-navigation/native";
+import { AppContext } from "../../../Providers/App/AppProvider";
 
 type LoginProps = {
-  parentProps: OnboardingFlowCoordinatorProps
-  navigation: any
-  nav: {[key: string]: any}
+
 }
 
 function Login(props: LoginProps) {
   // useTranslation hook, for handling translations.
   // For more info: https://react.i18next.com/latest/usetranslation-hook
   const { t } = useTranslation()
+  const navigation = useNavigation<any>()
+
+  const appContext = useContext(AppContext)
   const aContext = useContext(AccountServiceContext)
   const bsContext = useContext(BackendServiceContext)
+
   const [userName, setUserName] = useState("")
   const [userPassword, setUserPassword] = useState("")
 
@@ -70,7 +74,7 @@ function Login(props: LoginProps) {
         type="primary" 
         onPress={() => {
           if (validate()) {
-            props.parentProps.handleLoader(true)
+            appContext?.app.handleLoader(true)
             const loginRequest: LoginRequestDTO = { username: userName, password: userPassword }
             bsContext?.beService.login(loginRequest).then((loginResponse) => {
               aContext?.aService.setAccount(userName)
@@ -79,15 +83,15 @@ function Login(props: LoginProps) {
             }).catch((loginError) => {
               Alert.alert(loginError.message)
             }).finally(() => {
-              props.parentProps.handleLoader(false)
+              appContext?.app.handleLoader(false)
             })
           }
         }} />
-      {/* <CustomButton 
+      <CustomButton 
         text={t("login.register")} 
         type="transparent" 
-        onPress={props.nav.registration}
-        style={{marginTop: -padding.sixth}} /> */}
+        onPress={() => { navigation.navigate("Registration") }}
+        style={{marginTop: -padding.sixth}} />
     </View>
   )
 }

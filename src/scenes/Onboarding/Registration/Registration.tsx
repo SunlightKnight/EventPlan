@@ -1,8 +1,7 @@
-import { Alert, View } from "react-native";
+import { Alert } from "react-native";
 import Label from "../../../components/Label";
 import colors from "../../../styles/colors";
-import { OnboardingFlowCoordinatorProps } from "../OnboardingFlowCoordinator";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller'
 import commonStyles from "../../../styles/styles";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -11,8 +10,7 @@ import TextField from "../../../components/TextField";
 import CustomButton from "../../../components/CustomButton";
 
 type RegistrationProps = {
-  parentProps: OnboardingFlowCoordinatorProps
-  navigation: any
+  
 }
 
 function Registration(props: RegistrationProps) {
@@ -31,7 +29,7 @@ function Registration(props: RegistrationProps) {
   }
 
   return (
-    <KeyboardAwareScrollView style={commonStyles.scrollingContent} extraScrollHeight={padding.double}>
+    <KeyboardAwareScrollView style={commonStyles.scrollingContent} bottomOffset={padding.double}>
       <Label 
         dimension="big" 
         weight="semibold" 

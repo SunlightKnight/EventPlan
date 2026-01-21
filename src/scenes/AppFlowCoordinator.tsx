@@ -8,15 +8,14 @@ import * as Keychain from "react-native-keychain"
 
 import OnboardingFlowCoordinator from "./Onboarding/OnboardingFlowCoordinator"
 import HomeFlowCoordinator from './Home/HomeFlowCoordinator';
-import { AccountServiceContext } from '../services/AccountServiceProvider';
-import { AuthToken, BackendServiceContext } from '../services/BackendServiceProvider';
+import { AccountServiceContext } from '../Providers/Account/AccountServiceProvider';
+import { AuthToken, BackendServiceContext } from '../Providers/Backend/BackendServiceProvider';
 
-import Loader from "./../components/Loader"
 import styles from '../styles/styles';
+import { AppContext } from '../Providers/App/AppProvider';
 
 export default function AppFlowCoordinator() {
-  // State variable that manages the Loader's (see line 98) operation.
-  const [loading, setLoading] = useState(true)
+  const appContext = useContext(AppContext)
   const accountService = useContext(AccountServiceContext)
   const backendService = useContext(BackendServiceContext)
 
@@ -33,9 +32,9 @@ export default function AppFlowCoordinator() {
 
     if (tokenObject && backendService) {
       backendService.setAuthToken(tokenObject)
-      setLoading(false)
+      appContext?.app.handleLoader(false)
     } else {
-      setLoading(false)
+      appContext?.app.handleLoader(false)
     }
 
     console.log("*** AppFlowCoordinator - LOADED")
@@ -53,50 +52,20 @@ export default function AppFlowCoordinator() {
     }
   }
 
-  // Handles Loader by using "setLoader" function (see line 19).
-  const handleLoader = (loading: boolean) => {
-    setLoading(loading)
-    if (loading) {
-      BackHandler.addEventListener('hardwareBackPress', handleAndroidBackButtonPress);
-    } else {
-      BackHandler.removeEventListener('hardwareBackPress', handleAndroidBackButtonPress);
-    }
-  }
-
-  // Disables Android back button while Loader is active.
-  const handleAndroidBackButtonPress = () => {
-    return true
-  }
-
-  // Handles logout.
-  // Deletes account from AsyncStorage and token from Keychain.
-  const manageLogout = async () => {
-    let accountRemoved = await accountService?.aService.removeAccount()
-    let tokenRemoved = await backendService?.removeAuthToken()
-
-    if (tokenRemoved && accountRemoved) {
-      setLoading(false)
-    } else {
-      console.log("*** AppFlowCoordinator - A problem ocurred while logging user out")
-      setLoading(false)
-    }
-  }
-
   // If token is present (hence, the user is logged in) HomeFlowCoordinator is rendered.
   // Otherwise, the user will see OnboardingFlowCoordinator and will only be able to login.
   // "handleLoader" and "manageLogout" are passed as props to both coordinators.
   // 
   let children = null
   if (backendService?.hasToken()) {
-    children = <HomeFlowCoordinator handleLoader={handleLoader} manageLogout={manageLogout} />
+    children = <HomeFlowCoordinator/>
   } else {
-    children = <OnboardingFlowCoordinator handleLoader={handleLoader} />
+    children = <OnboardingFlowCoordinator/>
   }
 
   return (
     <View style={styles.container}>
       {children}
-      <Loader loading={loading} />
     </View>
   )
 }
