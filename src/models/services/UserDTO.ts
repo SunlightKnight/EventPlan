@@ -1,5 +1,5 @@
-export interface UserDTO {
-  username: string
+export class UserDTO {
+  username!: string
   nome?: string
   cognome?: string
 }

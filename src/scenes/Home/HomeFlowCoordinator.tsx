@@ -11,7 +11,6 @@ import EventPayment from "./EventPayment/EventPayment";
 import { icon_back, icon_logout } from "../../assets/images";
 import padding from "../../styles/padding";
 import CreateEvent from "./CreateEvent/CreateEvent";
-import { EventDTO } from "../../models/services/EventDTO";
 import { useTranslation } from "react-i18next";
 import { AccountServiceContext } from "../../Providers/Account/AccountServiceProvider";
 import { BackendServiceContext } from "../../Providers/Backend/BackendServiceProvider";
@@ -86,7 +85,6 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
                   text: t("general.ok"),
                   onPress: async () => {
                     manageLogout()
-                    // appContext?.app.handleLoader(false)
                   },
                 },
                 {
