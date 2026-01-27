@@ -42,7 +42,7 @@ function Login(props: LoginProps) {
     <View style={{flex: 1, justifyContent: "flex-start", marginHorizontal: padding.full}}>
       <View style={{flexDirection: "row", justifyContent: "center", marginBottom: padding.double}}>
         <Label dimension="veryBig" weight="bold" color={colors.primary}>EVENT</Label>
-        <Label dimension="veryBig" weight="bold" color={colors.secondary} style={{marginLeft: padding.quarter}}>PLAN</Label>
+        <Label dimension="veryBig" weight="bold" color={colors.secondaryDark} style={{marginLeft: padding.quarter}}>PLAN</Label>
       </View>
         
       <Label 

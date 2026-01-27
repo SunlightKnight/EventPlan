@@ -5,9 +5,6 @@ export default {
   white: "#FFFFFF",
   paleGrey: "#F7F7F7",
 
-  primary: "#578CF7",
-  primaryDark: "#305AB0",
-  secondary: "#F5AB51",
   lightGrey: "#f0EDED",
   disabledGrey: "#B5B5B5",
   deepRed: "#BD0000",
@@ -16,4 +13,12 @@ export default {
   lightGreen: "#3FBA48",
   gold: "#FFBF00",
   deepGreenOpacity25: "#0DA81840",
+
+  background: "#F7F4F3",
+  primary: "#B9272C",
+  primaryDark: "#6f171a",
+  secondary: "#B6CEF6",
+  secondaryDark: "#8aa5d4",
+  mainText: "#383A42",
+  highlightText: "#4B75A8"
 }

@@ -1,4 +1,4 @@
-import { Alert, View } from "react-native"
+import { Alert, StyleSheet, View } from "react-native"
 import Label from "../../../components/Label"
 import padding from "../../../styles/padding"
 import colors from "../../../styles/colors"
@@ -7,6 +7,9 @@ import { useContext, useEffect, useState } from "react"
 import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider"
 import { useNavigation } from "@react-navigation/native"
 import { AppContext } from "../../../Providers/App/AppProvider"
+import EventList from "../../../components/EventList"
+import { EventsListResponseDTO } from "../../../models/services/EventsListResponseDTO"
+import { ScrollView } from "react-native-gesture-handler"
 
 type HomeProps = {
   parentProps: any
@@ -17,6 +20,8 @@ function Home(props: HomeProps) {
   const navigation = useNavigation<any>()
   const appContext = useContext(AppContext)
   const backendService = useContext(BackendServiceContext)
+
+  const [eventListData, setEventListData] = useState<EventsListResponseDTO>()
 
   useEffect(() => {
     const listener = function() {
@@ -30,7 +35,7 @@ function Home(props: HomeProps) {
   const fetchEventList = () => {
     appContext?.app.handleLoader(true)
     backendService?.beService.getEventList().then((eventListResponse) => {
-      
+      setEventListData(eventListResponse)
     }).catch((eventListError: any) => {
       // Handling session expired error.
       // If even refreshToken returns 401, user must be logged out.
@@ -53,16 +58,16 @@ function Home(props: HomeProps) {
   }
 
   return (
-    <View style={{flex: 1, marginTop: padding.full}}>
+    <ScrollView style={{flex: 1, marginTop: padding.full}}>
       <Label 
-        dimension="big" 
+        dimension="veryBig" 
         weight="semibold" 
         color={colors.primaryDark} 
         style={{marginBottom: padding.half, marginLeft: padding.full}}>
           {t("home.events")}
       </Label>
-      
-    </View>
+      <EventList events={eventListData}/>
+    </ScrollView>
   )
 }
 
