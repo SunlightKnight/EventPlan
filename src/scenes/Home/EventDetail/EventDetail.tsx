@@ -10,6 +10,9 @@ import { AutoSizeText, ResizeTextMode } from "react-native-auto-size-text"
 import DropShadow from "react-native-drop-shadow"
 import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_IMG_SRC_TYPES, useState } from "react"
 import { PartecipantDTO } from "../../../models/services/PartecipantDTO"
+import Modal from "react-native-modal"
+import { CreditCardFormData, CreditCardFormField, CreditCardInput, CreditCardView } from "react-native-credit-card-input"
+import { KeyboardAvoidingView } from "react-native-keyboard-controller"
 
 type EventDetailProps = {
   route?: any
@@ -20,6 +23,9 @@ function EventDetail(props: EventDetailProps) {
   const { event } = props.route?.params
 
   const [participantsOpen, setParticipantsOpen] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [creditCardInfo, setCreditCardInfo] = useState<CreditCardFormData>()
+  const [focusedField, setFocusedField] = useState<CreditCardFormField>()
 
   const getImage = () => {
     let url = icons.undefined
@@ -62,6 +68,24 @@ function EventDetail(props: EventDetailProps) {
 
   return (
     <ScrollView>
+      <Modal
+        isVisible={modalOpen}
+        onBackdropPress={() => { setModalOpen(false) }}>
+        <KeyboardAvoidingView behavior="padding" style={{flex: 1, justifyContent: 'center'}}>
+          <View style={{backgroundColor: colors.background, paddingVertical: 20}}>
+            <CreditCardView
+              focusedField={focusedField}
+              type={creditCardInfo?.values.type}
+              number={creditCardInfo?.values.number}
+              expiry={creditCardInfo?.values.expiry}
+              cvc={creditCardInfo?.values.cvc}
+              style={{ alignSelf: "center" }}
+            />
+            <CreditCardInput onChange={(data) => { setCreditCardInfo(data) }} />
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
       <View style={styles.topContainer}>
         <View style={styles.topRectangle}>
           <View style={styles.iconContainer}>
@@ -99,7 +123,7 @@ function EventDetail(props: EventDetailProps) {
               <Text style={styles.participantsTitle}>
                 {t("detail.participants")}
               </Text>
-              <TouchableOpacity style={styles.participantsButtonHolder} onPress={() => {setParticipantsOpen(!participantsOpen)}}>
+              <TouchableOpacity style={styles.participantsButtonHolder} onPress={() => { setParticipantsOpen(!participantsOpen) }}>
                 <Image source={participantsOpen ? icon_collapse : icon_expand} style={styles.participantsButtonIcon} />
               </TouchableOpacity>
             </View>
@@ -110,7 +134,7 @@ function EventDetail(props: EventDetailProps) {
         </DropShadow>
 
         <DropShadow style={styles.generalShadow}>
-          <TouchableOpacity style={styles.paymentContainer}>
+          <TouchableOpacity style={styles.paymentContainer} onPress={() => { setModalOpen(!modalOpen) }}>
             <Text style={styles.paymentText}>
               {t("payment.proceed_to_payment")}
             </Text>
