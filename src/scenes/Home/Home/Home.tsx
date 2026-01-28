@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, View } from "react-native"
+import { Alert, Image, StyleSheet, TouchableOpacity, View } from "react-native"
 import Label from "../../../components/Label"
 import padding from "../../../styles/padding"
 import colors from "../../../styles/colors"
@@ -10,9 +10,11 @@ import { AppContext } from "../../../Providers/App/AppProvider"
 import EventList from "../../../components/EventList"
 import { EventsListResponseDTO } from "../../../models/services/EventsListResponseDTO"
 import { ScrollView } from "react-native-gesture-handler"
+import {icon_add} from "../../../assets/images/index"
 
 type HomeProps = {
   parentProps: any
+  
 }
 
 function Home(props: HomeProps) {
@@ -59,16 +61,60 @@ function Home(props: HomeProps) {
 
   return (
     <ScrollView style={{flex: 1, marginTop: padding.full}}>
-      <Label 
-        dimension="veryBig" 
-        weight="semibold" 
-        color={colors.primaryDark} 
-        style={{marginBottom: padding.half, marginLeft: padding.full}}>
-          {t("home.events")}
-      </Label>
+      <View style={styles.container}>
+        <Label 
+          dimension="veryBig" 
+          weight="semibold" 
+          flex={5}
+          alignSelf="center"
+          color={colors.primaryDark} 
+          style={{marginBottom: padding.half, marginLeft: padding.full}}>
+            {t("home.events")}
+        </Label>
+        <View style={styles.addEventButtonContainer}>
+          <TouchableOpacity style={styles.addEventButton} onPress={() => {navigation.navigate("CreateEvent") }}>
+            <Image source={icon_add} style={styles.addIcon}/>
+          </TouchableOpacity>
+        </View>
+      </View>
       <EventList events={eventListData}/>
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  labelEvent:{
+
+  },
+  
+  container: {
+    height: '100%',
+      flex: 1,
+      marginRight: '5%',
+      flexDirection: 'row',
+      marginBottom: 10,
+      
+    },
+
+  addEventButtonContainer: {
+    flex:1
+  },
+
+  addIcon: {
+      tintColor: colors.primaryDark,
+      height: '100%',
+      aspectRatio: 1,
+    },
+
+  addEventButton: {
+      height: '100%',
+      aspectRatio: 1,
+      padding: 4,
+      backgroundColor: colors.background,
+      borderColor: colors.primaryDark,
+      borderWidth: 3,
+      borderRadius: '100%'
+    }
+});
 
 export default Home
