@@ -6,11 +6,16 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import commonStyles from "../../../styles/styles";
 import padding from "../../../styles/padding";
 import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider";
-import { Alert } from "react-native";
+import { Alert, Button, TextInput } from "react-native";
 import { UserDTO } from "../../../models/services/UserDTO";
 import CustomButton from "../../../components/CustomButton";
 import { CreateEventRequestDTO } from "../../../models/services/CreateEventRequestDTO";
 import { AppContext } from "../../../Providers/App/AppProvider";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native"
+import React from "react";
+import DateTextField from "../../../components/DateTextField";
+
+
 
 type CreateEventProps = {
   parentProps: any
@@ -29,11 +34,12 @@ function CreateEvent(props: CreateEventProps) {
   const [selectedUsers, setSelectedUsers] = useState<Array<UserDTO>>([]);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [text, onChangeText] = useState<string>('');
 
   const getUserList = () => {
     appContext?.app.handleLoader(true);
     backendService?.beService.getUsersList().then((userListResponse) => {
-      
+
     }).catch((userListError) => {
       if (userListError.status === 401) {
         Alert.alert(t("general.error"), t("errors.unauthorized"), [
@@ -55,12 +61,12 @@ function CreateEvent(props: CreateEventProps) {
   const saveEvent = () => {
     let creator: UserDTO = new UserDTO()
 
-    if(nameEvent && selectedDate && eventTotal && creator && selectedUsers) {
+    if (nameEvent && selectedDate && eventTotal && creator && selectedUsers) {
       appContext?.app.handleLoader(true)
       let createEventRequest: CreateEventRequestDTO = new CreateEventRequestDTO()
-      
+
       backendService?.beService.createEvent(createEventRequest).then((_) => {
-        
+
       }).catch((createEventError) => {
         Alert.alert(t("general.error"), createEventError.message + ": " + createEventError.status)
       }).finally(() => {
@@ -69,29 +75,111 @@ function CreateEvent(props: CreateEventProps) {
     }
   }
 
+
+
   return (
     <KeyboardAwareScrollView
       style={commonStyles.scrollingContent}
-      contentContainerStyle={{paddingBottom: padding.double}}
+      contentContainerStyle={{ paddingBottom: padding.double }}
       bottomOffset={padding.double}>
       <Label
-        dimension="big"
+        dimension="veryBig"
         weight="semibold"
         color={colors.primaryDark}
         style={{ marginBottom: padding.half, marginLeft: padding.quarter }}>
         {t("home.create_event")}
       </Label>
 
-      
+      <View>
+        <View>
+          <Label
+            dimension="normal"
+            weight="semibold"
+            color={colors.mainText}
+            marginLeft={'5%'}
+            style={{ marginLeft: padding.quarter }}>
+            {t("create.name_event")}
+          </Label>
+          <TextInput
+            style={styles.inputName}
+            onChangeText={onChangeText}
+            value={text}
+          />
+        </View>
+        <View style={styles.columnContainer}>
+          <View>
+            <Label
+              dimension="normal"
+              weight="semibold"
+              color={colors.mainText}
+              marginLeft={'5%'}
+              flex={5}
+              style={{}}>
+              {t("create.event_data")}
+            </Label>
+            <Button
+              title="Press me"
+              onPress={() => ''}
+            />
+          </View>
+          <View style={styles.timeContainer}>
+            <Label
+              dimension="normal"
+              weight="semibold"
+              color={colors.mainText}
+              marginLeft={'5%'}
+              flex={5}
+              style={{}}>
+              {t("create.event_time")}
+            </Label>
+            <Button
+              title="Press me"
+              onPress={() => ''}
+            />
+          </View>
+        </View>
+      </View>
 
-      <CustomButton 
+
+      <CustomButton
         text={t("home.create_event")}
-        style={{marginTop: padding.full}}
+        style={{ marginTop: padding.full }}
         onPress={() => {
           saveEvent()
         }} />
     </KeyboardAwareScrollView>
   );
+
 }
+
+const styles = StyleSheet.create({
+  inputName: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    marginLeft: padding.quarter
+  },
+
+  nameContainer: {
+
+  },
+
+  columnContainer: {
+    flexDirection: 'row'
+  },
+
+  DataContainer: {
+    marginLeft:"20%"
+
+  },
+
+  timeContainer: {
+    marginLeft:"20%"
+
+  }
+
+});
+
 
 export default CreateEvent;
