@@ -1,3 +1,3 @@
 export default {
-    undefined: require("./doubleArrow.png")
+    undefined: require("./eventIcon_undefined.png")
 }
