@@ -14,6 +14,7 @@ import { AppContext } from "../../../Providers/App/AppProvider";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native"
 import React from "react";
 import DateTextField from "../../../components/DateTextField";
+import { ScrollView } from "react-native-gesture-handler";
 
 
 
@@ -90,7 +91,7 @@ function CreateEvent(props: CreateEventProps) {
         {t("home.create_event")}
       </Label>
 
-      <View>
+      <ScrollView>
         <View>
           <Label
             dimension="normal"
@@ -117,28 +118,22 @@ function CreateEvent(props: CreateEventProps) {
               style={{}}>
               {t("create.event_data")}
             </Label>
-            <Button
-              title="Press me"
-              onPress={() => ''}
-            />
+            <DateTextField open={datePickerOpen} onConfirm={(date:Date)=>{
+              setSelectedDate(date)
+              setDatePickerOpen(false)
+            }}
+             onCancel={()=>{setDatePickerOpen(false)}}
+             onDeletePress={()=>{setSelectedDate(undefined)}}
+             onDatePickerPress={()=>{setDatePickerOpen(true)}
+            }
+            >
+              
+
+            </DateTextField>
           </View>
-          <View style={styles.timeContainer}>
-            <Label
-              dimension="normal"
-              weight="semibold"
-              color={colors.mainText}
-              marginLeft={'5%'}
-              flex={5}
-              style={{}}>
-              {t("create.event_time")}
-            </Label>
-            <Button
-              title="Press me"
-              onPress={() => ''}
-            />
-          </View>
+         
         </View>
-      </View>
+      </ScrollView>
 
 
       <CustomButton
@@ -166,16 +161,16 @@ const styles = StyleSheet.create({
   },
 
   columnContainer: {
-    flexDirection: 'row'
+    
   },
 
   DataContainer: {
-    marginLeft:"20%"
+    marginLeft: "20%"
 
   },
 
   timeContainer: {
-    marginLeft:"20%"
+    marginLeft: "20%"
 
   }
 
