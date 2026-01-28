@@ -61,6 +61,10 @@
     "card_expiry": "Scadenza",
     "card_cvv": "CVV",
     "pay": "Paga {{AMOUNT}}",
-    "payment_success": "Payment has been successful"
+    "payment_success": "Payment has been successful",
+    "proceed_to_payment": "Procedi al pagamento"
+  },
+  "event_categories": {
+    "undefined": "NON DEFINITO"
   }
 }

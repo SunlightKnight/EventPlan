@@ -61,6 +61,10 @@
     "card_expiry": "Expiry",
     "card_cvv": "CVV",
     "pay": "Pay {{AMOUNT}}",
-    "payment_success": "Payment has been successful"
+    "payment_success": "Payment has been successful",
+    "proceed_to_payment": "Proceed to payment"
+  },
+  "event_categories": {
+    "undefined": "UNDEFINED"
   }
 }

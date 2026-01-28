@@ -19,6 +19,7 @@ export default {
   primaryDark: "#6f171a",
   secondary: "#B6CEF6",
   secondaryDark: "#8aa5d4",
-  mainText: "#383A42",
-  highlightText: "#4B75A8"
+  mainText: "#4b4e58",
+  highlightText: "#4B75A8",
+  paymentGreen: "#97ca96"
 }
