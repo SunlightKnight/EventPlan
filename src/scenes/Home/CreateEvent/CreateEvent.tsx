@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import commonStyles from "../../../styles/styles";
 import padding from "../../../styles/padding";
 import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider";
-import { Alert, Button, Text, TextInput } from "react-native";
+import { Alert, Button, GestureResponderEvent, Text, TextInput } from "react-native";
 import { UserDTO } from "../../../models/services/UserDTO";
 import CustomButton from "../../../components/CustomButton";
 import { CreateEventRequestDTO } from "../../../models/services/CreateEventRequestDTO";
@@ -17,6 +17,7 @@ import DateTextField from "../../../components/DateTextField";
 import { ScrollView } from "react-native-gesture-handler";
 import { icon_collapse, icon_expand } from "../../../assets/images";
 import DropShadow from "react-native-drop-shadow";
+import { AccountServiceContext } from "../../../Providers/Account/AccountServiceProvider";
 
 
 
@@ -24,10 +25,13 @@ type CreateEventProps = {
   parentProps: any
 };
 
+
+
 function CreateEvent(props: CreateEventProps) {
   const { t } = useTranslation();
 
   const appContext = useContext(AppContext)
+  const accountServiceContext = useContext(AccountServiceContext)
   const backendService = useContext(BackendServiceContext);
 
   const [userList, setUserList] = useState<Array<UserDTO>>([]);
@@ -38,7 +42,13 @@ function CreateEvent(props: CreateEventProps) {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [text, onChangeText] = useState<string>('');
-  const [categoryOpen, setCategoryOpen] = useState(false)
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+let category = [
+    ('event_categories.undefined'),
+    ('event_categories.school')
+  ]
 
   const getUserList = () => {
     appContext?.app.handleLoader(true);
@@ -64,13 +74,15 @@ function CreateEvent(props: CreateEventProps) {
 
   const saveEvent = () => {
     let creator: UserDTO = new UserDTO()
+    creator.username = accountServiceContext?.aService.getUserName() ?? ""
 
     if (nameEvent && selectedDate && eventTotal && creator && selectedUsers) {
       appContext?.app.handleLoader(true)
       let createEventRequest: CreateEventRequestDTO = new CreateEventRequestDTO()
-
+      createEventRequest.nome
+      //assegna a Create event request
       backendService?.beService.createEvent(createEventRequest).then((_) => {
-
+        //torna alla pag principale
       }).catch((createEventError) => {
         Alert.alert(t("general.error"), createEventError.message + ": " + createEventError.status)
       }).finally(() => {
@@ -80,10 +92,7 @@ function CreateEvent(props: CreateEventProps) {
   }
 
 
-  let category = [
-    'undefined',
-    'school'
-  ]
+  
 
   const createCategoryEntries = () => {
     if (category.length == undefined) {
@@ -93,23 +102,23 @@ function CreateEvent(props: CreateEventProps) {
     }
 
     let cells = new Array()
-    let i: number = 0
 
-    for (i = 0; i < (category.length); i++) {
-
-      cells[i] = <View style={styles.categoryEntry}>
-        <TouchableOpacity>
+    for (let i = 0; i < (category.length); i++) {
+      let view = (
+      <View style={styles.categoryEntry}>
+        <TouchableOpacity  onPress={() => {setSelectedCategory(category[i]); setCategoryOpen(false)}}>
           <Text>
-            {t('event_categories.' + category[i])}
+            {t('' + category[i])}
           </Text>
         </TouchableOpacity>
-      </View>
+      </View>)
+      cells.push(view)
     }
 
     return cells
   }
 
-  const categoryCells = createCategoryEntries();
+  //const categoryCells = createCategoryEntries();
 
   return (
     <KeyboardAwareScrollView
@@ -166,7 +175,7 @@ function CreateEvent(props: CreateEventProps) {
         <View style={styles.categoryContainer}>
           <View style={styles.categoryHeader}>
             <Text style={styles.categoryTitle}>
-              {t("detail.participants")}
+              {t(selectedCategory)}
             </Text>
             <TouchableOpacity style={styles.categoryButtonHolder} onPress={() => { setCategoryOpen(!categoryOpen) }}>
               <Image source={categoryOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
@@ -174,7 +183,7 @@ function CreateEvent(props: CreateEventProps) {
             </TouchableOpacity>
           </View>
           {categoryOpen ? <View style={styles.categoryMainView}>
-            {categoryCells}
+            {createCategoryEntries()}
           </View> : null}
         </View>
       </DropShadow>
@@ -264,3 +273,7 @@ const styles = StyleSheet.create({
 
 
 export default CreateEvent;
+function setCount(arg0: (prevCount: any) => any) {
+  throw new Error("Function not implemented.");
+}
+
