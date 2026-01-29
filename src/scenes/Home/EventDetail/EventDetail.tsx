@@ -1,18 +1,21 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Image, ScrollView, StyleSheet, Text, Touchable, TouchableOpacity, View } from "react-native"
 import Label from "../../../components/Label"
 import { useTranslation } from "react-i18next"
 import colors from "../../../styles/colors"
 import padding from "../../../styles/padding"
-import { useRoute } from "@react-navigation/native"
+import { StackActions, useNavigation, useRoute } from "@react-navigation/native"
 import icons from "../../../assets/images/eventIcons"
 import { icon_expand, icon_collapse } from "../../../assets/images/index"
 import { AutoSizeText, ResizeTextMode } from "react-native-auto-size-text"
 import DropShadow from "react-native-drop-shadow"
-import { DO_NOT_USE_OR_YOU_WILL_BE_FIRED_EXPERIMENTAL_IMG_SRC_TYPES, useState } from "react"
 import { PartecipantDTO } from "../../../models/services/PartecipantDTO"
 import Modal from "react-native-modal"
 import { CreditCardFormData, CreditCardFormField, CreditCardInput, CreditCardView } from "react-native-credit-card-input"
 import { KeyboardAvoidingView } from "react-native-keyboard-controller"
+import { useContext, useState } from "react"
+import { AccountServiceContext } from "../../../Providers/Account/AccountServiceProvider"
+import { EventDTO } from "../../../models/services/EventDTO"
+import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider"
 
 type EventDetailProps = {
   route?: any
@@ -20,6 +23,9 @@ type EventDetailProps = {
 
 function EventDetail(props: EventDetailProps) {
   const { t } = useTranslation()
+  const navigation = useNavigation<any>()
+  const accountContext = useContext(AccountServiceContext)
+  const backendService = useContext(BackendServiceContext)
   const { event } = props.route?.params
 
   const [participantsOpen, setParticipantsOpen] = useState(false)
@@ -31,6 +37,49 @@ function EventDetail(props: EventDetailProps) {
     let url = icons.undefined
 
     return url
+  }
+
+  const isCurrentUserInParticipantsList = (event: EventDTO) => {
+    let participantsList: Array<PartecipantDTO> = event.partecipantiList
+    let i: number = 0
+
+    for (i = 0; i < participantsList.length; i++) {
+      if (!(participantsList[i].username == accountContext?.aService.getUserName())) {
+        continue
+      }
+
+      console.log(participantsList[i].idPartecipante, i)
+
+      return [participantsList[i].idPartecipante, i]
+    }
+
+    return [-100, -100]
+  }
+
+  const isEventPaid = (event: EventDTO) => {
+    let arrayIndex = isCurrentUserInParticipantsList(event)[1]
+
+    if (arrayIndex == -100) {
+      return true
+    }
+
+    if (event.partecipantiList[arrayIndex].dataPagamento) {
+      return true
+    }
+
+    return false
+  }
+
+  const payEvent = (event: EventDTO) => {
+    let pID = isCurrentUserInParticipantsList(event)[0]
+
+    console.log(pID)
+
+    backendService?.beService.payEvent(pID).then((code) => {
+      if (code.status == 200) {
+        navigation.dispatch(StackActions).pop(1)
+      }
+    })
   }
 
   const createParticipantEntries = (participants: Array<PartecipantDTO>) => {
@@ -46,7 +95,7 @@ function EventDetail(props: EventDetailProps) {
     for (i = 0; i < (participants.length); i++) {
       cells[participants[i].idPartecipante] = <View style={styles.participantsEntry}>
         <Text style={styles.participantsEntryName}>
-          {(participants[i].cognome ? participants[i].cognome : 'Doe') + " " + (participants[i].nome ? participants[i].nome : 'John')}
+          {(participants[i].username == accountContext?.aService.getUserName() ? '> ' : '') + (participants[i].cognome ? participants[i].cognome : 'Doe') + " " + (participants[i].nome ? participants[i].nome : 'John')}
         </Text>
 
         <Text style={styles.participantsEntryEntry}>
@@ -64,24 +113,40 @@ function EventDetail(props: EventDetailProps) {
     return cells
   }
 
+  const isUserPresent = isCurrentUserInParticipantsList(event)
+  const eventPaid = isEventPaid(event)
   const participantCells = createParticipantEntries(event.partecipantiList)
 
   return (
     <ScrollView>
       <Modal
         isVisible={modalOpen}
-        onBackdropPress={() => { setModalOpen(false) }}>
-        <KeyboardAvoidingView behavior="padding" style={{flex: 1, justifyContent: 'center'}}>
-          <View style={{backgroundColor: colors.background, paddingVertical: 20}}>
-            <CreditCardView
-              focusedField={focusedField}
-              type={creditCardInfo?.values.type}
-              number={creditCardInfo?.values.number}
-              expiry={creditCardInfo?.values.expiry}
-              cvc={creditCardInfo?.values.cvc}
-              style={{ alignSelf: "center" }}
-            />
+        onBackButtonPress={() => { setModalOpen(false) }}>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1, justifyContent: 'center' }}>
+          <View style={{ backgroundColor: colors.background, paddingVertical: 20 }}>
+            <DropShadow style={styles.strongerShadow}>
+              <CreditCardView
+                focusedField={focusedField}
+                type={creditCardInfo?.values.type}
+                number={creditCardInfo?.values.number}
+                expiry={creditCardInfo?.values.expiry}
+                cvc={creditCardInfo?.values.cvc}
+                style={{ alignSelf: "center" }}
+              />
+            </DropShadow>
             <CreditCardInput onChange={(data) => { setCreditCardInfo(data) }} />
+            <DropShadow style={styles.generalShadow}>
+              {creditCardInfo?.valid ?
+                <TouchableOpacity style={styles.paymentConfirmContainer} onPress={() => { payEvent(event) }}>
+                  <Text style={styles.paymentText}>
+                    {t("payment.confirm_payment")}
+                  </Text>
+                </TouchableOpacity> : <View style={styles.paymentConfirmContainerDisabled}>
+                  <Text style={styles.paymentText}>
+                    {t("payment.invalid_card")}
+                  </Text>
+                </View>}
+            </DropShadow>
           </View>
         </KeyboardAvoidingView>
       </Modal>
@@ -134,11 +199,15 @@ function EventDetail(props: EventDetailProps) {
         </DropShadow>
 
         <DropShadow style={styles.generalShadow}>
-          <TouchableOpacity style={styles.paymentContainer} onPress={() => { setModalOpen(!modalOpen) }}>
+          {!eventPaid ? <TouchableOpacity style={styles.paymentContainer} onPress={() => { setModalOpen(!modalOpen) }}>
             <Text style={styles.paymentText}>
               {t("payment.proceed_to_payment")}
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> : <View style={styles.paymentContainerDisabled}>
+            <Text style={styles.paymentText}>
+              {t("payment.already_paid")}
+            </Text>
+          </View>}
         </DropShadow>
       </View>
     </ScrollView>
@@ -153,6 +222,15 @@ const styles = StyleSheet.create({
       height: 0,
     },
     shadowOpacity: .3,
+    shadowRadius: 6,
+  },
+  strongerShadow: {
+    shadowColor: colors.mainText,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 1,
     shadowRadius: 6,
   },
   spacer: {
@@ -266,8 +344,29 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     backgroundColor: colors.paymentGreen,
   },
+  paymentConfirmContainer: {
+    alignItems: 'center',
+
+    marginHorizontal: 12,
+    marginTop: 6,
+    padding: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    backgroundColor: colors.paymentGreen,
+  },
+  paymentConfirmContainerDisabled: {
+    alignItems: 'center',
+
+    marginHorizontal: 12,
+    marginTop: 6,
+    padding: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    backgroundColor: colors.disabledGrey,
+  },
   paymentContainerDisabled: {
     flex: 1,
+    alignItems: 'center',
 
     marginHorizontal: 12,
     marginVertical: 6,

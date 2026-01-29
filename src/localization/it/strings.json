@@ -63,7 +63,9 @@
     "card_cvv": "CVV",
     "pay": "Paga {{AMOUNT}}",
     "payment_success": "Payment has been successful",
-    "proceed_to_payment": "Procedi al pagamento"
+    "proceed_to_payment": "Procedi al pagamento",
+    "confirm_payment": "Conferma pagamento",
+    "already_paid": "Pagamento già effettuato"
   },
   "event_categories": {
     "undefined": "NON DEFINITO"
