@@ -91,50 +91,42 @@ function CreateEvent(props: CreateEventProps) {
         {t("home.create_event")}
       </Label>
 
-      <ScrollView>
-        <View>
-          <Label
-            dimension="normal"
-            weight="semibold"
-            color={colors.mainText}
-            marginLeft={'5%'}
-            style={{ marginLeft: padding.quarter }}>
-            {t("create.name_event")}
-          </Label>
-          <TextInput
-            style={styles.inputName}
-            onChangeText={onChangeText}
-            value={text}
-          />
-        </View>
-        <View style={styles.columnContainer}>
-          <View>
-            <Label
-              dimension="normal"
-              weight="semibold"
-              color={colors.mainText}
-              marginLeft={'5%'}
-              flex={5}
-              style={{}}>
-              {t("create.event_data")}
-            </Label>
-            <DateTextField open={datePickerOpen} onConfirm={(date:Date)=>{
-              setSelectedDate(date)
-              setDatePickerOpen(false)
-            }}
-             onCancel={()=>{setDatePickerOpen(false)}}
-             onDeletePress={()=>{setSelectedDate(undefined)}}
-             onDatePickerPress={()=>{setDatePickerOpen(true)}
-            }
-            >
-              
+      <Label
+        dimension="normal"
+        weight="semibold"
+        color={colors.mainText}
+        marginLeft={'5%'}
+        style={{ marginLeft: padding.quarter }}>
+        {t("create.name_event")}
+      </Label>
+      <TextInput
+        style={styles.inputName}
+        onChangeText={onChangeText}
+        value={text}
+      />
 
-            </DateTextField>
-          </View>
-         
-        </View>
-      </ScrollView>
-
+      {/* <Label
+        dimension="normal"
+        weight="semibold"
+        color={colors.mainText}
+        marginLeft={'5%'}
+        flex={5}
+        style={{}}>
+        {t("create.event_data")}
+      </Label> */}
+      <DateTextField 
+      fieldTitle="uyghbfneaus"
+        open={datePickerOpen} 
+        selectedDate={selectedDate}
+        mode={"datetime"}
+        onConfirm={(date:Date)=>{
+          setSelectedDate(date)
+          setDatePickerOpen(false)
+        }}
+        onCancel={()=>{setDatePickerOpen(false)}}
+        onDeletePress={()=>{setSelectedDate(undefined)}}
+        onDatePickerPress={()=>{setDatePickerOpen(true)}
+      } />         
 
       <CustomButton
         text={t("home.create_event")}
