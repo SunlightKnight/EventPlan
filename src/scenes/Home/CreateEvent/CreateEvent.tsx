@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import commonStyles from "../../../styles/styles";
 import padding from "../../../styles/padding";
 import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider";
-import { Alert, Button, TextInput } from "react-native";
+import { Alert, Button, Text, TextInput } from "react-native";
 import { UserDTO } from "../../../models/services/UserDTO";
 import CustomButton from "../../../components/CustomButton";
 import { CreateEventRequestDTO } from "../../../models/services/CreateEventRequestDTO";
@@ -15,6 +15,8 @@ import { Image, StyleSheet, TouchableOpacity, View } from "react-native"
 import React from "react";
 import DateTextField from "../../../components/DateTextField";
 import { ScrollView } from "react-native-gesture-handler";
+import { icon_collapse, icon_expand } from "../../../assets/images";
+import DropShadow from "react-native-drop-shadow";
 
 
 
@@ -36,6 +38,7 @@ function CreateEvent(props: CreateEventProps) {
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [text, onChangeText] = useState<string>('');
+  const [categoryOpen, setCategoryOpen] = useState(false)
 
   const getUserList = () => {
     appContext?.app.handleLoader(true);
@@ -77,6 +80,36 @@ function CreateEvent(props: CreateEventProps) {
   }
 
 
+  let category = [
+    'undefined',
+    'school'
+  ]
+
+  const createCategoryEntries = () => {
+    if (category.length == undefined) {
+      return <View>
+
+      </View>
+    }
+
+    let cells = new Array()
+    let i: number = 0
+
+    for (i = 0; i < (category.length); i++) {
+
+      cells[i] = <View style={styles.categoryEntry}>
+        <TouchableOpacity>
+          <Text>
+            {t('event_categories.' + category[i])}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    }
+
+    return cells
+  }
+
+  const categoryCells = createCategoryEntries();
 
   return (
     <KeyboardAwareScrollView
@@ -91,51 +124,60 @@ function CreateEvent(props: CreateEventProps) {
         {t("home.create_event")}
       </Label>
 
-      <ScrollView>
-        <View>
-          <Label
-            dimension="normal"
-            weight="semibold"
-            color={colors.mainText}
-            marginLeft={'5%'}
-            style={{ marginLeft: padding.quarter }}>
-            {t("create.name_event")}
-          </Label>
-          <TextInput
-            style={styles.inputName}
-            onChangeText={onChangeText}
-            value={text}
-          />
-        </View>
-        <View style={styles.columnContainer}>
-          <View>
-            <Label
-              dimension="normal"
-              weight="semibold"
-              color={colors.mainText}
-              marginLeft={'5%'}
-              flex={5}
-              style={{}}>
-              {t("create.event_data")}
-            </Label>
-            <DateTextField open={datePickerOpen} onConfirm={(date:Date)=>{
-              setSelectedDate(date)
-              setDatePickerOpen(false)
-            }}
-             onCancel={()=>{setDatePickerOpen(false)}}
-             onDeletePress={()=>{setSelectedDate(undefined)}}
-             onDatePickerPress={()=>{setDatePickerOpen(true)}
-            }
-            >
-              
+      <Label
+        dimension="normal"
+        weight="semibold"
+        color={colors.mainText}
+        marginLeft={'5%'}
+        style={{ marginLeft: padding.quarter }}>
+        {t("create.name_event")}
+      </Label>
+      <TextInput
+        style={styles.inputName}
+        onChangeText={onChangeText}
+        value={text}
+      />
 
-            </DateTextField>
+      {/* <Label
+        dimension="normal"
+        weight="semibold"
+        color={colors.mainText}
+        marginLeft={'5%'}
+        flex={5}
+        style={{}}>
+        {t("create.event_data")}
+      </Label> */}
+      <DateTextField
+        fieldTitle={t("create.event_data")}
+        open={datePickerOpen}
+        selectedDate={selectedDate}
+        mode={"datetime"}
+        onConfirm={(date: Date) => {
+          setSelectedDate(date)
+          setDatePickerOpen(false)
+        }}
+        onCancel={() => { setDatePickerOpen(false) }}
+        onDeletePress={() => { setSelectedDate(undefined) }}
+        onDatePickerPress={() => { setDatePickerOpen(true) }
+        } />
+
+
+      <DropShadow style={styles.generalShadow}>
+        <View style={styles.categoryContainer}>
+          <View style={styles.categoryHeader}>
+            <Text style={styles.categoryTitle}>
+              {t("detail.participants")}
+            </Text>
+            <TouchableOpacity style={styles.categoryButtonHolder} onPress={() => { setCategoryOpen(!categoryOpen) }}>
+              <Image source={categoryOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
+
+            </TouchableOpacity>
           </View>
-         
+          {categoryOpen ? <View style={styles.categoryMainView}>
+            {categoryCells}
+          </View> : null}
         </View>
-      </ScrollView>
-
-
+      </DropShadow>
       <CustomButton
         text={t("home.create_event")}
         style={{ marginTop: padding.full }}
@@ -146,6 +188,7 @@ function CreateEvent(props: CreateEventProps) {
   );
 
 }
+
 
 const styles = StyleSheet.create({
   inputName: {
@@ -161,18 +204,61 @@ const styles = StyleSheet.create({
   },
 
   columnContainer: {
-    
-  },
-
-  DataContainer: {
-    marginLeft: "20%"
 
   },
 
-  timeContainer: {
-    marginLeft: "20%"
+  categoryButtonHolder: {
+    height: 32,
+    aspectRatio: 1,
 
+  },
+
+  categoryButtonIcon: {
+    height: '100%',
+    aspectRatio: 1,
+    tintColor: colors.secondary,
+    flex: 1
+  },
+  generalShadow: {
+    shadowColor: colors.mainText,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: .3,
+    shadowRadius: 6,
+  },
+  categoryContainer: {
+    marginHorizontal: 12,
+    marginVertical: 6,
+    padding: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    flex: 2,
+
+    backgroundColor: colors.background,
+  },
+  categoryHeader: {
+    flexDirection: 'row',
+
+  },
+  categoryMainView: {
+
+  },
+  categoryTitle: {
+    flex: 1,
+    fontSize: 24,
+    fontWeight: '600',
+    color: colors.secondaryDark,
+    justifyContent: 'flex-start',
+
+  },
+  categoryEntry: {
+    marginLeft: 8,
+    fontSize: 20,
+    color: colors.highlightText
   }
+
 
 });
 
