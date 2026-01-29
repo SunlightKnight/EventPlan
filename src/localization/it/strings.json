@@ -45,7 +45,8 @@
     "alert_message": "Evento creato con successo",
     "list_title": "Lista partecipanti",
     "event_data": "Data evento",
-    "event_time": "Orario evento"
+    "event_time": "Orario evento",
+    "event_category": "Categoria evento"
   },
   "detail": {
     "detail": "Dettaglio evento",
@@ -66,6 +67,7 @@
     "proceed_to_payment": "Procedi al pagamento"
   },
   "event_categories": {
-    "undefined": "NON DEFINITO"
+    "undefined": "NON DEFINITO",
+    "school": "Scuola"
   }
 }

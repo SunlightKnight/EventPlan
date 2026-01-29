@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -8,
     left: 10,
-    alignSelf: "center"
+    alignSelf: "center",
+
   }
 })
