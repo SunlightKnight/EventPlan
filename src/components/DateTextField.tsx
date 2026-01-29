@@ -1,13 +1,13 @@
 import React from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Image, 
-  TouchableOpacity, 
-  ViewStyle, 
-  StyleProp, 
-  TextStyle, 
-  ImageStyle, 
+import {
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  ViewStyle,
+  StyleProp,
+  TextStyle,
+  ImageStyle,
   Platform
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
@@ -41,23 +41,23 @@ type DatePickerFieldProps = {
 
 export default function DateTextField(props: DatePickerFieldProps) {
   const { t } = useTranslation()
-  const { 
+  const {
     outerViewStyle,
-    fieldTitle, 
+    fieldTitle,
     fieldTitleStyle,
-    labelText, 
-    labelStyle, 
-    open, 
+    labelText,
+    labelStyle,
+    open,
     mode,
-    selectedDate, 
-    minDate, 
-    maxDate, 
-    viewStyle, 
+    selectedDate,
+    minDate,
+    maxDate,
+    viewStyle,
     iconsStyle,
-    onConfirm, 
-    onCancel, 
+    onConfirm,
+    onCancel,
     onDeletePress,
-    onDatePickerPress 
+    onDatePickerPress
   } = props;
 
   const formatCurrentDate = (date: Date): string => {
@@ -74,18 +74,21 @@ export default function DateTextField(props: DatePickerFieldProps) {
   }
 
   return (
-    <View style={[{marginHorizontal: padding.full, marginVertical: padding.half}, outerViewStyle]}>
+    <View style={[{ marginHorizontal: padding.full, marginVertical: padding.half }, outerViewStyle]}>
       {fieldTitle ? (
         <Label
-          dimension='small'
-          style={[{marginLeft: padding.full}, fieldTitleStyle]}>
+          dimension="normal"
+          weight="semibold"
+          color={colors.mainText}
+          style={[{ marginLeft: padding.full }, fieldTitleStyle]}>
           {fieldTitle}
         </Label>
       ) : null}
       <View style={[{
         backgroundColor: colors.lightGrey,
-        borderRadius: padding.onehalf, 
+        borderRadius: padding.quarter,
         marginTop: padding.quarter,
+        width: "100%"
       }, viewStyle]}>
         <TouchableOpacity activeOpacity={1} onPress={onDatePickerPress} style={styles.containerStyle}>
           <DatePicker
@@ -104,15 +107,15 @@ export default function DateTextField(props: DatePickerFieldProps) {
             timeZoneOffsetInMinutes={60}
             locale={"it-it"}
           />
-          <Label dimension='normal' style={{marginLeft: padding.half}}>
+          <Label dimension='normal' style={{ marginLeft: padding.half }}>
             {!selectedDate ? "" : formatCurrentDate(selectedDate)}
           </Label>
           {selectedDate ? (
             <TouchableOpacity activeOpacity={1} onPress={onDeletePress}>
-              <Image source={icon_cancel} resizeMode="contain" style={[{tintColor: selectedDate ? colors.deepRed : undefined, width: 30, height: 30}, iconsStyle]} />
+              <Image source={icon_cancel} resizeMode="contain" style={[{ tintColor: selectedDate ? colors.deepRed : undefined, width: 30, height: 30 }, iconsStyle]} />
             </TouchableOpacity>
           ) : (
-            <Image source={icon_event} resizeMode="contain" style={[{marginRight: padding.half, width: 30, height: 30}, iconsStyle]}/>
+            <Image source={icon_event} resizeMode="contain" style={[{ marginRight: padding.half, width: 30, height: 30 }, iconsStyle]} />
           )}
         </TouchableOpacity>
       </View>
@@ -127,15 +130,15 @@ export default function DateTextField(props: DatePickerFieldProps) {
 
 const styles = StyleSheet.create({
   containerStyle: {
-    height: 55, 
-    flexDirection: "row", 
-    justifyContent: "space-between", 
-    alignItems: "center", 
+    height: 55,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginHorizontal: padding.half
   },
   labelStyle: {
-    paddingHorizontal: padding.quarter, 
-    backgroundColor: colors.white, 
+    paddingHorizontal: padding.quarter,
+    backgroundColor: colors.white,
     position: "absolute",
     top: -8,
     left: 10,

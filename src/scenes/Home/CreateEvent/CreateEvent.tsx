@@ -98,9 +98,11 @@ function CreateEvent(props: CreateEventProps) {
     for (i = 0; i < (category.length); i++) {
 
       cells[i] = <View style={styles.categoryEntry}>
-        <Text>
-          {t('event_categories.' + category[i])}
-        </Text>
+        <TouchableOpacity>
+          <Text>
+            {t('event_categories.' + category[i])}
+          </Text>
+        </TouchableOpacity>
       </View>
     }
 
@@ -146,7 +148,7 @@ function CreateEvent(props: CreateEventProps) {
         {t("create.event_data")}
       </Label> */}
       <DateTextField
-        fieldTitle="uyghbfneaus"
+        fieldTitle={t("create.event_data")}
         open={datePickerOpen}
         selectedDate={selectedDate}
         mode={"datetime"}
@@ -161,9 +163,11 @@ function CreateEvent(props: CreateEventProps) {
 
 
       <DropShadow style={styles.generalShadow}>
-        <View style={styles.participantsContainer}>
-          <View style={styles.participantHeader}>
-
+        <View style={styles.categoryContainer}>
+          <View style={styles.categoryHeader}>
+            <Text style={styles.categoryTitle}>
+              {t("detail.participants")}
+            </Text>
             <TouchableOpacity style={styles.categoryButtonHolder} onPress={() => { setCategoryOpen(!categoryOpen) }}>
               <Image source={categoryOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
 
@@ -206,12 +210,14 @@ const styles = StyleSheet.create({
   categoryButtonHolder: {
     height: 32,
     aspectRatio: 1,
+
   },
 
   categoryButtonIcon: {
     height: '100%',
     aspectRatio: 1,
-    tintColor: colors.secondary
+    tintColor: colors.secondary,
+    flex: 1
   },
   generalShadow: {
     shadowColor: colors.mainText,
@@ -222,7 +228,7 @@ const styles = StyleSheet.create({
     shadowOpacity: .3,
     shadowRadius: 6,
   },
-  participantsContainer: {
+  categoryContainer: {
     marginHorizontal: 12,
     marginVertical: 6,
     padding: 4,
@@ -232,11 +238,19 @@ const styles = StyleSheet.create({
 
     backgroundColor: colors.background,
   },
-  participantHeader: {
+  categoryHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+
   },
   categoryMainView: {
+
+  },
+  categoryTitle: {
+    flex: 1,
+    fontSize: 24,
+    fontWeight: '600',
+    color: colors.secondaryDark,
+    justifyContent: 'flex-start',
 
   },
   categoryEntry: {
