@@ -1358,6 +1358,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-drop-shadow (1.0.3):
+    - React
   - react-native-keyboard-controller (1.20.6):
     - DoubleConversion
     - glog
@@ -2079,6 +2081,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
+  - react-native-drop-shadow (from `../node_modules/react-native-drop-shadow`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -2207,6 +2210,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
+  react-native-drop-shadow:
+    :path: "../node_modules/react-native-drop-shadow"
   react-native-keyboard-controller:
     :path: "../node_modules/react-native-keyboard-controller"
   react-native-safe-area-context:
@@ -2331,6 +2336,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: b47a3289a3fe38e665347e48579f67a37be42bb3
   React-microtasksnativemodule: c1a3d5195c3985a2246f130ad3f3cad587b79b03
   react-native-date-picker: 4e33db548d52eeea54531394cb0c1149ed0cb0f9
+  react-native-drop-shadow: a30a971eed0b9ef1a3656492b82f12ebe93de120
   react-native-keyboard-controller: 23c890cb70a269a4d9e4d6b5c26e2a2563021785
   react-native-safe-area-context: bc59472155ffb889a1ffe16c19a04c0cd451562b
   React-NativeModulesApple: 1ed1401e841d89df68c9a429c785d51272fc21a5
