@@ -21,5 +21,6 @@ export default {
   secondaryDark: "#8aa5d4",
   mainText: "#4b4e58",
   highlightText: "#4B75A8",
-  paymentGreen: "#97ca96"
+  paymentGreen: "#97ca96",
+  creditCard: "#215077"
 }
