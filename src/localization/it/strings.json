@@ -67,5 +67,14 @@
   },
   "event_categories": {
     "undefined": "NON DEFINITO"
+  },
+  "filter": {
+    "filters":"Filtri",
+    "categories":"Tutte le categorie",
+    "payed":"Eventi pagati",
+    "not_payed":"Eventi da pagare",
+    "all_events":"Tutti gli eventi",
+    "created_by_me":"Creati da me",
+    "partecipating":"Non creati da me"
   }
 }
