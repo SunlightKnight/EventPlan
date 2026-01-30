@@ -69,7 +69,8 @@
     "already_paid": "Pagamento già effettuato"
   },
   "event_categories": {
-    "undefined": "NON DEFINITO"
+    "undefined": "NON DEFINITO",
+    "school": "Scuola"
   },
   "filter": {
     "filters":"Filtri",
