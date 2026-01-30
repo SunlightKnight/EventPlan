@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import Label from "../../../components/Label";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import colors from "../../../styles/colors";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import commonStyles from "../../../styles/styles";
@@ -36,7 +36,6 @@ function CreateEvent(props: CreateEventProps) {
   const appContext = useContext(AppContext)
   const accountServiceContext = useContext(AccountServiceContext)
   const backendService = useContext(BackendServiceContext);
-  const { event } = props.route?.params
 
   const [userList, setUserList] = useState<Array<UserDTO>>([]);
   const [nameEvent, setNameEvent] = useState<string>("");
@@ -49,16 +48,22 @@ function CreateEvent(props: CreateEventProps) {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const accountContext = useContext(AccountServiceContext)
+  const [userOpen, setUserOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState("");
 
   let category = [
     ('event_categories.undefined'),
     ('event_categories.school')
   ]
 
+  useEffect(() => {
+    getUserList()
+  }, [])
+
   const getUserList = () => {
     appContext?.app.handleLoader(true);
     backendService?.beService.getUsersList().then((userListResponse) => {
-
+      setUserList(userListResponse)
     }).catch((userListError) => {
       if (userListError.status === 401) {
         Alert.alert(t("general.error"), t("errors.unauthorized"), [
@@ -96,9 +101,6 @@ function CreateEvent(props: CreateEventProps) {
     }
   }
 
-
-
-
   const createCategoryEntries = () => {
     if (category.length == undefined) {
       return <View>
@@ -123,57 +125,58 @@ function CreateEvent(props: CreateEventProps) {
     return cells
   }
 
-  const isCurrentUserInParticipantsList = (event: EventDTO) => {
-      let participantsList: Array<PartecipantDTO> = event.partecipantiList
-      let i: number = 0
-  
-      for (i = 0; i < participantsList.length; i++) {
-        if (!(participantsList[i].username == accountContext?.aService.getUserName())) {
-          continue
-        }
-  
-        console.log(participantsList[i].idPartecipante, i)
-  
-        return [participantsList[i].idPartecipante, i]
-      }
-  
-      return [-100, -100]
+  const addSelectedUser = (user : UserDTO) => {
+    console.log(user)
+    if(selectedUsers.includes(user)){
+      console.log(selectedUsers, user, selectedUsers.includes(user))
+      let newArray = selectedUsers.filter((item) => {return item.username != user.username})
+      setSelectedUsers(newArray)
+    }else{
+      let newArray = selectedUsers.filter((item) => {return true})
+      newArray.push(user)
+      setSelectedUsers(newArray)
     }
+    
+  }
 
-  const createParticipantEntries = (participants: Array<PartecipantDTO>) => {
-      if (participants == undefined) {
+  const createUserEntries = () => {
+      if (userList == undefined) {
         return <View>
-  
         </View>
       }
   
       let cells = new Array()
       let i: number = 0
+
   
-      for (i = 0; i < (participants.length); i++) {
-        cells[participants[i].idPartecipante] = <View style={styles.menuEntry}>
+      for (i = 0; i < (userList.length); i++) {
+        const buttonUser = userList[i]
+        cells[i] = <View  style={styles.partecipantColumn}>
+          <TouchableOpacity onPress={() => {addSelectedUser(buttonUser)}} style={styles.partecipantEntry}>
+            <View style={styles.PartecipantButton}>
+              {selectedUsers.includes(buttonUser) ? <View style={styles.partecipantButtonInner}>
+
+              </View> : <View></View>}
+            </View>
+          </TouchableOpacity>
+          <View >
           <Text style={styles.menuEntryName}>
-            {(participants[i].username == accountContext?.aService.getUserName() ? '> ' : '') + (participants[i].cognome ? participants[i].cognome : 'Doe') + " " + (participants[i].nome ? participants[i].nome : 'John')}
+            {(userList[i].username == accountContext?.aService.getUserName() ? '> ' : '') + (userList[i].cognome ? userList[i].cognome : 'Doe') + " " + (userList[i].nome ? userList[i].nome : 'John')}
           </Text>
   
           <Text style={styles.menuEntryEntry}>
-            {'Username: ' + (participants[i].username ? participants[i].username : 'N/A')}
+            {'Username: ' + (userList[i].username ? userList[i].username : 'N/A')}
           </Text>
-          <Text style={styles.menuEntryEntry}>
-            {'Spesa: €' + (participants[i].spesa ? participants[i].spesa : '0')}
-          </Text>
-          <Text style={styles.menuEntryEntry}>
-            {'Data di pagamento: ' + (participants[i].dataPagamento ? participants[i].dataPagamento : 'NON EFFETTUATO')}
-          </Text>
+          </View>
         </View>
+        
       }
   
       return cells
     }
 
   //const categoryCells = createCategoryEntries();
-  const participantCells = createParticipantEntries(event.partecipantiList)
-
+  let userCells = createUserEntries()
   return (
     <KeyboardAwareScrollView
       style={commonStyles.scrollingContent}
@@ -287,17 +290,17 @@ function CreateEvent(props: CreateEventProps) {
       </Label>
           <DropShadow style={styles.generalShadow}>
             <View style={styles.categoryContainer}>
-              <TouchableOpacity style={styles.categoryHeader} onPress={() => { setCategoryOpen(!categoryOpen) }}>
+              <TouchableOpacity style={styles.categoryHeader} onPress={() => { setUserOpen(!userOpen) }}>
                 <Text style={styles.categoryTitle}>
                   {t(selectedCategory)}
                 </Text>
                 <View style={styles.categoryButtonHolder} >
-                  <Image source={categoryOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
+                  <Image source={userOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
 
                 </View>
               </TouchableOpacity>
-              {categoryOpen ? <View style={styles.categoryMainView}>
-                {participantCells}
+              {userOpen ? <View style={styles.categoryMainView}>
+                {userCells}
               </View> : null}
             </View>
           </DropShadow>
@@ -425,8 +428,27 @@ const styles = StyleSheet.create({
       color: colors.mainText
     },
 
+    PartecipantButton:{
+      aspectRatio: 1,
+      height: 20,
+      borderColor: colors.disabledGrey,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 2,
+    },
+    partecipantButtonInner:{
+      aspectRatio: 1,
+      height: 12,
+      backgroundColor: colors.disabledGrey,
+    },
 
+    partecipantEntry: {
+      marginVertical: 6,
+    },
+    partecipantColumn: {
+      flexDirection: 'row',
 
+    },
 });
 
 
