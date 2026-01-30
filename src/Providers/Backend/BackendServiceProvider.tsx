@@ -247,8 +247,8 @@ const BackendServiceProvider = ({ children } : any) => {
         } else {
           throwError({
             status: response.status,
-            message: t("errors.generic"),
-            messageKey: "error.generic"
+            message: response.statusText,
+            messageKey: response.statusText
           })
         }
       }
