@@ -39,7 +39,7 @@ function Login(props: LoginProps) {
   }
 
   return (
-    <View style={{flex: 1, justifyContent: "flex-start", marginHorizontal: padding.full}}>
+    <View style={{flex: 1, justifyContent: "flex-start", marginHorizontal: padding.full, backgroundColor: colors.background}}>
       <View style={{flexDirection: "row", justifyContent: "center", marginBottom: padding.double}}>
         <Label dimension="veryBig" weight="bold" color={colors.primary}>EVENT</Label>
         <Label dimension="veryBig" weight="bold" color={colors.secondaryDark} style={{marginLeft: padding.quarter}}>PLAN</Label>
@@ -60,7 +60,8 @@ function Login(props: LoginProps) {
         iconStyle={{height: 25}}
         autoCapitalize="none"
         autoCorrect={false}
-        onChangeText={(text) => { setUserName(text) }}/>
+        onChangeText={(text) => { setUserName(text) }}
+        />
       <TextField 
         label={t("login.password")} 
         value={userPassword}

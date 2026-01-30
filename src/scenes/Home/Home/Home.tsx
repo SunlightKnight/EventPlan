@@ -1,9 +1,9 @@
-import { Alert, Button, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Button, Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native"
 import Label from "../../../components/Label"
 import padding from "../../../styles/padding"
 import colors from "../../../styles/colors"
 import { useTranslation } from "react-i18next"
-import { useContext, useEffect, useState } from "react"
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useState } from "react"
 import { BackendServiceContext } from "../../../Providers/Backend/BackendServiceProvider"
 import { useNavigation } from "@react-navigation/native"
 import { AppContext } from "../../../Providers/App/AppProvider"
@@ -19,6 +19,7 @@ type HomeProps = {
   parentProps: any
 
 }
+
 
 function Home(props: HomeProps) {
   const { t } = useTranslation()
@@ -70,7 +71,7 @@ function Home(props: HomeProps) {
 
 
   return (
-    <ScrollView style={{ flex: 1, marginTop: padding.full }}>
+    <ScrollView style={{ flex: 1, marginTop: padding.full, backgroundColor: colors.background }}>
       <Modal
         isVisible={active}
         onBackdropPress={() => { console.warn("closed"); }}

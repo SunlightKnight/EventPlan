@@ -13,6 +13,7 @@ import { AuthToken, BackendServiceContext } from '../Providers/Backend/BackendSe
 
 import styles from '../styles/styles';
 import { AppContext } from '../Providers/App/AppProvider';
+import colors from '../styles/colors';
 
 export default function AppFlowCoordinator() {
   const appContext = useContext(AppContext)
@@ -64,7 +65,7 @@ export default function AppFlowCoordinator() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
       {children}
     </View>
   )

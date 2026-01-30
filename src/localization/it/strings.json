@@ -70,7 +70,13 @@
   },
   "event_categories": {
     "undefined": "NON DEFINITO",
-    "school": "Scuola"
+    "school": "Scuola",
+    "business": "Business",
+    "history": "Cultura",
+    "music": "Musica",
+    "party": "Party",
+    "social": "Sociale",
+    "sport": "Sport"
   },
   "filter": {
     "filters":"Filtri",
