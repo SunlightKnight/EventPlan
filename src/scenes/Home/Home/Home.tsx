@@ -13,6 +13,7 @@ import { ScrollView } from "react-native-gesture-handler"
 import { icon_add, icon_filter } from "../../../assets/images/index"
 import Modal from "react-native-modal"
 import DropShadow from "react-native-drop-shadow"
+import { icon_expand, icon_collapse } from "../../../assets/images/index"
 
 type HomeProps = {
   parentProps: any
@@ -28,6 +29,9 @@ function Home(props: HomeProps) {
   const [eventListData, setEventListData] = useState<EventsListResponseDTO>()
   const [active, setactive] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false)
+  const [categoriesOpen, setCategoriesOpen] = useState(false)
+  const [paymentOpen, setPaymentOpen] = useState(false)
+  const [creatorOpen, setCreatorOpen] = useState(false)
 
   useEffect(() => {
     const listener = function () {
@@ -76,15 +80,92 @@ function Home(props: HomeProps) {
             <Text style={styles.labelFilter}>
               {t("filter.filters")}
             </Text>
-            <DropShadow style={styles.generalShadow}>
+            <ScrollView style={styles.filterFieldContainer}>
+              <TouchableOpacity style={styles.filterFieldHeader} onPress={() => { setCategoriesOpen(!categoriesOpen) }}>
+                <Text style={styles.filterFieldTitle}>
+                  {t("filter.categories")}
+                </Text>
+                <View style={styles.filterFieldButtonHolder}>
+                  <Image source={categoriesOpen ? icon_collapse : icon_expand} style={styles.filterFieldButtonIcon} />
+                </View>
+              </TouchableOpacity>
+              {categoriesOpen ? <View style={styles.filterFieldMainView}>
+                <View style={styles.filterFieldOption}>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}>
+                    
+                  </TouchableOpacity>
+                  <Text style={styles.filterFieldText}>
+                    {t("filter.all_categories")}
+                  </Text>
+                </View>
 
-            </DropShadow>
-            <DropShadow style={styles.generalShadow}>
+              </View> : null}
+            </ScrollView>
 
-            </DropShadow>
-            <DropShadow style={styles.generalShadow}>
+            <View style={styles.filterFieldContainer}>
+              <TouchableOpacity style={styles.filterFieldHeader} onPress={() => { setPaymentOpen(!paymentOpen) }}>
+                <Text style={styles.filterFieldTitle}>
+                  {t("filter.payment")}
+                </Text>
+                <View style={styles.filterFieldButtonHolder}>
+                  <Image source={paymentOpen ? icon_collapse : icon_expand} style={styles.filterFieldButtonIcon} />
+                </View>
+              </TouchableOpacity>
+              {paymentOpen ? <View style={styles.filterFieldMainView}>
+                <View style={styles.filterFieldOption}>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <Text style={styles.filterFieldText}>
+                    {t("filter.all_events")}
+                  </Text>
+                </View>
+                <View style={styles.filterFieldOption}>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <Text style={styles.filterFieldText}>
+                    {t("filter.payed")}
+                  </Text>
+                </View>
+                <View style={styles.filterFieldOption}>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <Text style={styles.filterFieldText}>
+                    {t("filter.not_payed")}
+                  </Text>
+                </View>
 
-            </DropShadow>
+              </View> : null}
+            </View>
+
+            <View style={styles.filterFieldContainer}>
+              <TouchableOpacity style={styles.filterFieldHeader} onPress={() => { setCreatorOpen(!creatorOpen) }}>
+                <Text style={styles.filterFieldTitle}>
+                  {t("filter.creator")}
+                </Text>
+                <View style={styles.filterFieldButtonHolder}>
+                  <Image source={creatorOpen ? icon_collapse : icon_expand} style={styles.filterFieldButtonIcon} />
+                </View>
+              </TouchableOpacity>
+              {creatorOpen ? <View style={styles.filterFieldMainView}>
+                <View style={styles.filterFieldOption}>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <Text style={styles.filterFieldText}>
+                    {t("filter.all_events")}
+                  </Text>
+                </View>
+                <View style={styles.filterFieldOption}>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <Text style={styles.filterFieldText}>
+                    {t("filter.created_by_me")}
+                  </Text>
+                </View>
+                <View style={styles.filterFieldOption}>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <Text style={styles.filterFieldText}>
+                    {t("filter.partecipating")}
+                  </Text>
+                </View>
+
+              </View> : null}
+            </View>
+
             <View style={styles.modalButtonContainer}>
               <View style={styles.addEventButtonContainer}>
                 <TouchableOpacity style={styles.modalButton} onPress={() => { setactive(!active) }}>
@@ -94,7 +175,7 @@ function Home(props: HomeProps) {
                 </TouchableOpacity>
               </View>
               <View style={styles.addEventButtonContainer}>
-                <TouchableOpacity style={[styles.modalButton, {backgroundColor: colors.primary}]} onPress={() => { setactive(!active) }}>
+                <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.primary, marginLeft: 10 }]} onPress={() => { setactive(!active) }}>
                   <Label style={styles.labelFilterButton}>
                     {t("general.cancel")}
                   </Label>
@@ -176,7 +257,8 @@ const styles = StyleSheet.create({
   modalButtonContainer: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginTop:15
   },
 
   modalView: {
@@ -214,7 +296,7 @@ const styles = StyleSheet.create({
 
   filterButtonContainer: {
     flex: 1,
-    marginRight: '10%'
+    marginRight: '10%',
   },
 
   generalShadow: {
@@ -227,6 +309,68 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
 
+  filterFieldButtonHolder: {
+    height: 32,
+    aspectRatio: 1,
+  },
+
+  filterFieldButtonIcon: {
+    height: '100%',
+    aspectRatio: 1,
+    tintColor: colors.secondary
+  },
+
+  filterFieldMainView: {
+  },
+
+  filterFieldContainer: {
+    marginHorizontal: 12,
+    marginVertical: 6,
+    padding: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    width: '100%',
+  },
+
+  filterFieldHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+
+  filterFieldTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: colors.secondary,
+  },
+
+  filterFieldText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.mainText,
+  },
+
+  filterFieldButton: {
+    height: 30,
+    aspectRatio: 1,
+    backgroundColor: colors.secondary,
+    borderRadius: '100%',
+    marginRight: 10,
+    justifyContent:'center',
+  },
+
+  filterFieldOption: {
+    flexDirection: 'row',
+    marginBottom: 10
+  },
+
+  filterFieldOptionSelected: {
+    backgroundColor: colors.secondaryDark,
+    width:20,
+    height:20,
+    borderRadius:'100%',
+    alignSelf:'center',
+  }
 
 });
 
