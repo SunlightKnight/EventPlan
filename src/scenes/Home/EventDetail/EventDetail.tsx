@@ -77,6 +77,7 @@ function EventDetail(props: EventDetailProps) {
 
     backendService?.beService.payEvent(pID).then((code) => {
       if (code.status == 200) {
+        setModalOpen(false)
         navigation.dispatch(StackActions).pop(1)
       }
     })
