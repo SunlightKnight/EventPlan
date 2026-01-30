@@ -73,9 +73,9 @@ function Home(props: HomeProps) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Label style={styles.labelFilter}>
+            <Text style={styles.labelFilter}>
               {t("filter.filters")}
-            </Label>
+            </Text>
             <DropShadow style={styles.generalShadow}>
 
             </DropShadow>
@@ -94,7 +94,7 @@ function Home(props: HomeProps) {
                 </TouchableOpacity>
               </View>
               <View style={styles.addEventButtonContainer}>
-                <TouchableOpacity style={styles.modalButton} onPress={() => { setactive(!active) }}>
+                <TouchableOpacity style={[styles.modalButton, {backgroundColor: colors.primary}]} onPress={() => { setactive(!active) }}>
                   <Label style={styles.labelFilterButton}>
                     {t("general.cancel")}
                   </Label>
@@ -138,17 +138,21 @@ const styles = StyleSheet.create({
 
   labelFilterButton: {
     alignSelf: 'center',
-    color: colors.primaryDark,
-    fontWeight: '500',
+    color: colors.background,
+    fontWeight: '700',
     fontSize: 20,
     margin: 5,
   },
 
   labelFilter: {
-    flex: 5,
+    width: '100%',
     alignSelf: 'center',
-    color: colors.primaryDark,
-    marginBottom: padding.quarter,
+    color: colors.background,
+    marginBottom: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+    backgroundColor: colors.primary,
     fontWeight: 'bold',
     fontSize: 30
   },
@@ -163,33 +167,29 @@ const styles = StyleSheet.create({
 
   modalContainer: {
     flex: 1,
+
     backgroundColor: "transparent",
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   modalButtonContainer: {
-    height: '100%',
-    flex: 1,
+    width: '100%',
     flexDirection: 'row',
+    justifyContent: 'center'
   },
 
   modalView: {
     backgroundColor: colors.background,
-    height: '50%',
-    width: '80%',
+    padding: 8,
+    width: '90%',
     alignItems: "center",
     justifyContent: "center"
   },
 
   modalButton: {
-    height: '70%',
-    width: '100%',
-    aspectRatio: 3,
-    alignSelf: 'center',
-    backgroundColor: colors.background,
-    borderColor: colors.primaryDark,
-    borderWidth: 3,
+    borderRadius: 6,
+    backgroundColor: colors.paymentGreen,
   },
 
   addEventButtonContainer: {
