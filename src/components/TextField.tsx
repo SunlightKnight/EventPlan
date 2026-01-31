@@ -29,7 +29,7 @@ function TextField(props: TextFieldProps) {
     <View style={[{marginHorizontal: padding.full}, props.style]}>
       {props.label ? (
         <Label
-          color={isSelected ? colors.primary : colors.black}
+          color={isSelected ? colors.primary : colors.mainText}
           dimension='small'
           style={[{marginTop: padding.half, marginBottom: padding.quarter}, props.labelStyle]}>
           {props.label}
@@ -50,7 +50,7 @@ function TextField(props: TextFieldProps) {
           style={[
             styles.textInputText,
             {
-              color: (props.editable !== undefined && props.editable == false) ? colors.lightGrey : colors.black,
+              color: (props.editable !== undefined && props.editable == false) ? colors.lightGrey : colors.mainText,
             },
             props.textStyle,
           ]}
@@ -62,7 +62,7 @@ function TextField(props: TextFieldProps) {
           <Image 
             source={props.icon} 
             resizeMode="contain" 
-            style={[{width: 30, height: 30, marginRight: padding.half, opacity: isSelected ? 0.8 : 0.3, tintColor: isSelected ? colors.primary : undefined}, props.iconStyle]} />
+            style={[{width: 30, height: 30, marginRight: padding.half, opacity: isSelected ? 0.8 : 0.3, tintColor: isSelected ? colors.primary : colors.mainText}, props.iconStyle]} />
         ) : null}
       </View>
     </View>

@@ -18,7 +18,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { icon_collapse, icon_expand } from "../../../assets/images";
 import DropShadow from "react-native-drop-shadow";
 import { AccountServiceContext } from "../../../Providers/Account/AccountServiceProvider";
-import { icon_school } from "../../../assets/images/index"
+import icons from "../../../assets/images/eventIcons"
 import { PartecipantDTO } from "../../../models/services/PartecipantDTO";
 import { EventDTO } from "../../../models/services/EventDTO";
 import { formatDate } from "../../../utils/Helper";
@@ -267,7 +267,7 @@ function CreateEvent(props: CreateEventProps) {
             </View>
           </DropShadow>
           <View>
-            <Image source={icon_school} style={styles.schoolIcon} />
+            <Image source={icons.school} style={styles.schoolIcon} />
 
           </View>
         </View>
