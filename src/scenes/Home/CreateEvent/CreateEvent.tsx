@@ -23,6 +23,7 @@ import { PartecipantDTO } from "../../../models/services/PartecipantDTO";
 import { EventDTO } from "../../../models/services/EventDTO";
 import { formatDate } from "../../../utils/Helper";
 import { createEventAPIDateTime, fullDate } from "../../../utils/Constants";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
 
 type CreateEventProps = {
@@ -34,6 +35,7 @@ type CreateEventProps = {
 
 function CreateEvent(props: CreateEventProps) {
   const { t } = useTranslation();
+  const navigation = useNavigation<any>()
 
   const appContext = useContext(AppContext)
   const accountServiceContext = useContext(AccountServiceContext)
@@ -48,34 +50,23 @@ function CreateEvent(props: CreateEventProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [text, onChangeText] = useState<string>('');
   const [categoryOpen, setCategoryOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("undefined");
   const accountContext = useContext(AccountServiceContext)
   const [userOpen, setUserOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
 
   const category = [
-    ('event_categories.undefined'),
-    ('event_categories.school'),
-    ('event_categories.business'),
-    ('event_categories.history'),
-    ('event_categories.music'),
-    ('event_categories.party'),
-    ('event_categories.social'),
-    ('event_categories.sport')
+    ('undefined'),
+    ('school'),
+    ('business'),
+    ('history'),
+    ('music'),
+    ('party'),
+    ('social'),
+    ('sport')
   ]
 
-  const categoryIcon = [
-    {id: 'event_categories.undefined', icon: 'icons.undefined'},
-    {id: 'event_categories.school', icon: 'icons.school'},
-    {id: 'event_categories.business', icon: 'icons.business'},
-    {id: 'event_categories.history', icon: 'icons.history'},
-    {id: 'event_categories.music', icon: 'icons.music'},
-    {id: 'event_categories.party', icon: 'icons.party'},
-    {id: 'event_categories.social', icon: 'icons.social'},
-    {id: 'event_categories.sport', icon: 'icons.sport'},
-  ]
 
-  
 
   useEffect(() => {
     getUserList()
@@ -119,11 +110,20 @@ function CreateEvent(props: CreateEventProps) {
       createEventRequest.categoria = selectedCategory
       createEventRequest.spesa = eventTotal
       createEventRequest.descr = descEvent
-      createEventRequest.partecipantiList = selectedUsers
+      let newArray = selectedUsers.filter(() => { return true })
+      console.log(newArray)
+      for (let i = 0; i < userList.length; i++) {
+        const buttonUser = userList[i]
+        console.log(buttonUser, buttonUser.username, accountServiceContext?.aService.getUserName())
+        if (buttonUser.username == accountServiceContext?.aService.getUserName()) {
+          newArray.push(buttonUser)
+        }
+      }
+      createEventRequest.partecipantiList = newArray
       createEventRequest.creatore = creator
 
       backendService?.beService.createEvent(createEventRequest).then((_) => {
-        //torna alla pag principale
+         navigation.dispatch(StackActions).pop(1)
       }).catch((createEventError) => {
         Alert.alert(t("general.error"), createEventError.message + ": " + createEventError.status)
       }).finally(() => {
@@ -132,11 +132,11 @@ function CreateEvent(props: CreateEventProps) {
     }
   }
 
-  const IconList = () => {
-     const categoriaTrovata = categoryIcon.find((item) => item.id === selectedCategory);
-     return categoriaTrovata
-  
-};
+  const getImage = () => {
+    let url = icons[selectedCategory.toLowerCase()] || icons.undefined
+
+    return url
+  }
 
   const formatUsers = (spesa: number) => {
     let newArray = selectedUsers.filter((item) => { return true })
@@ -160,7 +160,7 @@ function CreateEvent(props: CreateEventProps) {
         <View style={styles.categoryEntry}>
           <TouchableOpacity onPress={() => { setSelectedCategory(category[i]); setCategoryOpen(false) }}>
             <Text style={styles.menuEntryNameCategory}>
-              {t('' + category[i])}
+              {t('event_categories.' + category[i])}
             </Text>
           </TouchableOpacity>
         </View>)
@@ -195,6 +195,9 @@ function CreateEvent(props: CreateEventProps) {
 
     for (let i = 0; i < (userList.length); i++) {
       const buttonUser = userList[i]
+      if (buttonUser.username == accountServiceContext?.aService.getUserName()) {
+        continue
+      }
       cells[i] = <View style={styles.partecipantColumn}>
         <TouchableOpacity onPress={() => { addSelectedUser(buttonUser) }} style={styles.partecipantEntry}>
           <View style={styles.PartecipantButton}>
@@ -212,6 +215,7 @@ function CreateEvent(props: CreateEventProps) {
             {'Username: ' + (userList[i].username ? userList[i].username : 'N/A')}
           </Text>
         </View>
+
       </View>
 
     }
@@ -219,8 +223,7 @@ function CreateEvent(props: CreateEventProps) {
     return cells
   }
 
-  
-  //const categoryCells = createCategoryEntries();
+
   let userCells = createUserEntries()
   return (
     <KeyboardAwareScrollView
@@ -229,7 +232,7 @@ function CreateEvent(props: CreateEventProps) {
       bottomOffset={padding.double}>
       <Label
         dimension="veryBig"
-        weight="semibold"
+        weight="bold"
         color={colors.primaryDark}
         style={{ marginBottom: padding.half, marginLeft: padding.quarter }}>
         {t("home.create_event")}
@@ -280,7 +283,7 @@ function CreateEvent(props: CreateEventProps) {
             <View style={styles.categoryContainer}>
               <TouchableOpacity style={styles.categoryHeader} onPress={() => { setCategoryOpen(!categoryOpen) }}>
                 <Text style={styles.categoryTitle}>
-                  {t(selectedCategory)}
+                  {t('event_categories.' + selectedCategory)}
                 </Text>
                 <View style={styles.categoryButtonHolder} >
                   <Image source={categoryOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
@@ -293,7 +296,7 @@ function CreateEvent(props: CreateEventProps) {
             </View>
           </View>
           <View>
-            <Image source={(IconList()?.icon)} style={styles.categoryIconChange} />
+            <Image source={getImage()} style={styles.categoryIconChange} />
 
           </View>
         </View>
@@ -333,19 +336,19 @@ function CreateEvent(props: CreateEventProps) {
           style={{ marginLeft: padding.quarter }}>
           {t("create.list_title")}
         </Label>
-          <View style={styles.categoryContainer}>
-            <TouchableOpacity style={styles.categoryHeader} onPress={() => { setUserOpen(!userOpen) }}>
-              <Text style={styles.categoryTitle}>
-                
-              </Text>
-              <View style={styles.categoryButtonHolder} >
-                <Image source={userOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
+        <View style={styles.categoryContainer}>
+          <TouchableOpacity style={styles.categoryHeader} onPress={() => { setUserOpen(!userOpen) }}>
+            <Text style={styles.categoryTitle}>
 
-              </View>
-            </TouchableOpacity>
-            {userOpen ? <View style={styles.categoryMainView}>
-              {userCells}
-            </View> : null}
+            </Text>
+            <View style={styles.categoryButtonHolder} >
+              <Image source={userOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
+
+            </View>
+          </TouchableOpacity>
+          {userOpen ? <View style={styles.categoryMainView}>
+            {userCells}
+          </View> : null}
         </View>
 
       </View>
@@ -413,8 +416,8 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     flex: 2,
 
-    borderWidth:4,
-    borderColor:colors.secondary,
+    borderWidth: 4,
+    borderColor: colors.secondary,
     backgroundColor: colors.background,
   },
   categoryHeader: {
@@ -430,7 +433,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.highlightText,
     justifyContent: 'flex-start',
-    
+
 
   },
 
@@ -460,11 +463,11 @@ const styles = StyleSheet.create({
 
   totalEvent: {
     backgroundColor: colors.lightGrey,
-    marginBottom:'4%',
-    marginTop:'2%'
+    marginBottom: '4%',
+    marginTop: '2%'
 
   },
-  
+
   menuEntry: {
     marginVertical: 6
   },
@@ -502,8 +505,8 @@ const styles = StyleSheet.create({
   },
   menuEntryNameCategory: {
     fontSize: 17,
-    marginTop:3,
-    marginBottom:3,
+    marginTop: 3,
+    marginBottom: 3,
     color: colors.mainText
   },
 });
