@@ -58,7 +58,6 @@ function Login(props: LoginProps) {
         value={userName}
         icon={icon_mail} 
         iconStyle={{height: 25}}
-        textStyle={{color}}
         autoCapitalize="none"
         autoCorrect={false}
         onChangeText={(text) => { setUserName(text) }}
