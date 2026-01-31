@@ -55,7 +55,13 @@ function CreateEvent(props: CreateEventProps) {
 
   let category = [
     ('event_categories.undefined'),
-    ('event_categories.school')
+    ('event_categories.school'),
+    ('event_categories.business'),
+    ('event_categories.history'),
+    ('event_categories.music'),
+    ('event_categories.party'),
+    ('event_categories.social'),
+    ('event_categories.sport')
   ]
 
   useEffect(() => {
@@ -134,7 +140,7 @@ function CreateEvent(props: CreateEventProps) {
       let view = (
         <View style={styles.categoryEntry}>
           <TouchableOpacity onPress={() => { setSelectedCategory(category[i]); setCategoryOpen(false) }}>
-            <Text>
+            <Text style={styles.menuEntryNameCategory}>
               {t('' + category[i])}
             </Text>
           </TouchableOpacity>
@@ -218,7 +224,7 @@ function CreateEvent(props: CreateEventProps) {
         {t("create.name_event")}
       </Label>
       <TextInput
-        style={styles.inputName}
+        style={styles.totalEvent}
         onChangeText={(text) => setNameEvent(String(text))}
         value={nameEvent}
       />
@@ -267,7 +273,7 @@ function CreateEvent(props: CreateEventProps) {
             </View>
           </View>
           <View>
-            <Image source={icons.school} style={styles.schoolIcon} />
+            <Image source={icons.school} style={styles.categoryIconChange} />
 
           </View>
         </View>
@@ -280,7 +286,7 @@ function CreateEvent(props: CreateEventProps) {
         style={{ marginLeft: padding.quarter }}>
         {t("create.total_event")}
       </Label>
-      <TextInput
+      <TextInput style={styles.totalEvent}
         onChangeText={(text) => setEventTotal(Number(text) || 0)}
         keyboardType="numeric"
       />
@@ -305,13 +311,12 @@ function CreateEvent(props: CreateEventProps) {
           color={colors.mainText}
           marginLeft={'5%'}
           style={{ marginLeft: padding.quarter }}>
-          {t("create._list_title")}
+          {t("create.list_title")}
         </Label>
-        <DropShadow style={styles.generalShadow}>
           <View style={styles.categoryContainer}>
             <TouchableOpacity style={styles.categoryHeader} onPress={() => { setUserOpen(!userOpen) }}>
               <Text style={styles.categoryTitle}>
-                {t(selectedCategory)}
+                
               </Text>
               <View style={styles.categoryButtonHolder} >
                 <Image source={userOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
@@ -321,8 +326,7 @@ function CreateEvent(props: CreateEventProps) {
             {userOpen ? <View style={styles.categoryMainView}>
               {userCells}
             </View> : null}
-          </View>
-        </DropShadow>
+        </View>
 
       </View>
       <CustomButton
@@ -342,13 +346,13 @@ function CreateEvent(props: CreateEventProps) {
 
 const styles = StyleSheet.create({
   inputName: {
-    flex:1,
+    flex: 1,
     height: 40,
     padding: 10,
-    alignSelf:'stretch',
-    backgroundColor:colors.disabledGrey,
-    marginTop:'2%',
-    marginBottom:'4%'
+    alignSelf: 'stretch',
+    backgroundColor: colors.disabledGrey,
+    marginTop: '2%',
+    marginBottom: '4%'
 
   },
 
@@ -363,14 +367,14 @@ const styles = StyleSheet.create({
   categoryButtonHolder: {
     height: 32,
     aspectRatio: 1,
-
   },
 
   categoryButtonIcon: {
     height: '100%',
     aspectRatio: 1,
     tintColor: colors.secondary,
-    flex: 1
+    flex: 1,
+
   },
   generalShadow: {
     shadowColor: colors.mainText,
@@ -382,13 +386,15 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   categoryContainer: {
-    marginHorizontal: '1%',
     marginVertical: '2%',
+    marginBottom: '6%',
     padding: 4,
     paddingHorizontal: 10,
     borderRadius: 6,
     flex: 2,
 
+    borderWidth:4,
+    borderColor:colors.secondary,
     backgroundColor: colors.background,
   },
   categoryHeader: {
@@ -402,14 +408,15 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 24,
     fontWeight: '600',
-    color: colors.secondaryDark,
+    color: colors.highlightText,
     justifyContent: 'flex-start',
+    
 
   },
 
   catContainer: {
     marginHorizontal: '-0.5%',
-    marginVertical: '5%',
+    marginVertical: '6%',
     marginBottom: '5%',
     padding: 10,
     paddingHorizontal: 7,
@@ -424,18 +431,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: colors.highlightText
   },
-  schoolIcon: {
-    height: '75%',
-    aspectRatio: 1,
+  categoryIconChange: {
     alignSelf: 'center',
     backgroundColor: colors.primary,
-    borderRadius: 6,
+    marginBottom: '4%',
+    borderRadius: 10
   },
 
   totalEvent: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.lightGrey,
+    marginBottom:'4%',
+    marginTop:'2%'
 
   },
+  
   menuEntry: {
     marginVertical: 6
   },
@@ -470,6 +479,12 @@ const styles = StyleSheet.create({
   partecipantColumn: {
     flexDirection: 'row',
 
+  },
+  menuEntryNameCategory: {
+    fontSize: 17,
+    marginTop:3,
+    marginBottom:3,
+    color: colors.mainText
   },
 });
 
