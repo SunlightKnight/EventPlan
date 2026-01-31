@@ -126,7 +126,7 @@ function EventList(props: EventListProps) {
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: colors.white },
+  container: { backgroundColor: colors.background },
   
 });
 

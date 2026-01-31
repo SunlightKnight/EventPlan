@@ -11,7 +11,7 @@ const colors = () => {
       white: "#FFFFFF",
       paleGrey: "#F7F7F7",
 
-      lightGrey: "#d6d6d6",
+      lightGrey: "#ececec",
       disabledGrey: "#B5B5B5",
       deepRed: "#BD0000",
       red: "#C41F1F",
@@ -22,6 +22,7 @@ const colors = () => {
 
       background: "#F7F4F3",
       primary: "#B9272C",
+      primary_alter: "#F7F4F3",
       primaryDark: "#6f171a",
       secondary: "#B6CEF6",
       secondaryDark: "#8aa5d4",
@@ -34,6 +35,7 @@ const colors = () => {
     return {
       background: "#171820",
       primary: "#a44d59",
+      primary_alter: "#a44d59",
       primaryDark: "#d77e8a",
       secondary: "#2c2c38",
       secondaryDark: "#7a93ad",

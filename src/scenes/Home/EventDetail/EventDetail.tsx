@@ -182,14 +182,14 @@ function EventDetail(props: EventDetailProps) {
           </View>
 
           <View style={styles.participantsContainer}>
-            <View style={styles.participantHeader}>
+            <TouchableOpacity style={styles.participantHeader}onPress={() => { setParticipantsOpen(!participantsOpen) }}>
               <Text style={styles.participantsTitle}>
                 {t("detail.participants")}
               </Text>
-              <TouchableOpacity style={styles.participantsButtonHolder} onPress={() => { setParticipantsOpen(!participantsOpen) }}>
+              <View style={styles.participantsButtonHolder} >
                 <Image source={participantsOpen ? icon_collapse : icon_expand} style={styles.participantsButtonIcon} />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
             {participantsOpen ? <View style={styles.participantMainView}>
               {participantCells}
             </View> : null}
