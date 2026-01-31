@@ -21,6 +21,8 @@ import { AccountServiceContext } from "../../../Providers/Account/AccountService
 import { icon_school } from "../../../assets/images/index"
 import { PartecipantDTO } from "../../../models/services/PartecipantDTO";
 import { EventDTO } from "../../../models/services/EventDTO";
+import { formatDate } from "../../../utils/Helper";
+import { createEventAPIDateTime, fullDate } from "../../../utils/Constants";
 
 
 type CreateEventProps = {
@@ -41,7 +43,7 @@ function CreateEvent(props: CreateEventProps) {
   const [nameEvent, setNameEvent] = useState<string>("");
   const [descEvent, setDescEvent] = useState<string>("");
   const [eventTotal, setEventTotal] = useState<number | null>(null);
-  const [selectedUsers, setSelectedUsers] = useState<Array<UserDTO>>([]);
+  const [selectedUsers, setSelectedUsers] = useState<Array<any>>([]);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [text, onChangeText] = useState<string>('');
@@ -83,14 +85,24 @@ function CreateEvent(props: CreateEventProps) {
   };
 
   const saveEvent = () => {
-    let creator: UserDTO = new UserDTO()
-    creator.username = accountServiceContext?.aService.getUserName() ?? ""
-
+    let creator: UserDTO = new UserDTO
+    for (let i = 0; i < userList.length; i++) {
+      if (userList[i].username == accountServiceContext?.aService.getUserName()) {
+        creator = userList[i]
+        break
+      }
+    }
     if (nameEvent && selectedDate && eventTotal && creator && selectedUsers) {
       appContext?.app.handleLoader(true)
       let createEventRequest: CreateEventRequestDTO = new CreateEventRequestDTO()
-      createEventRequest.nome
-      //assegna a Create event request
+      createEventRequest.nome = nameEvent
+      createEventRequest.dataEv = formatDate(selectedDate.toISOString(), fullDate, createEventAPIDateTime)
+      createEventRequest.categoria = selectedCategory
+      createEventRequest.spesa = eventTotal
+      createEventRequest.descr = descEvent
+      createEventRequest.partecipantiList = selectedUsers
+      createEventRequest.creatore = creator
+
       backendService?.beService.createEvent(createEventRequest).then((_) => {
         //torna alla pag principale
       }).catch((createEventError) => {
@@ -99,6 +111,14 @@ function CreateEvent(props: CreateEventProps) {
         appContext?.app.handleLoader(false)
       })
     }
+  }
+
+  const formatUsers = (spesa: number) => {
+    let newArray = selectedUsers.filter((item) => { return true })
+    for (let i = 0; i < newArray.length; i++) {
+      newArray[i].spesa = spesa;
+    }
+    return newArray
   }
 
   const createCategoryEntries = () => {
@@ -125,55 +145,54 @@ function CreateEvent(props: CreateEventProps) {
     return cells
   }
 
-  const addSelectedUser = (user : UserDTO) => {
-    console.log(user)
-    if(selectedUsers.includes(user)){
+  const addSelectedUser = (user: UserDTO) => {
+    console.log(user, selectedUsers)
+    if (selectedUsers.filter((item) => { return (user.username == item.username) }).length > 0) {
       console.log(selectedUsers, user, selectedUsers.includes(user))
-      let newArray = selectedUsers.filter((item) => {return item.username != user.username})
+      let newArray = selectedUsers.filter((item) => { return item.username != user.username })
       setSelectedUsers(newArray)
-    }else{
-      let newArray = selectedUsers.filter((item) => {return true})
+    } else {
+      let newArray = selectedUsers.filter((item) => { return true })
       newArray.push(user)
       setSelectedUsers(newArray)
     }
-    
+
   }
 
   const createUserEntries = () => {
-      if (userList == undefined) {
-        return <View>
-        </View>
-      }
-  
-      let cells = new Array()
-      let i: number = 0
+    if (userList == undefined) {
+      return <View>
+      </View>
+    }
 
-  
-      for (i = 0; i < (userList.length); i++) {
-        const buttonUser = userList[i]
-        cells[i] = <View  style={styles.partecipantColumn}>
-          <TouchableOpacity onPress={() => {addSelectedUser(buttonUser)}} style={styles.partecipantEntry}>
-            <View style={styles.PartecipantButton}>
-              {selectedUsers.includes(buttonUser) ? <View style={styles.partecipantButtonInner}>
+    let cells = new Array()
 
-              </View> : <View></View>}
-            </View>
-          </TouchableOpacity>
-          <View >
+
+    for (let i = 0; i < (userList.length); i++) {
+      const buttonUser = userList[i]
+      cells[i] = <View style={styles.partecipantColumn}>
+        <TouchableOpacity onPress={() => { addSelectedUser(buttonUser) }} style={styles.partecipantEntry}>
+          <View style={styles.PartecipantButton}>
+            {(selectedUsers.filter((item) => { return (buttonUser.username == item.username) }).length > 0) ? <View style={styles.partecipantButtonInner}>
+
+            </View> : <View></View>}
+          </View>
+        </TouchableOpacity>
+        <View >
           <Text style={styles.menuEntryName}>
             {(userList[i].username == accountContext?.aService.getUserName() ? '> ' : '') + (userList[i].cognome ? userList[i].cognome : 'Doe') + " " + (userList[i].nome ? userList[i].nome : 'John')}
           </Text>
-  
+
           <Text style={styles.menuEntryEntry}>
             {'Username: ' + (userList[i].username ? userList[i].username : 'N/A')}
           </Text>
-          </View>
         </View>
-        
-      }
-  
-      return cells
+      </View>
+
     }
+
+    return cells
+  }
 
   //const categoryCells = createCategoryEntries();
   let userCells = createUserEntries()
@@ -200,8 +219,8 @@ function CreateEvent(props: CreateEventProps) {
       </Label>
       <TextInput
         style={styles.inputName}
-        onChangeText={onChangeText}
-        value={text}
+        onChangeText={(text) => setNameEvent(String(text))}
+        value={nameEvent}
       />
 
 
@@ -276,36 +295,36 @@ function CreateEvent(props: CreateEventProps) {
       </Label>
       <TextInput
         style={styles.totalEvent}
-        onChangeText={setDescEvent}
-        value={text}
+        onChangeText={(text) => setDescEvent(String(text))}
+        value={descEvent}
       />
       <View style={styles.columnContainer}>
         <Label
-        dimension="normal"
-        weight="semibold"
-        color={colors.mainText}
-        marginLeft={'5%'}
-        style={{ marginLeft: padding.quarter }}>
-        {t("create._list_title")}
-      </Label>
-          <DropShadow style={styles.generalShadow}>
-            <View style={styles.categoryContainer}>
-              <TouchableOpacity style={styles.categoryHeader} onPress={() => { setUserOpen(!userOpen) }}>
-                <Text style={styles.categoryTitle}>
-                  {t(selectedCategory)}
-                </Text>
-                <View style={styles.categoryButtonHolder} >
-                  <Image source={userOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
+          dimension="normal"
+          weight="semibold"
+          color={colors.mainText}
+          marginLeft={'5%'}
+          style={{ marginLeft: padding.quarter }}>
+          {t("create._list_title")}
+        </Label>
+        <DropShadow style={styles.generalShadow}>
+          <View style={styles.categoryContainer}>
+            <TouchableOpacity style={styles.categoryHeader} onPress={() => { setUserOpen(!userOpen) }}>
+              <Text style={styles.categoryTitle}>
+                {t(selectedCategory)}
+              </Text>
+              <View style={styles.categoryButtonHolder} >
+                <Image source={userOpen ? icon_collapse : icon_expand} style={styles.categoryButtonIcon} />
 
-                </View>
-              </TouchableOpacity>
-              {userOpen ? <View style={styles.categoryMainView}>
-                {userCells}
-              </View> : null}
-            </View>
-          </DropShadow>
-          
-        </View>
+              </View>
+            </TouchableOpacity>
+            {userOpen ? <View style={styles.categoryMainView}>
+              {userCells}
+            </View> : null}
+          </View>
+        </DropShadow>
+
+      </View>
       <CustomButton
         text={t("home.create_event")}
         style={{ marginTop: padding.full }}
@@ -313,7 +332,7 @@ function CreateEvent(props: CreateEventProps) {
           saveEvent()
         }} />
 
-        
+
 
     </KeyboardAwareScrollView>
   );
@@ -410,45 +429,45 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
 
-  totalEvent:{
+  totalEvent: {
     backgroundColor: colors.secondary,
 
   },
   menuEntry: {
-      marginVertical: 6
-    },
-    menuEntryName: {
-      marginLeft: 8,
-      fontSize: 20,
-      color: colors.highlightText
-    },
-    menuEntryEntry: {
-      marginLeft: 16,
-      fontSize: 16,
-      color: colors.mainText
-    },
+    marginVertical: 6
+  },
+  menuEntryName: {
+    marginLeft: 8,
+    fontSize: 20,
+    color: colors.highlightText
+  },
+  menuEntryEntry: {
+    marginLeft: 16,
+    fontSize: 16,
+    color: colors.mainText
+  },
 
-    PartecipantButton:{
-      aspectRatio: 1,
-      height: 20,
-      borderColor: colors.disabledGrey,
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderWidth: 2,
-    },
-    partecipantButtonInner:{
-      aspectRatio: 1,
-      height: 12,
-      backgroundColor: colors.disabledGrey,
-    },
+  PartecipantButton: {
+    aspectRatio: 1,
+    height: 20,
+    borderColor: colors.disabledGrey,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+  },
+  partecipantButtonInner: {
+    aspectRatio: 1,
+    height: 12,
+    backgroundColor: colors.disabledGrey,
+  },
 
-    partecipantEntry: {
-      marginVertical: 6,
-    },
-    partecipantColumn: {
-      flexDirection: 'row',
+  partecipantEntry: {
+    marginVertical: 6,
+  },
+  partecipantColumn: {
+    flexDirection: 'row',
 
-    },
+  },
 });
 
 

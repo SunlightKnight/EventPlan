@@ -30,6 +30,7 @@ const AppProvider = ({ children } : any) => {
   const backendService = useContext(BackendServiceContext)
 
   const [loading, setLoading] = useState(false)
+  
 
   // Disables Android back button press while loading
   useEffect(() => {
