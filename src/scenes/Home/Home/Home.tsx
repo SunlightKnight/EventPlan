@@ -130,10 +130,8 @@ function Home(props: HomeProps) {
   }
 
 
-  const showEvents = (events: EventsListResponseDTO | undefined, index: number) => {
-    if (index == 1) { //eventi filtrati
-
-    } else {//tutti gli eventi
+  const showEvents = () => {
+    
       setactive(!active)
       setSelectedCategories(new Array)
       setSelectedPayment(-1)
@@ -141,7 +139,8 @@ function Home(props: HomeProps) {
       setCategoriesOpen(false)
       setPaymentOpen(false)
       setCreatorOpen(false)
-    }
+
+    
   }
 
   return (
@@ -246,7 +245,7 @@ function Home(props: HomeProps) {
                 </TouchableOpacity>
               </View>
               <View style={styles.addEventButtonContainer}>
-                <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.primary, marginLeft: 10 }]} onPress={() => { showEvents(undefined, 0) }}>
+                <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.primary, marginLeft: 10 }]} onPress={() => { showEvents() }}>
                   <Label style={styles.labelFilterButton}>
                     {t("general.cancel")}
                   </Label>
@@ -271,7 +270,7 @@ function Home(props: HomeProps) {
           </TouchableOpacity>
         </View>
       </View>
-      <EventList events={eventListData} />
+      <EventList events={eventListData} categoryFilters={selectedCategories} paymentFilter={selectedPayment} creatorFilter={selectedCreator}/>
     </ScrollView>
   )
 }

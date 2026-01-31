@@ -7,6 +7,7 @@ export interface EventDTO {
   descr: string,
   dataEv: string,
   spesa: number,
+  categoria: string,
   creatore: UserDTO,
   partecipantiList: Array<PartecipantDTO>
 }
