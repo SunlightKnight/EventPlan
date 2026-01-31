@@ -1,4 +1,4 @@
-import { Alert, Button, Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native"
+import { Alert, Button, Image, RefreshControl, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native"
 import Label from "../../../components/Label"
 import padding from "../../../styles/padding"
 import colors from "../../../styles/colors"
@@ -46,6 +46,7 @@ function Home(props: HomeProps) {
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>([]);
   const [selectedPayment, setSelectedPayment] = useState(-1);
   const [selectedCreator, setSelectedCreator] = useState(-1);
+  const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
     const listener = function () {
@@ -132,8 +133,19 @@ function Home(props: HomeProps) {
 
   let categoriesCells = createCategoriesEntries()
 
+  const onRefresh = () => {
+    setRefreshing(true)
+    setTimeout(() => {
+      fetchEventList()
+      setRefreshing(false);
+    }, 100);
+  }
+
   return (
-    <ScrollView style={{ flex: 1, marginTop: padding.full, backgroundColor: colors.background }}>
+    <ScrollView style={{ flex: 1, marginTop: padding.full, backgroundColor: colors.background }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+      }>
       <Modal
         isVisible={active}
         onBackdropPress={() => { console.warn("closed"); }}
@@ -143,7 +155,7 @@ function Home(props: HomeProps) {
             <Text style={styles.labelFilter}>
               {t("filter.filters")}
             </Text>
-            <View  style={[styles.filterFieldContainer,{height:'25%'}] }>
+            <View style={[styles.filterFieldContainer, { height: '25%' }]}>
               <TouchableOpacity style={styles.filterFieldHeader} onPress={() => { setCategoriesOpen(!categoriesOpen) }}>
                 <Text style={styles.filterFieldTitle}>
                   {t("filter.categories")}

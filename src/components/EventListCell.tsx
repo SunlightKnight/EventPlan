@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     marginVertical: 6,
     borderRadius: 8,
     padding: 12,
-    backgroundColor: colors.white,
+    backgroundColor: colors.background,
     flexDirection: 'row'
   },
   containerShadow: {
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 0,
     },
-    shadowOpacity: .3,
+    shadowOpacity: .1,
     shadowRadius: 5,
   },
 
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
 
   arrowIcon: {
-    tintColor: colors.background,
+    tintColor: colors.primary_alter,
     alignSelf: 'center',
     height: '100%',
     width: '100%'
