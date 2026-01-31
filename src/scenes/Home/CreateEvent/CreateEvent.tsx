@@ -53,7 +53,7 @@ function CreateEvent(props: CreateEventProps) {
   const [userOpen, setUserOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState("");
 
-  let category = [
+  const category = [
     ('event_categories.undefined'),
     ('event_categories.school'),
     ('event_categories.business'),
@@ -63,6 +63,19 @@ function CreateEvent(props: CreateEventProps) {
     ('event_categories.social'),
     ('event_categories.sport')
   ]
+
+  const categoryIcon = [
+    {id: 'event_categories.undefined', icon: 'icons.undefined'},
+    {id: 'event_categories.school', icon: 'icons.school'},
+    {id: 'event_categories.business', icon: 'icons.business'},
+    {id: 'event_categories.history', icon: 'icons.history'},
+    {id: 'event_categories.music', icon: 'icons.music'},
+    {id: 'event_categories.party', icon: 'icons.party'},
+    {id: 'event_categories.social', icon: 'icons.social'},
+    {id: 'event_categories.sport', icon: 'icons.sport'},
+  ]
+
+  
 
   useEffect(() => {
     getUserList()
@@ -118,6 +131,12 @@ function CreateEvent(props: CreateEventProps) {
       })
     }
   }
+
+  const IconList = () => {
+     const categoriaTrovata = categoryIcon.find((item) => item.id === selectedCategory);
+     return categoriaTrovata
+  
+};
 
   const formatUsers = (spesa: number) => {
     let newArray = selectedUsers.filter((item) => { return true })
@@ -200,6 +219,7 @@ function CreateEvent(props: CreateEventProps) {
     return cells
   }
 
+  
   //const categoryCells = createCategoryEntries();
   let userCells = createUserEntries()
   return (
@@ -273,7 +293,7 @@ function CreateEvent(props: CreateEventProps) {
             </View>
           </View>
           <View>
-            <Image source={icons.school} style={styles.categoryIconChange} />
+            <Image source={(IconList()?.icon)} style={styles.categoryIconChange} />
 
           </View>
         </View>
