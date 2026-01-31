@@ -12,8 +12,7 @@ import { EventsListResponseDTO } from "../../../models/services/EventsListRespon
 import { ScrollView } from "react-native-gesture-handler"
 import { icon_add, icon_filter } from "../../../assets/images/index"
 import Modal from "react-native-modal"
-import DropShadow from "react-native-drop-shadow"
-import { icon_expand, icon_collapse } from "../../../assets/images/index"
+import { icon_expand, icon_collapse, icon_cancel } from "../../../assets/images/index"
 
 type HomeProps = {
   parentProps: any
@@ -130,7 +129,20 @@ function Home(props: HomeProps) {
     return cells
   }
 
-  let categoriesCells = createCategoriesEntries()
+
+  const showEvents = (events: EventsListResponseDTO | undefined, index: number) => {
+    if (index == 1) { //eventi filtrati
+
+    } else {//tutti gli eventi
+      setactive(!active)
+      setSelectedCategories(new Array)
+      setSelectedPayment(-1)
+      setSelectedCreator(-1)
+      setCategoriesOpen(false)
+      setPaymentOpen(false)
+      setCreatorOpen(false)
+    }
+  }
 
   return (
     <ScrollView style={{ flex: 1, marginTop: padding.full, backgroundColor: colors.background }}>
@@ -140,10 +152,16 @@ function Home(props: HomeProps) {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
-            <Text style={styles.labelFilter}>
-              {t("filter.filters")}
-            </Text>
-            <View  style={[styles.filterFieldContainer,{height:'25%'}] }>
+            <View style={styles.labelFilterContainer}>
+              <Text style={styles.labelFilter}>
+                {t("filter.filters")}
+              </Text>
+              <TouchableOpacity style={styles.labelFilterButtonHolder} onPress={() => { setactive(!active) }}>
+                <Image source={ icon_cancel} style={styles.labelFilterButtonIcon} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={categoriesOpen ? [styles.filterFieldContainer, { height: 140 }] : styles.filterFieldContainer}>
               <TouchableOpacity style={styles.filterFieldHeader} onPress={() => { setCategoriesOpen(!categoriesOpen) }}>
                 <Text style={styles.filterFieldTitle}>
                   {t("filter.categories")}
@@ -228,7 +246,7 @@ function Home(props: HomeProps) {
                 </TouchableOpacity>
               </View>
               <View style={styles.addEventButtonContainer}>
-                <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.primary, marginLeft: 10 }]} onPress={() => { setactive(!active) }}>
+                <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.primary, marginLeft: 10 }]} onPress={() => { showEvents(undefined, 0) }}>
                   <Label style={styles.labelFilterButton}>
                     {t("general.cancel")}
                   </Label>
@@ -279,16 +297,35 @@ const styles = StyleSheet.create({
   },
 
   labelFilter: {
+    flex: 1,
+    alignSelf: 'baseline',
+    color: colors.background,
+    fontWeight: 'bold',
+    fontSize: 30
+  },
+
+  labelFilterContainer: {
     width: '100%',
     alignSelf: 'center',
-    color: colors.background,
     marginBottom: 10,
     paddingVertical: 2,
     paddingHorizontal: 8,
     borderRadius: 6,
     backgroundColor: colors.primary,
-    fontWeight: 'bold',
-    fontSize: 30
+    flexDirection:'row',
+  },
+
+  labelFilterButtonIcon: {
+    height: '100%',
+    aspectRatio: 1,
+    tintColor: colors.background,
+
+  },
+
+  labelFilterButtonHolder: {
+    height: 35,
+    aspectRatio: 1,
+    alignSelf: 'center',
   },
 
   container: {
@@ -370,7 +407,7 @@ const styles = StyleSheet.create({
   filterFieldButtonIcon: {
     height: '100%',
     aspectRatio: 1,
-    tintColor: colors.secondary
+    tintColor: colors.highlightText
   },
 
   filterFieldMainView: {
@@ -397,17 +434,17 @@ const styles = StyleSheet.create({
   filterFieldTitle: {
     fontSize: 24,
     fontWeight: '600',
-    color: colors.secondary,
+    color: colors.highlightText,
   },
 
   filterFieldText: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: '400',
     color: colors.mainText,
   },
 
   filterFieldButton: {
-    height: 30,
+    height: 20,
     aspectRatio: 1,
     borderColor: colors.disabledGrey,
     borderWidth: 2,
@@ -423,8 +460,8 @@ const styles = StyleSheet.create({
 
   filterFieldOptionSelected: {
     backgroundColor: colors.disabledGrey,
-    width: 20,
-    height: 20,
+    width: 10,
+    height: 10,
     borderRadius: '100%',
     alignSelf: 'center',
   }
