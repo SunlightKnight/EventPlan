@@ -20,6 +20,17 @@ type HomeProps = {
 
 }
 
+const category = [
+  ('event_categories.undefined'),
+  ('event_categories.school'),
+  ('event_categories.business'),
+  ('event_categories.history'),
+  ('event_categories.music'),
+  ('event_categories.party'),
+  ('event_categories.social'),
+  ('event_categories.sport')
+]
+
 
 function Home(props: HomeProps) {
   const { t } = useTranslation()
@@ -32,7 +43,6 @@ function Home(props: HomeProps) {
   const [categoriesOpen, setCategoriesOpen] = useState(false)
   const [paymentOpen, setPaymentOpen] = useState(false)
   const [creatorOpen, setCreatorOpen] = useState(false)
-  const [categoriesList, setCategoriesList] = useState<Array<string>>([]);
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>([]);
   const [selectedPayment, setSelectedPayment] = useState(-1);
   const [selectedCreator, setSelectedCreator] = useState(-1);
@@ -71,7 +81,7 @@ function Home(props: HomeProps) {
     })
   }
 
-  const setSelectedPaymentOption = (index : number) => {
+  const setSelectedPaymentOption = (index: number) => {
     if (index == selectedPayment) {
       setSelectedPayment(-1)
       return
@@ -80,7 +90,7 @@ function Home(props: HomeProps) {
     setSelectedPayment(index)
   }
 
-  const setSelectedCreatorOption = (index : number) => {
+  const setSelectedCreatorOption = (index: number) => {
     if (index == selectedCreator) {
       setSelectedCreator(-1)
       return
@@ -89,12 +99,6 @@ function Home(props: HomeProps) {
     setSelectedCreator(index)
   }
 
-  //for category section of filter module
-
-  const getCategoriesList = () => {
-    appContext?.app.handleLoader(true);
-    //prendo categorie da appContext
-  };
 
   const addSelectedCategories = (category: string) => {
     if (selectedCategories.includes(category)) {
@@ -109,26 +113,18 @@ function Home(props: HomeProps) {
   }
 
   const createCategoriesEntries = () => {
-    if (categoriesList == undefined) {
-      return <View>
-      </View>
-    }
     let cells = new Array()
     let i: number = 0
-    for (i = 0; i < (categoriesList.length); i++) {
-      const buttonCategory = categoriesList[i]
-      cells[i] = <View style={styles.filterFieldMainView}>
-        <TouchableOpacity onPress={() => { addSelectedCategories(buttonCategory) }} style={styles.filterFieldOption}>
-          <View style={styles.filterFieldButton}>
-            {selectedCategories.includes(buttonCategory) ? <View style={styles.filterFieldOptionSelected}>
-            </View> : <View></View>}
-          </View>
+    for (i = 0; i < (category.length); i++) {
+      const buttonCategory = category[i]
+      cells[i] = <View style={styles.filterFieldOption}>
+        <TouchableOpacity onPress={() => { addSelectedCategories(buttonCategory) }} style={styles.filterFieldButton}>
+          {selectedCategories.includes(buttonCategory) ? <View style={styles.filterFieldOptionSelected}>
+          </View> : <View></View>}
         </TouchableOpacity>
-        <View >
-          <Text style={styles.filterFieldText}>
-            {(categoriesList[i])}
-          </Text>
-        </View>
+        <Text style={styles.filterFieldText}>
+          {t(category[i])}
+        </Text>
       </View>
     }
     return cells
@@ -147,7 +143,7 @@ function Home(props: HomeProps) {
             <Text style={styles.labelFilter}>
               {t("filter.filters")}
             </Text>
-            <ScrollView style={styles.filterFieldContainer}>
+            <View  style={[styles.filterFieldContainer,{height:'25%'}] }>
               <TouchableOpacity style={styles.filterFieldHeader} onPress={() => { setCategoriesOpen(!categoriesOpen) }}>
                 <Text style={styles.filterFieldTitle}>
                   {t("filter.categories")}
@@ -156,10 +152,12 @@ function Home(props: HomeProps) {
                   <Image source={categoriesOpen ? icon_collapse : icon_expand} style={styles.filterFieldButtonIcon} />
                 </View>
               </TouchableOpacity>
-              {categoriesOpen ? <View style={styles.filterFieldMainView}>
-                {createCategoriesEntries()}
-              </View> : null}
-            </ScrollView>
+              <ScrollView style={styles.filterFieldScrollContainer}>
+                {categoriesOpen ? <View style={styles.filterFieldMainView}>
+                  {createCategoriesEntries()}
+                </View> : null}
+              </ScrollView>
+            </View>
 
             <View style={styles.filterFieldContainer}>
               <TouchableOpacity style={styles.filterFieldHeader} onPress={() => { setPaymentOpen(!paymentOpen) }}>
@@ -172,16 +170,16 @@ function Home(props: HomeProps) {
               </TouchableOpacity>
               {paymentOpen ? <View style={styles.filterFieldMainView}>
                 <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => {setSelectedPaymentOption(0)}}>
-                    {selectedPayment == 0 ? <View style={styles.filterFieldOptionSelected}/> : <View/>}
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { setSelectedPaymentOption(0) }}>
+                    {selectedPayment == 0 ? <View style={styles.filterFieldOptionSelected} /> : <View />}
                   </TouchableOpacity>
                   <Text style={styles.filterFieldText}>
                     {t("filter.payed")}
                   </Text>
                 </View>
                 <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => {setSelectedPaymentOption(1)}}>
-                    {selectedPayment == 1 ? <View style={styles.filterFieldOptionSelected}/> : <View/>}
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { setSelectedPaymentOption(1) }}>
+                    {selectedPayment == 1 ? <View style={styles.filterFieldOptionSelected} /> : <View />}
                   </TouchableOpacity>
                   <Text style={styles.filterFieldText}>
                     {t("filter.not_payed")}
@@ -202,16 +200,16 @@ function Home(props: HomeProps) {
               </TouchableOpacity>
               {creatorOpen ? <View style={styles.filterFieldMainView}>
                 <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => {setSelectedCreatorOption(0)}}>
-                    {selectedCreator == 0 ? <View style={styles.filterFieldOptionSelected}/> : <View/>}
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { setSelectedCreatorOption(0) }}>
+                    {selectedCreator == 0 ? <View style={styles.filterFieldOptionSelected} /> : <View />}
                   </TouchableOpacity>
                   <Text style={styles.filterFieldText}>
                     {t("filter.created_by_me")}
                   </Text>
                 </View>
                 <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => {setSelectedCreatorOption(1)}}>
-                    {selectedCreator == 1 ? <View style={styles.filterFieldOptionSelected}/> : <View/>}
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { setSelectedCreatorOption(1) }}>
+                    {selectedCreator == 1 ? <View style={styles.filterFieldOptionSelected} /> : <View />}
                   </TouchableOpacity>
                   <Text style={styles.filterFieldText}>
                     {t("filter.partecipating")}
@@ -385,6 +383,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 6,
     width: '100%',
+  },
+
+  filterFieldScrollContainer: {
   },
 
   filterFieldHeader: {
