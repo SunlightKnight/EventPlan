@@ -34,7 +34,7 @@ function EventDetail(props: EventDetailProps) {
   const [focusedField, setFocusedField] = useState<CreditCardFormField>()
 
   const getImage = () => {
-    let url = icons.undefined
+    let url = icons[event.categoria.toLowerCase()] || icons.undefined
 
     return url
   }
@@ -95,7 +95,7 @@ function EventDetail(props: EventDetailProps) {
 
     for (i = 0; i < (participants.length); i++) {
       cells[participants[i].idPartecipante] = <View style={styles.participantsEntry}>
-        <Text style={styles.participantsEntryName}>
+        <Text style={styles.participantsEntryName} key={i}>
           {(participants[i].username == accountContext?.aService.getUserName() ? '> ' : '') + (participants[i].cognome ? participants[i].cognome : 'Doe') + " " + (participants[i].nome ? participants[i].nome : 'John')}
         </Text>
 
@@ -163,7 +163,6 @@ function EventDetail(props: EventDetailProps) {
         </Text>
       </View>
       <View style={styles.detailsContainer}>
-        <DropShadow style={styles.generalShadow}>
           <View style={styles.descriptionContainer}>
             <View style={styles.spacer} />
             <View style={styles.dateCategoryContainer}>
@@ -171,7 +170,7 @@ function EventDetail(props: EventDetailProps) {
                 {event.dataEv}
               </Text>
               <Text style={styles.eventCategory}>
-                {event.category ? event.category : t('event_categories.undefined')}
+                {event.categoria ? t('event_categories.' + event.categoria.toLowerCase()).toUpperCase() : t('event_categories.undefined')}
               </Text>
             </View>
             <View style={styles.spacer} />
@@ -181,9 +180,7 @@ function EventDetail(props: EventDetailProps) {
               </Text>
             </View>
           </View>
-        </DropShadow>
 
-        <DropShadow style={styles.generalShadow}>
           <View style={styles.participantsContainer}>
             <View style={styles.participantHeader}>
               <Text style={styles.participantsTitle}>
@@ -197,9 +194,7 @@ function EventDetail(props: EventDetailProps) {
               {participantCells}
             </View> : null}
           </View>
-        </DropShadow>
 
-        <DropShadow style={styles.generalShadow}>
           {!eventPaid ? <TouchableOpacity style={styles.paymentContainer} onPress={() => { setModalOpen(!modalOpen) }}>
             <Text style={styles.paymentText}>
               {t("payment.proceed_to_payment")}
@@ -209,7 +204,6 @@ function EventDetail(props: EventDetailProps) {
               {t("payment.already_paid")}
             </Text>
           </View>}
-        </DropShadow>
       </View>
     </ScrollView>
   )
@@ -305,6 +299,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     flex: 1,
     height: '100%',
+    padding: 6,
   },
 
   topContainer: {
@@ -328,7 +323,7 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     flex: 5,
 
-    backgroundColor: colors.background,
+    backgroundColor: colors.lightGrey,
     paddingVertical: 4,
     borderRadius: 6,
     marginHorizontal: 12,
@@ -384,7 +379,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     flex: 2,
 
-    backgroundColor: colors.background,
+    backgroundColor: colors.lightGrey,
   },
   participantHeader: {
     flexDirection: 'row',

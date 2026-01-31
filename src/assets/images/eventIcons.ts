@@ -5,6 +5,6 @@ export default {
     history: require("./eventIcon_history.png"),
     music: require("./eventIcon_music.png"),
     party: require("./eventIcon_party.png"),
-    social: require("./eventIcon_sport.png"),
+    social: require("./eventIcon_social.png"),
     sport: require("./eventIcon_sport.png")
 }

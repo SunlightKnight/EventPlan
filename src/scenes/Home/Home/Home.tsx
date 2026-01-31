@@ -117,7 +117,7 @@ function Home(props: HomeProps) {
     let i: number = 0
     for (i = 0; i < (category.length); i++) {
       const buttonCategory = category[i]
-      cells[i] = <View style={styles.filterFieldOption}>
+      cells[i] = <View style={styles.filterFieldOption} key={i}>
         <TouchableOpacity onPress={() => { addSelectedCategories(buttonCategory) }} style={styles.filterFieldButton}>
           {selectedCategories.includes(buttonCategory) ? <View style={styles.filterFieldOptionSelected}>
           </View> : <View></View>}
