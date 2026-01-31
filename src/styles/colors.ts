@@ -11,7 +11,7 @@ const colors = () => {
       white: "#FFFFFF",
       paleGrey: "#F7F7F7",
 
-      lightGrey: "#d6d6d6",
+      lightGrey: "#ececec",
       disabledGrey: "#B5B5B5",
       deepRed: "#BD0000",
       red: "#C41F1F",
