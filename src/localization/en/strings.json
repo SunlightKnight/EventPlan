@@ -80,13 +80,11 @@
   },
   "filter": {
     "filters":"Filters",
-    "all_categories":"All categories",
     "categories":"Categories",
     "payment":"Payment",
     "creator":"Creator",
     "payed":"Payed events",
     "not_payed":"Events to pay",
-    "all_events":"All events",
     "created_by_me":"Created by me",
     "partecipating":"Partecipating only"
   }
