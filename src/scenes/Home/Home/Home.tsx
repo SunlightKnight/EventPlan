@@ -28,10 +28,13 @@ function Home(props: HomeProps) {
 
   const [eventListData, setEventListData] = useState<EventsListResponseDTO>()
   const [active, setactive] = useState(false);
-  const [categoryOpen, setCategoryOpen] = useState(false)
   const [categoriesOpen, setCategoriesOpen] = useState(false)
   const [paymentOpen, setPaymentOpen] = useState(false)
   const [creatorOpen, setCreatorOpen] = useState(false)
+  const [categoriesList, setCategoriesList] = useState<Array<string>>([]);
+  const [selectedCategories, setSelectedCategories] = useState<Array<string>>([]);
+  const [selectedPayment, setSelectedPayment] = useState(-1);
+  const [selectedCreator, setSelectedCreator] = useState(-1);
 
   useEffect(() => {
     const listener = function () {
@@ -67,7 +70,70 @@ function Home(props: HomeProps) {
     })
   }
 
+  const setSelectedPaymentOption = (index : number) => {
+    if (index == selectedPayment) {
+      setSelectedPayment(-1)
+      return
+    }
 
+    setSelectedPayment(index)
+  }
+
+  const setSelectedCreatorOption = (index : number) => {
+    if (index == selectedCreator) {
+      setSelectedCreator(-1)
+      return
+    }
+
+    setSelectedCreator(index)
+  }
+
+  //for category section of filter module
+
+  const getCategoriesList = () => {
+    appContext?.app.handleLoader(true);
+    //prendo categorie da appContext
+  };
+
+  const addSelectedCategories = (category: string) => {
+    if (selectedCategories.includes(category)) {
+      console.log(selectedCategories, category, selectedCategories.includes(category))
+      let newArray = selectedCategories.filter((item) => { return item != category })
+      setSelectedCategories(newArray)
+    } else {
+      let newArray = selectedCategories.filter((item) => { return true })
+      newArray.push(category)
+      setSelectedCategories(newArray)
+    }
+  }
+
+  const createCategoriesEntries = () => {
+    if (categoriesList == undefined) {
+      return <View>
+      </View>
+    }
+    let cells = new Array()
+    let i: number = 0
+    for (i = 0; i < (categoriesList.length); i++) {
+      const buttonCategory = categoriesList[i]
+      cells[i] = <View style={styles.filterFieldMainView}>
+        <TouchableOpacity onPress={() => { addSelectedCategories(buttonCategory) }} style={styles.filterFieldOption}>
+          <View style={styles.filterFieldButton}>
+            {selectedCategories.includes(buttonCategory) ? <View style={styles.filterFieldOptionSelected}>
+            </View> : <View></View>}
+          </View>
+        </TouchableOpacity>
+        <View >
+          <Text style={styles.filterFieldText}>
+            {(categoriesList[i])}
+          </Text>
+        </View>
+      </View>
+    }
+    return cells
+  }
+
+  let categoriesCells = createCategoriesEntries()
 
   return (
     <ScrollView style={{ flex: 1, marginTop: padding.full }}>
@@ -90,15 +156,7 @@ function Home(props: HomeProps) {
                 </View>
               </TouchableOpacity>
               {categoriesOpen ? <View style={styles.filterFieldMainView}>
-                <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}>
-                    
-                  </TouchableOpacity>
-                  <Text style={styles.filterFieldText}>
-                    {t("filter.all_categories")}
-                  </Text>
-                </View>
-
+                {createCategoriesEntries()}
               </View> : null}
             </ScrollView>
 
@@ -113,19 +171,17 @@ function Home(props: HomeProps) {
               </TouchableOpacity>
               {paymentOpen ? <View style={styles.filterFieldMainView}>
                 <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
-                  <Text style={styles.filterFieldText}>
-                    {t("filter.all_events")}
-                  </Text>
-                </View>
-                <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => {setSelectedPaymentOption(0)}}>
+                    {selectedPayment == 0 ? <View style={styles.filterFieldOptionSelected}/> : <View/>}
+                  </TouchableOpacity>
                   <Text style={styles.filterFieldText}>
                     {t("filter.payed")}
                   </Text>
                 </View>
                 <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => {setSelectedPaymentOption(1)}}>
+                    {selectedPayment == 1 ? <View style={styles.filterFieldOptionSelected}/> : <View/>}
+                  </TouchableOpacity>
                   <Text style={styles.filterFieldText}>
                     {t("filter.not_payed")}
                   </Text>
@@ -145,19 +201,17 @@ function Home(props: HomeProps) {
               </TouchableOpacity>
               {creatorOpen ? <View style={styles.filterFieldMainView}>
                 <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
-                  <Text style={styles.filterFieldText}>
-                    {t("filter.all_events")}
-                  </Text>
-                </View>
-                <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => {setSelectedCreatorOption(0)}}>
+                    {selectedCreator == 0 ? <View style={styles.filterFieldOptionSelected}/> : <View/>}
+                  </TouchableOpacity>
                   <Text style={styles.filterFieldText}>
                     {t("filter.created_by_me")}
                   </Text>
                 </View>
                 <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { }}></TouchableOpacity>
+                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => {setSelectedCreatorOption(1)}}>
+                    {selectedCreator == 1 ? <View style={styles.filterFieldOptionSelected}/> : <View/>}
+                  </TouchableOpacity>
                   <Text style={styles.filterFieldText}>
                     {t("filter.partecipating")}
                   </Text>
@@ -258,7 +312,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop:15
+    marginTop: 15
   },
 
   modalView: {
@@ -353,10 +407,11 @@ const styles = StyleSheet.create({
   filterFieldButton: {
     height: 30,
     aspectRatio: 1,
-    backgroundColor: colors.secondary,
+    borderColor: colors.disabledGrey,
+    borderWidth: 2,
     borderRadius: '100%',
     marginRight: 10,
-    justifyContent:'center',
+    justifyContent: 'center',
   },
 
   filterFieldOption: {
@@ -365,12 +420,13 @@ const styles = StyleSheet.create({
   },
 
   filterFieldOptionSelected: {
-    backgroundColor: colors.secondaryDark,
-    width:20,
-    height:20,
-    borderRadius:'100%',
-    alignSelf:'center',
+    backgroundColor: colors.disabledGrey,
+    width: 20,
+    height: 20,
+    borderRadius: '100%',
+    alignSelf: 'center',
   }
+
 
 });
 
