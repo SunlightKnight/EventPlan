@@ -33,15 +33,29 @@ const colors = () => {
   } else {
     return {
       background: "#171820",
-      primary: "#9D061A",
-      primaryDark: "#620410",
-      secondary: "#568BC8",
-      secondaryDark: "#284F7B",
+      primary: "#a44d59",
+      primaryDark: "#d77e8a",
+      secondary: "#2c2c38",
+      secondaryDark: "#7a93ad",
       mainText: "#DAD2D8",
-      highlightText: "#1E3B5C",
-      paymentGreen: "#0A7147",
-      creditCard: "#19486d"
+      highlightText: "#7a93ad",
+      paymentGreen: "#82c9a3",
+      creditCard: "#19486d",
 
+      black: "#000000",
+      blackOpacity25: '#00000040',
+      blackOpacity40: '#00000066',
+      white: "#FFFFFF",
+      paleGrey: "#F7F7F7",
+
+      lightGrey: "#21212a",
+      disabledGrey: "#c7cdd3",
+      deepRed: "#BD0000",
+      red: "#C41F1F",
+      deepGreen: "#0DA818",
+      lightGreen: "#3FBA48",
+      gold: "#FFBF00",
+      deepGreenOpacity25: "#0DA81840",
     }
   }
 }

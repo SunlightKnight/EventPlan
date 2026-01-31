@@ -61,6 +61,7 @@ function Login(props: LoginProps) {
         autoCapitalize="none"
         autoCorrect={false}
         onChangeText={(text) => { setUserName(text) }}
+        style={{color: colors.primary}}
         />
       <TextField 
         label={t("login.password")} 
