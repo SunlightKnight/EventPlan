@@ -250,7 +250,7 @@ function CreateEvent(props: CreateEventProps) {
         </Label>
 
         <View style={styles.columnContainer}>
-          <DropShadow style={styles.generalShadow}>
+          <View style={styles.generalShadow}>
             <View style={styles.categoryContainer}>
               <TouchableOpacity style={styles.categoryHeader} onPress={() => { setCategoryOpen(!categoryOpen) }}>
                 <Text style={styles.categoryTitle}>
@@ -265,7 +265,7 @@ function CreateEvent(props: CreateEventProps) {
                 {createCategoryEntries()}
               </View> : null}
             </View>
-          </DropShadow>
+          </View>
           <View>
             <Image source={icons.school} style={styles.schoolIcon} />
 
@@ -342,11 +342,14 @@ function CreateEvent(props: CreateEventProps) {
 
 const styles = StyleSheet.create({
   inputName: {
+    flex:1,
     height: 40,
-    margin: 12,
-    borderWidth: 1,
     padding: 10,
-    marginLeft: padding.quarter
+    alignSelf:'stretch',
+    backgroundColor:colors.disabledGrey,
+    marginTop:'2%',
+    marginBottom:'4%'
+
   },
 
   nameContainer: {

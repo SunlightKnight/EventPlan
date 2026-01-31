@@ -74,20 +74,19 @@ export default function DateTextField(props: DatePickerFieldProps) {
   }
 
   return (
-    <View style={[{ marginHorizontal: padding.full, marginVertical: padding.half }, outerViewStyle]}>
+    <View style={[{ flex:1 }, outerViewStyle]}>
       {fieldTitle ? (
         <Label
           dimension="normal"
           weight="semibold"
           color={colors.mainText}
-          style={[{ marginLeft: padding.full }, fieldTitleStyle]}>
+          style={[{ marginBottom:'2%' }, fieldTitleStyle]}>
           {fieldTitle}
         </Label>
       ) : null}
       <View style={[{
         backgroundColor: colors.lightGrey,
         borderRadius: padding.quarter,
-        marginTop: padding.quarter,
         width: "100%"
       }, viewStyle]}>
         <TouchableOpacity activeOpacity={1} onPress={onDatePickerPress} style={styles.containerStyle}>
@@ -134,10 +133,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginHorizontal: padding.half
   },
   labelStyle: {
-    paddingHorizontal: padding.quarter,
     backgroundColor: colors.white,
     position: "absolute",
     top: -8,
