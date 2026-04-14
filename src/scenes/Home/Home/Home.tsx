@@ -221,36 +221,6 @@ function Home(props: HomeProps) {
 
               </View> : null}
             </View>
-
-            <View style={styles.filterFieldContainer}>
-              <TouchableOpacity style={styles.filterFieldHeader} onPress={() => { setCreatorOpen(!creatorOpen) }}>
-                <Text style={styles.filterFieldTitle}>
-                  {t("filter.creator")}
-                </Text>
-                <View style={styles.filterFieldButtonHolder}>
-                  <Image source={creatorOpen ? icon_collapse : icon_expand} style={styles.filterFieldButtonIcon} />
-                </View>
-              </TouchableOpacity>
-              {creatorOpen ? <View style={styles.filterFieldMainView}>
-                <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { setSelectedCreatorOption(0) }}>
-                    {selectedCreator == 0 ? <View style={styles.filterFieldOptionSelected} /> : <View />}
-                  </TouchableOpacity>
-                  <Text style={styles.filterFieldText}>
-                    {t("filter.created_by_me")}
-                  </Text>
-                </View>
-                <View style={styles.filterFieldOption}>
-                  <TouchableOpacity style={styles.filterFieldButton} onPress={() => { setSelectedCreatorOption(1) }}>
-                    {selectedCreator == 1 ? <View style={styles.filterFieldOptionSelected} /> : <View />}
-                  </TouchableOpacity>
-                  <Text style={styles.filterFieldText}>
-                    {t("filter.partecipating")}
-                  </Text>
-                </View>
-
-              </View> : null}
-            </View>
           </View>
         </View>
       </Modal>
@@ -271,7 +241,7 @@ function Home(props: HomeProps) {
           </TouchableOpacity>
         </View>
       </View>
-      <EventList events={filteredData} categoryFilters={selectedCategories} paymentFilter={selectedPayment} creatorFilter={selectedCreator}/>
+      <EventList events={filteredData} categoryFilters={selectedCategories} paymentFilter={selectedPayment}/>
     </ScrollView>
   )
 }

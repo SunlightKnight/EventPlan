@@ -17,7 +17,6 @@ type EventListProps = {
     events: EventDTO[] | null
     categoryFilters: Array<string>
     paymentFilter: number
-    creatorFilter: number
 };
 
 const category = [
@@ -54,69 +53,60 @@ function EventList(props: EventListProps) {
     }
 
 
-    const createCells = (events : EventDTO[] | null, filterCategory : Array<string>, filterPayment:number, filterCreator:number) => {
+    const createCells = (events : EventDTO[] | null, filterCategory : Array<string>, filterPayment:number) => {
         if (events == null) {
             return <View> </View>
         }
-        let flag : boolean = false
+        
         let cells = new Array()
         let i : number = 0
         let j : number =0
         for (i = 0; i < (events.length); i++) {
+            let flagP : boolean = false
+            let flagC : boolean = false
             if(isCurrentUserInParticipantsList(events[i])) {
-                if(filterPayment==-1&&filterCreator==-1&&filterCategory.length==0){
+                if(filterPayment==-1&&filterCategory.length==0){
                     cells[events[i].id] = <EventListCell event={events[i]}></EventListCell>
                     continue
                 }
-                switch(filterCreator){
-                    case 1:{
-                        if(events[i].creatore.username==accountContext?.aService.getUserName()){
-                            flag=true
-                        }
-                        break
-                    }
-                    case 0:{
-                        if(events[i].creatore.username!=accountContext?.aService.getUserName()){
-                            flag=true
-                        }
-                        break
-                    }
-                }
+                
 
                 switch(filterPayment){
                     case 0:{
                         if(events[i].partecipantiList[index].dataPagamento!=null){
-                            flag=true
+                            flagP=true
                         }
                         break
                     }
                     case 1:{
                         if(events[i].partecipantiList[index].dataPagamento==null){
-                            flag=true
+                            flagP=true
                         }
                         break
                     }
                 }
-
+                
                 if(filterCategory.length>0){
                     for(j=0;j<filterCategory.length; j++){
-                        if(filterCategory[j]==events[i].categoria){
-                            flag=true
+                        if(filterCategory[j]=="event_categories."+events[i].categoria){
+                            flagC=true
                             break
                         }
                     }
                 }
 
-                if(flag==true){
+                if((filterPayment==-1 || flagP==true) && (filterCategory.length==0 || flagC)){
                     cells[events[i].id] = <EventListCell event={events[i]}></EventListCell>
                 }
+
+
             }
         }
 
         return cells
     }
 
-    const cells = createCells(props.events, props.categoryFilters,props.paymentFilter,props.creatorFilter)
+    const cells = createCells(props.events, props.categoryFilters,props.paymentFilter)
 
     return (
         <View style={styles.container}>
