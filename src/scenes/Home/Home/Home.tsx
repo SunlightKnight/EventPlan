@@ -247,23 +247,6 @@ function Home(props: HomeProps) {
 
               </View> : null}
             </View>
-
-            <View style={styles.modalButtonContainer}>
-              <View style={styles.addEventButtonContainer}>
-                <TouchableOpacity style={styles.modalButton} onPress={() => { setactive(!active) }}>
-                  <Label style={styles.labelFilterButton}>
-                    {t("general.confirm")}
-                  </Label>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.addEventButtonContainer}>
-                <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.primary, marginLeft: 10 }]} onPress={() => { showEvents() }}>
-                  <Label style={styles.labelFilterButton}>
-                    {t("general.cancel")}
-                  </Label>
-                </TouchableOpacity>
-              </View>
-            </View>
           </View>
         </View>
       </Modal>
