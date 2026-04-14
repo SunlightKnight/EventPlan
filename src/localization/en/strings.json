@@ -80,6 +80,7 @@
     "sport": "Sport"
   },
   "filter": {
+    "searchBar":"Search events",
     "filters":"Filters",
     "categories":"Categories",
     "payment":"Payment",

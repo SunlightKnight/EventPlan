@@ -257,7 +257,7 @@ function Home(props: HomeProps) {
       <View style={styles.container}>
         <DropShadow style={styles.searchBarContainerShadow}>
           <View style={{ padding: padding.half }}>
-            <TextInput style={styles.searchBar} placeholder={t('books_list.search_bar_placeholder')} placeholderTextColor={colors.blackOpacity25} onChangeText={setSearchText} />
+            <TextInput style={styles.searchBar} placeholder={t('filter.searchBar')} placeholderTextColor={colors.blackOpacity25} onChangeText={setSearchText} />
           </View>
         </DropShadow>
         <View style={styles.filterButtonContainer}>
@@ -271,7 +271,7 @@ function Home(props: HomeProps) {
           </TouchableOpacity>
         </View>
       </View>
-      <EventList events={eventListData} categoryFilters={selectedCategories} paymentFilter={selectedPayment} creatorFilter={selectedCreator}/>
+      <EventList events={filteredData} categoryFilters={selectedCategories} paymentFilter={selectedPayment} creatorFilter={selectedCreator}/>
     </ScrollView>
   )
 }
@@ -291,8 +291,7 @@ const styles = StyleSheet.create({
   searchBarContainerShadow: {
         flex: 0,
         flexGrow: 0,
-
-        width: "100%",
+        width: "70%",
 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 0 },
