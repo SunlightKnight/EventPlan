@@ -14,7 +14,7 @@ import { BackendServiceContext } from "../Providers/Backend/BackendServiceProvid
 import { AccountServiceContext } from "../Providers/Account/AccountServiceProvider";
 
 type EventListProps = {
-    events: EventDTO[] | undefined
+    events: EventDTO[] | null
     categoryFilters: Array<string>
     paymentFilter: number
     creatorFilter: number
@@ -54,8 +54,8 @@ function EventList(props: EventListProps) {
     }
 
 
-    const createCells = (events : EventDTO[] | undefined, filterCategory : Array<string>, filterPayment:number, filterCreator:number) => {
-        if (events == undefined) {
+    const createCells = (events : EventDTO[] | null, filterCategory : Array<string>, filterPayment:number, filterCreator:number) => {
+        if (events == null) {
             return <View> </View>
         }
         let flag : boolean = false

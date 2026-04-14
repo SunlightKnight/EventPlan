@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
         flex: 0,
         flexGrow: 0,
         width: "70%",
-
+        marginRight: 5,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.15,
