@@ -74,9 +74,9 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
     ),
     headerRight: () => {
       return showLogout ? (
-        <TouchableOpacity 
-          style={{marginRight: padding.half, marginTop: Platform.OS === "ios" ? padding.full : HEADER_HEIGHT-40, alignItems: "flex-end"}}
-          onPress={() => { 
+        <View 
+          style={{marginRight: padding.half, marginTop: Platform.OS === "ios" ? padding.full : HEADER_HEIGHT-40, alignItems: "flex-end"}}>
+            <TouchableOpacity onPress={() => { 
             Alert.alert(
               t("logout.logout_title"),
               t("logout.logout_message"),
@@ -98,7 +98,8 @@ function HomeFlowCoordinator(props: HomeFlowCoordinatorProps) {
             source={icon_logout} 
             resizeMode="contain" 
             style={{width: 30, height: 30, tintColor: colors.white}} />
-        </TouchableOpacity>
+            </TouchableOpacity>
+        </View>
       ) : null
     },
   };

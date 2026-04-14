@@ -135,10 +135,8 @@ function Home(props: HomeProps) {
   }
 
 
-  const showEvents = (events: EventsListResponseDTO | undefined, index: number) => {
-    if (index == 1) { //eventi filtrati
-
-    } else {//tutti gli eventi
+  const showEvents = () => {
+    
       setactive(!active)
       setSelectedCategories(new Array)
       setSelectedPayment(-1)
@@ -146,7 +144,8 @@ function Home(props: HomeProps) {
       setCategoriesOpen(false)
       setPaymentOpen(false)
       setCreatorOpen(false)
-    }
+
+    
   }
 
   const onRefresh = () => {
@@ -252,23 +251,6 @@ function Home(props: HomeProps) {
 
               </View> : null}
             </View>
-
-            <View style={styles.modalButtonContainer}>
-              <View style={styles.addEventButtonContainer}>
-                <TouchableOpacity style={styles.modalButton} onPress={() => { setactive(!active) }}>
-                  <Label style={styles.labelFilterButton}>
-                    {t("general.confirm")}
-                  </Label>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.addEventButtonContainer}>
-                <TouchableOpacity style={[styles.modalButton, { backgroundColor: colors.primary, marginLeft: 10 }]} onPress={() => { showEvents(undefined, 0) }}>
-                  <Label style={styles.labelFilterButton}>
-                    {t("general.cancel")}
-                  </Label>
-                </TouchableOpacity>
-              </View>
-            </View>
           </View>
         </View>
       </Modal>
@@ -289,7 +271,7 @@ function Home(props: HomeProps) {
           </TouchableOpacity>
         </View>
       </View>
-      <EventList events={eventListData} />
+      <EventList events={eventListData} categoryFilters={selectedCategories} paymentFilter={selectedPayment} creatorFilter={selectedCreator}/>
     </ScrollView>
   )
 }

@@ -111,7 +111,7 @@ export default function DateTextField(props: DatePickerFieldProps) {
           </Label>
           {selectedDate ? (
             <TouchableOpacity activeOpacity={1} onPress={onDeletePress}>
-              <Image source={icon_cancel} resizeMode="contain" style={[{ tintColor: selectedDate ? colors.deepRed : undefined, width: 30, height: 30 }, iconsStyle]} />
+              <Image source={icon_cancel} resizeMode="contain" style={[{ tintColor: selectedDate ? colors.deepRed : undefined, width: 30, height: 30, marginRight:'3%' }, iconsStyle]} />
             </TouchableOpacity>
           ) : (
             <Image source={icon_event} resizeMode="contain" style={[{ marginRight: padding.half, width: 30, height: 30 }, iconsStyle]} />
