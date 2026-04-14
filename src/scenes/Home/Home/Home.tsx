@@ -9,10 +9,11 @@ import { useNavigation } from "@react-navigation/native"
 import { AppContext } from "../../../Providers/App/AppProvider"
 import EventList from "../../../components/EventList"
 import { EventsListResponseDTO } from "../../../models/services/EventsListResponseDTO"
-import { ScrollView } from "react-native-gesture-handler"
+import { ScrollView, TextInput } from "react-native-gesture-handler"
 import { icon_add, icon_filter } from "../../../assets/images/index"
 import Modal from "react-native-modal"
 import { icon_expand, icon_collapse, icon_cancel } from "../../../assets/images/index"
+import DropShadow from "react-native-drop-shadow"
 
 type HomeProps = {
   parentProps: any
@@ -45,7 +46,10 @@ function Home(props: HomeProps) {
   const [selectedCategories, setSelectedCategories] = useState<Array<string>>([]);
   const [selectedPayment, setSelectedPayment] = useState(-1);
   const [selectedCreator, setSelectedCreator] = useState(-1);
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
+  const filteredData = eventListData ? eventListData.eventiList.filter((item) => item.nome ? item.nome.toLowerCase().includes(searchText.toLowerCase()) : null) : null
 
   useEffect(() => {
     const listener = function () {
@@ -156,7 +160,7 @@ function Home(props: HomeProps) {
   return (
     <ScrollView style={{ flex: 1, marginTop: padding.full, backgroundColor: colors.background }}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <Modal
         isVisible={active}
@@ -169,7 +173,7 @@ function Home(props: HomeProps) {
                 {t("filter.filters")}
               </Text>
               <TouchableOpacity style={styles.labelFilterButtonHolder} onPress={() => { setactive(!active) }}>
-                <Image source={ icon_cancel} style={styles.labelFilterButtonIcon} />
+                <Image source={icon_cancel} style={styles.labelFilterButtonIcon} />
               </TouchableOpacity>
             </View>
 
@@ -269,9 +273,11 @@ function Home(props: HomeProps) {
         </View>
       </Modal>
       <View style={styles.container}>
-        <Label style={styles.labelEvent}>
-          {t("home.events")}
-        </Label>
+        <DropShadow style={styles.searchBarContainerShadow}>
+          <View style={{ padding: padding.half }}>
+            <TextInput style={styles.searchBar} placeholder={t('books_list.search_bar_placeholder')} placeholderTextColor={colors.blackOpacity25} onChangeText={setSearchText} />
+          </View>
+        </DropShadow>
         <View style={styles.filterButtonContainer}>
           <TouchableOpacity style={styles.addEventButton} onPress={() => { setactive(!active) }}>
             <Image source={icon_filter} style={styles.addIcon} />
@@ -300,6 +306,31 @@ const styles = StyleSheet.create({
 
   },
 
+  searchBarContainerShadow: {
+        flex: 0,
+        flexGrow: 0,
+
+        width: "100%",
+
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.15,
+        shadowRadius: 5,
+    },
+    searchBar: {
+        color: colors.blackOpacity40,
+        backgroundColor: colors.white,
+
+        width: "100%",
+        height: 40,
+
+        padding: padding.half,
+
+        fontSize: 20,
+
+        borderRadius: 5,
+    },
+
   labelFilterButton: {
     alignSelf: 'center',
     color: colors.background,
@@ -324,7 +355,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 6,
     backgroundColor: colors.primary,
-    flexDirection:'row',
+    flexDirection: 'row',
   },
 
   labelFilterButtonIcon: {
